@@ -67,17 +67,21 @@ a{color:#6941C6}a:hover{color:#53389E}
 .ad-slide{transition:opacity .6s ease, transform .6s ease}
 @media (prefers-reduced-motion: reduce){.glide,.ripple,.spin,.fade{animation:none}.ad-slide{transition:none}}
 /* Prototype chrome: deliberately "dev tools", not the design system, so it never reads as part of the kiosk. */
-.proto{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace !important;background:#1E1E1E !important;color:#CCCCCC !important;border-radius:4px !important;box-shadow:0 0 0 1px #3C3C3C,0 8px 24px rgba(0,0,0,.4) !important}
-.proto *{font-family:inherit !important;letter-spacing:0 !important;font-size:12px !important;line-height:18px !important;border-color:#3C3C3C !important}
+.proto{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace !important;background:#1E1E1E !important;color:#CCCCCC !important;border-radius:4px !important;box-shadow:0 0 0 1px #3C3C3C,0 8px 24px rgba(0,0,0,.4) !important;max-height:calc(100vh - 80px) !important;overflow-y:auto !important}
+.proto *{font-family:inherit !important;letter-spacing:0 !important;font-size:11px !important;line-height:16px !important;border-color:#3C3C3C !important}
 .proto *:not([role=radio]):not([role=switch]){color:#CCCCCC !important;background-color:transparent !important;box-shadow:none !important;border-radius:2px !important}
 .proto div[style*="font-weight: 600"],.proto span[style*="font-weight: 600"]{color:#FFFFFF !important;text-transform:lowercase !important}
 .proto span[style*="width: 32px"]{display:none !important}
 .proto .uu-row:hover,.proto .uu-btn:hover{background-color:#2D2D2D !important}
-.proto .uu-btn{border:1px solid #555555 !important;height:26px !important;padding:0 8px !important}
+.proto .uu-btn{border:1px solid #555555 !important;height:auto !important;min-height:22px !important;padding:3px 8px !important;white-space:normal !important;text-align:left !important;justify-content:flex-start !important}
 .proto [role=switch]{width:32px !important;height:16px !important;padding:2px !important;border-radius:2px !important;background-color:#444444 !important;box-shadow:none !important}
 .proto [role=switch][aria-checked=true]{background-color:#0E7AFE !important}
 .proto [role=switch][role=switch] > span{width:12px !important;height:12px !important;border-radius:1px !important;background-color:#EEEEEE !important;box-shadow:none !important}
 .proto [role=radio]{border-radius:2px !important}
+.proto [data-tip]{position:relative !important}
+.proto [data-tip]:hover::after,.proto [data-tip]:focus-visible::after{content:attr(data-tip);position:absolute;left:-1px;right:-1px;bottom:calc(100% + 4px);z-index:5;padding:4px 8px;background:#3A3A3A;color:#FFFFFF;border:1px solid #666666;border-radius:2px;white-space:normal;text-align:left;pointer-events:none;box-shadow:0 4px 12px rgba(0,0,0,.5)}
+.proto .proto-tab{color:#8A8A8A !important;border-bottom:2px solid transparent !important;border-radius:0 !important}
+.proto .proto-tab.on{color:#FFFFFF !important;border-bottom-color:#FFFFFF !important}
 .proto-trigger{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace !important;font-size:11px !important;letter-spacing:0 !important}
 </style>
 </helmet>
@@ -686,9 +690,17 @@ a{color:#6941C6}a:hover{color:#53389E}
       <div style="{{ui.simPos}} display: flex; align-items: center; z-index: 40;">
         <sc-if value="{{panel}}" hint-placeholder-val="{{ false }}">
           <aside class="proto" aria-label="Prototype controls" style="position: absolute; right: 0; bottom: calc(100% + 8px); width: 300px; max-height: calc(100vh - 140px); overflow-y: auto; border-radius: 12px; background: #fff; box-shadow: inset 0 0 0 1px #E9EAEB, 0 12px 16px -4px rgba(10,13,18,.08), 0 4px 6px -2px rgba(10,13,18,.03); padding: 16px; display: flex; flex-direction: column; gap: 16px;">
+            <div style="font-weight: 600">Prototype only</div>
+            <div role="tablist" aria-label="Prototype panel" style="display: flex; gap: 12px; border-bottom: 1px solid #3C3C3C; margin: -8px 0 0;">
+              <button type="button" role="tab" aria-selected="{{proto.tabC}}" onClick="{{proto.toControls}}" class="proto-tab {{proto.tabCCls}}" style="border: 0; background: none; font: inherit; padding: 4px 0; cursor: pointer">Controls</button>
+              <button type="button" role="tab" aria-selected="{{proto.tabK}}" onClick="{{proto.toCheckpoints}}" class="proto-tab {{proto.tabKCls}}" style="border: 0; background: none; font: inherit; padding: 4px 0; cursor: pointer">Checkpoints</button>
+              <button type="button" role="tab" aria-selected="{{proto.tabE}}" onClick="{{proto.toErrors}}" class="proto-tab {{proto.tabECls}}" style="border: 0; background: none; font: inherit; padding: 4px 0; cursor: pointer">Errors</button>
+            </div>
+            <sc-if value="{{proto.tabC}}" hint-placeholder-val="{{true}}">
+            <div style="display: flex; flex-direction: column; gap: 16px;">
             <div>
               <div style="font-size: 14px; line-height: 20px; font-weight: 600; color: #181D27;">Tap an ID on the reader</div>
-                <div style="font-size: 12px; line-height: 18px; color: #535862; margin-bottom: 8px;">Prototype only. {{hint}}</div>
+                <div style="font-size: 12px; line-height: 18px; color: #535862; margin-bottom: 8px;">{{hint}}</div>
               <div style="display: flex; flex-direction: column; gap: 6px;">
                 <sc-for list="{{tray}}" as="t" hint-placeholder-count="4">
                   <button class="uu-row uu-focus" onClick="{{t.tap}}" disabled="{{t.disabled}}" style="display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 10px; border: 0; border-radius: 8px; background: #fff; box-shadow: inset 0 0 0 1px #E9EAEB; text-align: left; font-family: inherit; cursor: pointer;">
@@ -715,7 +727,7 @@ a{color:#6941C6}a:hover{color:#53389E}
               <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;"><span style="font-size: 14px; line-height: 20px; font-weight: 600; color: #181D27;">Kiosk color</span><span style="font-size: 12px; line-height: 18px; color: #535862;">{{themeName}}</span></div>
               <div role="radiogroup" aria-label="Kiosk color" style="display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 4px;">
                 <sc-for list="{{swatches}}" as="w" hint-placeholder-count="9">
-                  <button class="uu-focus" role="radio" aria-checked="{{w.on}}" aria-label="{{w.name}}" title="{{w.name}}" onClick="{{w.pick}}" style="width: 100%; aspect-ratio: 1; border: 0; padding: 0; border-radius: 9999px; background: {{w.hex}}; box-shadow: {{w.ring}}; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                  <button class="uu-focus" role="radio" aria-checked="{{w.on}}" aria-label="{{w.name}}" data-tip="{{w.name}}" onClick="{{w.pick}}" style="width: 100%; aspect-ratio: 1; border: 0; padding: 0; border-radius: 9999px; background: {{w.hex}}; box-shadow: {{w.ring}}; cursor: pointer; display: flex; align-items: center; justify-content: center;">
                     <sc-if value="{{w.on}}" hint-placeholder-val="{{ false }}"><svg class="i" width="14" height="14" viewBox="0 0 24 24" style="color: #fff; stroke-width: 3;"><path d="M20 6 9 17l-5-5"></path></svg></sc-if>
                   </button>
                 </sc-for>
@@ -726,7 +738,25 @@ a{color:#6941C6}a:hover{color:#53389E}
               <div><div style="font-size: 14px; line-height: 20px; font-weight: 600; color: #181D27;">Reset prototype</div><div style="font-size: 12px; line-height: 18px; color: #535862;">Clears setup, colors, toggles and check-ins on every screen.</div></div>
               <button class="uu-btn uu-secondary" onClick="{{resetProto}}" style="height: 36px; padding: 0 12px; font-size: 14px; line-height: 20px; flex-shrink: 0;"><svg class="i" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="color: #A4A7AE;"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path></svg>Reset</button>
             </div>
-          </aside>
+                      </div>
+            </sc-if>
+            <sc-if value="{{proto.tabK}}" hint-placeholder-val="{{false}}">
+              <div style="display: flex; flex-direction: column; gap: 6px;">
+                <span>Jump to a moment · each starts from a reset</span>
+                <sc-for list="{{proto.cps}}" as="c" hint-placeholder-count="12">
+                  <button type="button" class="uu-btn" data-tip="{{c.tip}}" onClick="{{c.go}}" style="border: 1px solid #555; background: none; font: inherit; text-align: left; cursor: pointer">{{c.label}}</button>
+                </sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{proto.tabE}}" hint-placeholder-val="{{false}}">
+              <div style="display: flex; flex-direction: column; gap: 6px;">
+                <span>Jump to an error · each starts from a reset</span>
+                <sc-for list="{{proto.errs}}" as="c" hint-placeholder-count="12">
+                  <button type="button" class="uu-btn" data-tip="{{c.tip}}" onClick="{{c.go}}" style="border: 1px solid #555; background: none; font: inherit; text-align: left; cursor: pointer">{{c.label}}</button>
+                </sc-for>
+              </div>
+            </sc-if>
+</aside>
         </sc-if>
         <!-- Prototype-only: deliberately quiet ghost control so it doesn't compete with the kiosk design -->
         <button class="uu-focus proto-trigger" onClick="{{togglePanel}}" aria-expanded="{{panel}}" aria-label="Prototype controls" title="Prototype controls" style="height: 32px; padding: 0 8px; display: inline-flex; align-items: center; gap: 4px; border: 0; border-radius: 8px; background: transparent; color: {{simColor}}; opacity: {{simOpacity}}; font-family: inherit; font-size: 12px; line-height: 18px; font-weight: 500; white-space: nowrap; cursor: pointer;">
@@ -886,6 +916,52 @@ class Component extends DCLogic {
       idle: { show: (t.step === 'user' && !t.user.trim()) || isBadge, text: 'Returning to kiosk in ' + left + 's', offset: (40.84 * (1 - left / 30)).toFixed(2),
         color: left <= 5 ? '#414651' : '#717680', weight: left <= 5 ? '500' : '400', ring: left <= 5 ? '#535862' : '#A4A7AE' }
     };
+  }
+  /* Prototype only: Reset without the example-board state, used by checkpoints. */
+  cpReset() {
+    try { ['kioskProto.device', 'kioskProto.themeOverride', 'kioskProto.theme', 'kioskProto.weather', 'kioskProto.ads', 'kioskProto.staffArrive', 'kioskProto.findBy'].forEach(function (k) { window.localStorage.removeItem(k); }); } catch (e) {}
+    this.clearTimers(); this.checkins = {}; this.counter = 103;
+    this.setState({ screen: 'welcome', network: true, reader: true, hours: true, q: '', visit: null, notice: null, left: 0, delOpen: false, delOpenMap: {}, who: null, guest: null, gvisit: null, panel: false, verify: null, override: null, st: null, stLeft: 30, adIdx: 0 });
+  }
+  /* Prototype only: checkpoints and error checkpoints. Each resets, then sets up the moment with the kiosk's own functions. */
+  protoJumps() {
+    var self = this, E = function () { return self.find('U2048193'); }, L = function () { return self.find('U2051177'); };
+    var go = function (fn) { return function () { self.cpReset(); setTimeout(function () { fn(); self.setState({ panel: false }); }, 40); }; };
+    var wrongCode = function (attempts) { return function () { self.pick(E()); setTimeout(function () { self.sendCode(); setTimeout(function () { self.setState({ verify: Object.assign({}, self.state.verify, { code: '111111', attempts: attempts }) }); setTimeout(function () { self.verifySubmit(); }, 30); }, 30); }, 30); }; };
+    var cps = [
+      ['1 · Welcome', 'Start screen. Nothing in progress.', function () {}],
+      ['2 · Find by student ID', 'ID entry with 12345678 typed (Liam Martinez).', function () { self.setState({ screen: 'search', q: '12345678', left: 45 }); }],
+      ['3 · Search your name', 'Name search on, with "Emm" typed.', function () { try { window.localStorage.setItem('kioskProto.findBy', 'name'); } catch (e) {} self.setState({ screen: 'search', q: 'Emm', left: 45 }); }],
+      ['4 · Confirm it’s you', 'Emma Johnson picked. Choosing text or email.', function () { self.pick(E()); }],
+      ['5 · Enter the code', 'Code sent to Emma. 2 digits typed. Code is 482913.', function () { self.pick(E()); setTimeout(function () { self.sendCode(); setTimeout(function () { self.setState({ verify: Object.assign({}, self.state.verify, { code: '48' }) }); }, 30); }, 30); }],
+      ['6 · Who you’re picking up for', 'Liam Martinez checked in. Choosing who he picks up for.', function () { self.checkIn(L(), false); }],
+      ['7 · Checked in', 'Emma Johnson checked in. All items selected.', function () { self.checkIn(E(), false); }],
+      ['8 · Picking up some items', 'Emma checked in with 6 items deselected.', function () { self.checkIn(E(), false); self.checkins['U2048193'].skip = { p2: true, p52: true, p53: true, p54: true, p55: true, p56: true }; self.setState({ selTick: (self.state.selTick || 0) + 1 }); }],
+      ['9 · Checked in for others', 'Liam checked in for himself, Jordan Lee and Priya Natarajan.', function () { self.checkIn(L(), false, { self: true, 'Jordan Lee': true, 'Priya Natarajan': true }); }],
+      ['10 · Guest enters name', 'Guest screen with Maria Lopez typed.', function () { self.setState({ screen: 'guest', guest: { first: 'maria', last: 'lopez', field: 'last' }, left: 45 }); }],
+      ['11 · Guest checked in', 'Maria checked in as a guest. Number and wait shown.', function () { self.setState({ screen: 'guestIn', gvisit: { first: 'Maria', queue: 'A104', ahead: 2 }, left: 30 }); }],
+      ['12 · Staff sign-in', 'Gear opened. Username started on the keyboard.', function () { self.setState({ screen: 'staff', st: { step: 'user', user: 'admin@ricoh-usa', pw: '', err: '', kb: 'user', shift: false, shown: false }, stLeft: 30 }); }]
+    ];
+    var errs = [
+      ['E1 · Card not recognized', 'An unregistered card is tapped on the reader.', function () { self.tap('V0009127'); }],
+      ['E2 · No student ID match', 'An ID that isn’t in the roster is entered.', function () { self.setState({ screen: 'message', notice: { type: 'notFound', fromId: true }, left: 12 }); }],
+      ['E3 · No packages', 'Daniel Kim taps. He has nothing waiting.', function () { self.tap('U2073356'); }],
+      ['E4 · Nothing ready yet', 'Ava Thompson taps. Her 2 packages are still processing.', function () { self.tap('U2074410'); }],
+      ['E5 · Wrong code', 'Emma enters a wrong code once. 2 tries left.', wrongCode(0)],
+      ['E6 · Too many tries', 'Emma enters a wrong code a third time. Locked.', wrongCode(2)],
+      ['E7 · No phone or email', 'Mia Robinson has no contact on file, so no code can be sent.', function () { self.pick(self.find('U2062290')); }],
+      ['E8 · Already checked in', 'Emma checks in, then taps again.', function () { self.checkIn(E(), false); self.checkIn(E(), false); }],
+      ['E9 · Kiosk offline', 'Kiosk Wi-Fi off. Also a toggle in Controls.', function () { self.setState({ network: false }); }],
+      ['E10 · Reader unplugged', 'Badge reader off. Also a toggle in Controls.', function () { self.setState({ reader: false }); }],
+      ['E11 · Outside pickup hours', 'Pickup hours off. Also a toggle in Controls.', function () { self.setState({ hours: false }); }],
+      ['E12 · No kiosk access', 'Staff sign-in as alex@emory.edu, who has no kiosk access.', function () { self.setState({ screen: 'staff', st: { step: 'pw', user: 'alex@emory.edu', pw: '', err: 'You don’t have access to set up or run a kiosk.', kb: null, shift: false, shown: false }, stLeft: 30 }); }]
+    ];
+    var m = function (a) { return { label: a[0], tip: a[1], go: go(a[2]) }; };
+    var tab = this.state.simTab || 'controls', setTab = function (t) { return function () { self.setState({ simTab: t }); }; };
+    return { cps: cps.map(m), errs: errs.map(m),
+      tabC: tab === 'controls', tabK: tab === 'checkpoints', tabE: tab === 'errors',
+      tabCCls: tab === 'controls' ? 'on' : '', tabKCls: tab === 'checkpoints' ? 'on' : '', tabECls: tab === 'errors' ? 'on' : '',
+      toControls: setTab('controls'), toCheckpoints: setTab('checkpoints'), toErrors: setTab('errors') };
   }
   toWelcome() { this.clearTimers(); this.setState({ screen: 'welcome', visit: null, notice: null, q: '', delOpen: false, delOpenMap: {}, who: null, guest: null, gvisit: null, left: 0 }); }
 
@@ -1325,6 +1401,7 @@ class Component extends DCLogic {
       st: self.staffVals(),
       panel: s.panel, panelLabel: s.panel ? 'Hide controls' : 'Simulate',
       togglePanel: function () { self.setState({ panel: !self.state.panel }); },
+      proto: self.protoJumps(),
       hint: hint,
       themeName: (this.palette().filter(function (x) { return x[1] === theme; })[0] || ['Custom'])[0] + (override && override !== acctColor ? ' · preview' : ' · account color'),
       acctNote: (dev ? dev.cust.name : 'Default') + ' account color: ' + (this.palette().filter(function (x) { return x[1] === acctColor; })[0] || ['Custom'])[0] + ' (' + acctColor + ')',
