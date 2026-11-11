@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Kiosk diagnostics</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FDFDFD;font-family:Inter,ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+a{color:#6941C6}a:hover{color:#53389E}
+.i{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.uu-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:8px;font-family:inherit;font-weight:600;cursor:pointer;text-decoration:none;transition:background-color .1s linear,color .1s linear}
+.uu-btn:focus-visible,.uu-focus:focus-visible{outline:2px solid #9E77ED;outline-offset:2px}
+.uu-primary{background:#7F56D9;color:#fff;border:2px solid rgba(255,255,255,.12);box-shadow:inset 0 0 0 1px rgba(10,13,18,.18),inset 0 -2px 0 0 rgba(10,13,18,.05),0 1px 2px rgba(10,13,18,.05)}
+.uu-primary:hover{background:#6941C6;color:#fff}
+.uu-secondary{background:#fff;color:#414651;box-shadow:inset 0 0 0 1px #D5D7DA,inset 0 -2px 0 0 rgba(10,13,18,.05),0 1px 2px rgba(10,13,18,.05)}
+.uu-secondary:hover{background:#FAFAFA;color:#252B37}
+.uu-btn:disabled{cursor:not-allowed;background:#F5F5F5;color:#A4A7AE;box-shadow:inset 0 0 0 1px #E9EAEB;border-color:transparent}
+.spin{animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.fade{animation:fadeUp .2s ease-out both}
+@keyframes fadeUp{from{opacity:.001;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.fade,.spin{animation:none}}
+/* Prototype chrome: deliberately "dev tools", not the design system, so it never reads as part of the kiosk. */
+.proto{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace !important;background:#1E1E1E !important;color:#CCCCCC !important;border-radius:4px !important;box-shadow:0 0 0 1px #3C3C3C,0 8px 24px rgba(0,0,0,.4) !important}
+.proto *{font-family:inherit !important;letter-spacing:0 !important;font-size:12px !important;line-height:18px !important;border-color:#3C3C3C !important}
+.proto *:not([role=radio]):not([role=switch]){color:#CCCCCC !important;background-color:transparent !important;box-shadow:none !important;border-radius:2px !important}
+.proto div[style*="font-weight: 600"],.proto span[style*="font-weight: 600"]{color:#FFFFFF !important;text-transform:lowercase !important}
+.proto span[style*="width: 32px"]{display:none !important}
+.proto .uu-row:hover,.proto .uu-btn:hover{background-color:#2D2D2D !important}
+.proto .uu-btn{border:1px solid #555555 !important;height:26px !important;padding:0 8px !important}
+.proto [role=switch]{width:32px !important;height:16px !important;padding:2px !important;border-radius:2px !important;background-color:#444444 !important;box-shadow:none !important}
+.proto [role=switch][aria-checked=true]{background-color:#0E7AFE !important}
+.proto [role=switch][role=switch] > span{width:12px !important;height:12px !important;border-radius:1px !important;background-color:#EEEEEE !important;box-shadow:none !important}
+.proto [role=radio]{border-radius:2px !important}
+.proto-trigger.uu-secondary{background:#1E1E1E !important;color:#CCCCCC !important;box-shadow:0 0 0 1px #3C3C3C !important;border-radius:4px !important;height:30px !important}
+.proto-trigger.uu-secondary svg{color:#999999 !important}
+.proto-trigger{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace !important;font-size:11px !important;letter-spacing:0 !important}
+</style>
+</helmet>
+<div style="min-height: 100vh; display: flex; flex-direction: column; background: #FDFDFD; color: #181D27; font-family: Inter, ui-sans-serif, system-ui, sans-serif;">
+  <header style="background: #fff; border-bottom: 1px solid #E9EAEB; padding: clamp(12px, 2.5vh, 20px) max(clamp(16px, 3vw, 32px), calc((100% - 880px) / 2 + clamp(16px, 3vw, 32px)));">
+  <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 16px;">
+      <div>
+        <h1 style="margin: 0; font-size: 24px; line-height: 32px; font-weight: 600; letter-spacing: -0.01em;">Kiosk diagnostics</h1>
+        <p style="margin: 4px 0 0; font-size: 14px; line-height: 20px; color: #535862; font-family: ui-monospace, Menlo, monospace;">Kiosk {{kioskId}} · App 2.4.1{{runsText}}</p>
+      </div>
+      <a href="Admin.dc.html" class="uu-btn uu-secondary" style="height: 48px; padding: 0 22px; font-size: 16px; line-height: 24px;">Exit</a>
+    </div>
+  </header>
+  <div style="flex: 1; width: 100%; max-width: 880px; margin: 0 auto; justify-content: center; padding: clamp(16px, 4vh, 48px) clamp(16px, 3vw, 32px); display: flex; flex-direction: column; gap: 20px;">
+    
+    <div aria-live="polite" style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 12px; background: {{sum.bg}}; box-shadow: inset 0 0 0 1px {{sum.bd}}; color: {{sum.fg}}; font-size: 16px; line-height: 24px; font-weight: 600;">
+      <sc-if value="{{sum.running}}" hint-placeholder-val="{{ true }}"><svg class="i spin" width="20" height="20" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-6.22-8.56"></path></svg></sc-if>
+      <sc-if value="{{sum.ok}}" hint-placeholder-val="{{ false }}"><svg class="i" width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path></svg></sc-if>
+      <sc-if value="{{sum.bad}}" hint-placeholder-val="{{ false }}"><svg class="i" width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v4"></path><path d="M12 16h.01"></path></svg></sc-if>
+      {{sum.text}}
+    </div>
+
+    <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px;">
+      <sc-for list="{{rows}}" as="r" hint-placeholder-count="3">
+        <li style="border-radius: 12px; background: #fff; box-shadow: inset 0 0 0 1px {{r.ring}}, 0 1px 2px rgba(10,13,18,.05);">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding: 16px 20px;">
+            <span style="width: 48px; height: 48px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: #fff; box-shadow: inset 0 0 0 1px #D5D7DA, inset 0 -2px 0 0 rgba(10,13,18,.05), 0 1px 2px rgba(10,13,18,.05); color: #414651; flex-shrink: 0;">
+              <svg class="i" width="22" height="22" viewBox="0 0 24 24"><path d="{{r.icon}}"></path></svg>
+            </span>
+            <div style="flex: 1 1 240px; min-width: 0;">
+              <div style="font-size: 18px; line-height: 28px; font-weight: 600;">{{r.title}}</div>
+              <div style="font-size: 14px; line-height: 20px; color: {{r.detailFg}};">{{r.detail}}</div>
+            </div>
+            <sc-if value="{{r.canFix}}" hint-placeholder-val="{{ false }}">
+              <button class="uu-btn uu-primary" onClick="{{r.fix}}" style="height: 44px; padding: 0 16px; font-size: 14px; line-height: 20px;">
+                <svg class="i" width="18" height="18" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M8 16H3v5"></path></svg>{{r.action}}
+              </button>
+            </sc-if>
+            <span style="display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px 2px 8px; border-radius: 9999px; font-size: 14px; line-height: 20px; font-weight: 500; background: {{r.bbg}}; color: {{r.bfg}}; box-shadow: inset 0 0 0 1px {{r.bbd}}; flex-shrink: 0;">
+              <span style="width: 6px; height: 6px; border-radius: 9999px; background: {{r.dot}};"></span>{{r.badge}}
+            </span>
+          </div>
+          <sc-if value="{{r.showSteps}}" hint-placeholder-val="{{ false }}">
+            <div class="fade" style="padding: 0 20px 16px;">
+              <div style="padding: 16px; border-radius: 12px; background: #FAFAFA; box-shadow: inset 0 0 0 1px #E9EAEB;">
+                <div style="font-size: 14px; line-height: 20px; font-weight: 600; color: #414651;">That didn’t fix it. Try this:</div>
+                <ol style="list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px;">
+                  <sc-for list="{{r.steps}}" as="s" hint-placeholder-count="3">
+                    <li style="display: flex; gap: 12px; font-size: 16px; line-height: 24px; color: #414651;"><span style="width: 24px; height: 24px; border-radius: 9999px; background: #F4EBFF; color: #6941C6; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">{{s.n}}</span>{{s.text}}</li>
+                  </sc-for>
+                </ol>
+                <p style="margin: 12px 0 0; font-size: 14px; line-height: 20px; color: #535862;">{{r.note}}</p>
+              </div>
+            </div>
+          </sc-if>
+        </li>
+      </sc-for>
+    </ul>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+      <button class="uu-btn uu-secondary" onClick="{{runAll}}" disabled="{{sum.running}}" style="flex: 1 1 240px; height: 56px; font-size: 18px; line-height: 28px;">
+        <svg class="i" width="20" height="20" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M8 16H3v5"></path></svg>Run all checks
+      </button>
+      <a href="Main.dc.html" class="uu-btn uu-primary" style="flex: 1 1 240px; height: 56px; font-size: 18px; line-height: 28px;">Return to kiosk</a>
+    </div>
+
+  </div>
+
+  <!-- Prototype controls: page chrome, not kiosk UI -->
+  <div style="position: fixed; left: 16px; bottom: 16px; z-index: 40; display: flex; flex-direction: column; align-items: flex-start; gap: 8px;">
+    <sc-if value="{{panel}}" hint-placeholder-val="{{ false }}">
+      <aside class="proto" aria-label="Prototype controls" style="width: 300px; border-radius: 12px; background: #fff; box-shadow: inset 0 0 0 1px #E9EAEB, 0 12px 16px -4px rgba(10,13,18,.08), 0 4px 6px -2px rgba(10,13,18,.03); padding: 16px; display: flex; flex-direction: column; gap: 16px;">
+        <div>
+          <div style="font-size: 14px; line-height: 20px; font-weight: 600; color: #181D27;">Simulate</div>
+          <div style="font-size: 12px; line-height: 18px; color: #535862;">Prototype only. Change these, then run all checks.</div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <sc-for list="{{toggles}}" as="g" hint-placeholder-count="2">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+              <span style="font-size: 14px; line-height: 20px; font-weight: 500; color: #414651;">{{g.label}}</span>
+              <button class="uu-focus" role="switch" aria-checked="{{g.on}}" aria-label="{{g.label}}" onClick="{{g.flip}}" style="width: 44px; height: 24px; border: 0; border-radius: 9999px; padding: 2px; display: flex; justify-content: {{g.justify}}; background: {{g.track}}; cursor: pointer; flex-shrink: 0;"><span style="width: 20px; height: 20px; border-radius: 9999px; background: #fff; box-shadow: 0 1px 3px rgba(10,13,18,.1);"></span></button>
+            </div>
+          </sc-for>
+        </div>
+      </aside>
+    </sc-if>
+    <button class="uu-btn uu-secondary proto-trigger" onClick="{{togglePanel}}" aria-expanded="{{panel}}" style="height: 36px; padding: 0 12px; font-size: 14px; line-height: 20px; border-radius: 9999px;">
+      <svg class="i" width="16" height="16" viewBox="0 0 24 24" style="color: #A4A7AE;"><path d="M4 21v-7"></path><path d="M4 10V3"></path><path d="M12 21v-9"></path><path d="M12 8V3"></path><path d="M20 21v-5"></path><path d="M20 12V3"></path><path d="M1 14h6"></path><path d="M9 8h6"></path><path d="M17 16h6"></path></svg>{{panelLabel}}
+    </button>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1180,"height":820}}'>
+class Component extends DCLogic {
+  state = { panel: false, network: true, reader: true, status: { wifi: 'pending', service: 'pending', reader: 'pending' }, tried: {}, fixing: null, runs: 0 };
+  timers = [];
+  componentDidMount() {
+    this.runAll();
+    /* Prototype: watch the saved kiosk assignment so this screen updates when another screen changes it. */
+    var selfP = this; this._raw = null;
+    this._poll = setInterval(function () { var v = null; try { v = window.localStorage.getItem('kioskProto.device'); } catch (e) {} if (v !== selfP._raw) { selfP._raw = v; selfP.setState({ devTick: (selfP.state.devTick || 0) + 1 }); } }, 600);
+  }
+  componentWillUnmount() { this.timers.forEach(clearTimeout); clearInterval(this._poll); }
+  later(fn, ms) { this.timers.push(setTimeout(fn, ms)); }
+  result(id) { var s = this.state; return id === 'wifi' ? (s.network ? 'pass' : 'fail') : id === 'service' ? (s.network ? 'pass' : 'skip') : (s.reader ? 'pass' : 'fail'); }
+  setStatus(patch) { this.setState({ status: Object.assign({}, this.state.status, patch) }); }
+  runAll() {
+    var self = this;
+    this.timers.forEach(clearTimeout); this.timers = [];
+    this.setState({ tried: {}, fixing: null, status: { wifi: 'checking', service: 'pending', reader: 'pending' } });
+    this.later(function () { self.setStatus({ wifi: self.result('wifi'), service: 'checking' }); }, 800);
+    this.later(function () { self.setStatus({ service: self.result('service'), reader: 'checking' }); }, 1500);
+    this.later(function () { self.setStatus({ reader: self.result('reader') }); self.setState({ runs: self.state.runs + 1 }); }, 2200);
+  }
+  fix(id) {
+    var self = this, p = {}; p[id] = 'checking'; if (id === 'wifi') p.service = 'pending';
+    this.setState({ fixing: id }); this.setStatus(p);
+    this.later(function () {
+      var r = self.result(id), q = {}; q[id] = r; if (id === 'wifi') q.service = self.result('service');
+      self.setStatus(q);
+      if (r !== 'pass') { var t = Object.assign({}, self.state.tried); t[id] = true; self.setState({ tried: t }); }
+      self.setState({ fixing: null });
+    }, 1800);
+  }
+  renderVals() {
+    var self = this, s = this.state, st = s.status;
+    var dev = null;
+    try { var raw = window.localStorage.getItem('kioskProto.device'); if (raw && raw !== 'none') dev = JSON.parse(raw); } catch (e) {}
+    var KID = dev ? dev.kiosk.code : 'NB-SMC-01', WIFI = dev ? dev.wifi : 'NB-Mailroom-Kiosk';
+    var META = {
+      wifi: { title: 'Wi-Fi', icon: 'M12 20h.01 M2 8.82a15 15 0 0 1 20 0 M5 12.86a10 10 0 0 1 14 0 M8.5 16.43a5 5 0 0 1 7 0',
+        pass: 'Connected to ' + WIFI + ' · strong signal', fail: 'Not connected. This kiosk should be on ' + WIFI + '.', action: 'Reconnect',
+        steps: ['Open Settings on this kiosk device, then tap Wi-Fi.', 'Join ' + WIFI + '. The password is on the label under the kiosk stand.', 'Come back to this screen and tap Run all checks.'],
+        note: 'Other devices in the mailroom offline too? The building network is down. Contact campus IT and give them kiosk ID ' + KID + '.' },
+      service: { title: 'Delivery CTRL service', icon: 'M4 2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z M4 14h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2z M6 6h.01 M6 18h.01',
+        pass: 'Reachable · queue and package data in sync', skip: 'Needs Wi-Fi. Fix Wi-Fi first.', fail: 'Wi-Fi works, but the service isn’t responding.' },
+      reader: { title: 'Badge reader', icon: 'M6 8.32a7.43 7.43 0 0 1 0 7.36 M9.46 6.21a11.76 11.76 0 0 1 0 11.58 M12.91 4.1a15.91 15.91 0 0 1 .01 15.8 M16.37 2a20.16 20.16 0 0 1 0 20',
+        pass: 'Connected · reads ID cards and phones', fail: 'Not responding. Students can still check in by searching their name.', action: 'Retry reader',
+        steps: ['Check that the reader cable is plugged into the kiosk stand.', 'Unplug it, wait 5 seconds, and plug it back in.', 'Tap Retry reader.'],
+        note: 'Still not working? Contact Ricoh support and give them kiosk ID ' + KID + '.' }
+    };
+    var BADGE = { pass: ['Pass', '#ECFDF3', '#067647', '#ABEFC6', '#17B26A'], fail: ['Fail', '#FEF3F2', '#B42318', '#FECDCA', '#F04438'], skip: ['Skipped', '#FAFAFA', '#414651', '#E9EAEB', '#A4A7AE'],
+      checking: ['Checking', '#F9F5FF', '#6941C6', '#E9D7FE', '#9E77ED'], pending: ['Waiting', '#FAFAFA', '#414651', '#E9EAEB', '#D5D7DA'] };
+    var vals = [st.wifi, st.service, st.reader];
+    var running = vals.some(function (v) { return v === 'checking' || v === 'pending'; });
+    var problems = ['wifi', 'reader'].filter(function (k) { return st[k] === 'fail'; }).length;
+    var sum = running ? { running: true, ok: false, bad: false, text: 'Running checks…', bg: '#fff', bd: '#E9EAEB', fg: '#414651' }
+      : problems === 0 ? { running: false, ok: true, bad: false, text: 'All checks passing. The kiosk is ready for students.', bg: '#F6FEF9', bd: '#ABEFC6', fg: '#067647' }
+      : { running: false, ok: false, bad: true, text: problems + (problems === 1 ? ' issue' : ' issues') + ' found.' + (st.wifi === 'fail' ? ' Start with Wi-Fi.' : ''), bg: '#FFFBFA', bd: '#FECDCA', fg: '#B42318' };
+    var tg = function (label, key) { var on = !!s[key]; return { label: label, on: on, track: on ? '#7F56D9' : '#E9EAEB', justify: on ? 'flex-end' : 'flex-start', flip: function () { var o = { panel: false }; o[key] = !self.state[key]; self.setState(o); } }; };
+    return {
+      sum: sum, kioskId: KID,
+      runsText: s.runs ? ' · Checked ' + (s.runs === 1 ? 'just now' : s.runs + ' times') : '',
+      runAll: function () { self.runAll(); },
+      toggles: [tg('Kiosk Wi-Fi', 'network'), tg('Badge reader', 'reader')],
+      panel: s.panel, panelLabel: s.panel ? 'Hide controls' : 'Simulate',
+      togglePanel: function () { self.setState({ panel: !self.state.panel }); },
+      rows: ['wifi', 'service', 'reader'].map(function (id) {
+        var m = META[id], x = st[id], b = BADGE[x];
+        var detail = x === 'pass' ? m.pass : x === 'skip' ? m.skip : x === 'fail' ? m.fail : x === 'checking' ? (s.fixing === id ? (id === 'wifi' ? 'Reconnecting…' : 'Retrying…') : 'Checking…') : 'Waiting';
+        return { title: m.title, icon: m.icon, detail: detail, detailFg: x === 'fail' ? '#B42318' : '#535862', ring: x === 'fail' ? '#FECDCA' : '#E9EAEB',
+          badge: b[0], bbg: b[1], bfg: b[2], bbd: b[3], dot: b[4],
+          canFix: x === 'fail' && !!m.action, action: m.action || '', fix: function () { self.fix(id); },
+          showSteps: x === 'fail' && !!s.tried[id] && !!m.steps, note: m.note || '',
+          steps: (m.steps || []).map(function (t, i) { return { n: i + 1, text: t }; }) };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Kiosk admin</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FDFDFD;font-family:Inter,ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+a{color:#6941C6}a:hover{color:#53389E}
+.i{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.uu-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:8px;font-family:inherit;font-weight:600;cursor:pointer;text-decoration:none;transition:background-color .1s linear,color .1s linear}
+.uu-btn:focus-visible,.uu-focus:focus-visible{outline:2px solid #9E77ED;outline-offset:2px}
+.uu-primary{background:#7F56D9;color:#fff;border:2px solid rgba(255,255,255,.12);box-shadow:inset 0 0 0 1px rgba(10,13,18,.18),inset 0 -2px 0 0 rgba(10,13,18,.05),0 1px 2px rgba(10,13,18,.05)}
+.uu-primary:hover{background:#6941C6;color:#fff}
+.uu-secondary{background:#fff;color:#414651;box-shadow:inset 0 0 0 1px #D5D7DA,inset 0 -2px 0 0 rgba(10,13,18,.05),0 1px 2px rgba(10,13,18,.05)}
+.uu-secondary:hover{background:#FAFAFA;color:#252B37}
+.uu-destructive{background:#D92D20;color:#fff;border:2px solid rgba(255,255,255,.12);box-shadow:inset 0 0 0 1px rgba(10,13,18,.18),inset 0 -2px 0 0 rgba(10,13,18,.05),0 1px 2px rgba(10,13,18,.05)}
+.uu-destructive:hover{background:#B42318;color:#fff}
+.uu-link-error{background:transparent;color:#B42318;padding:0}
+.uu-link-error:hover{color:#912018}
+.card-a{transition:box-shadow .1s linear,background-color .1s linear}
+.card-a:hover{box-shadow:inset 0 0 0 1px #D5D7DA,0 4px 8px -2px rgba(10,13,18,.1),0 2px 4px -2px rgba(10,13,18,.06)}
+.card-p:hover{background:#6941C6}
+.card-a:focus-visible{outline:2px solid #9E77ED;outline-offset:2px}
+.fade{animation:fadeUp .2s ease-out both}
+@keyframes fadeUp{from{opacity:.001;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.fade{animation:none}}
+/* Prototype chrome: deliberately "dev tools", not the design system, so it never reads as part of the kiosk. */
+.proto{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace !important;background:#1E1E1E !important;color:#CCCCCC !important;border-radius:4px !important;box-shadow:0 0 0 1px #3C3C3C,0 8px 24px rgba(0,0,0,.4) !important}
+.proto *{font-family:inherit !important;letter-spacing:0 !important;font-size:12px !important;line-height:18px !important;border-color:#3C3C3C !important}
+.proto *:not([role=radio]):not([role=switch]){color:#CCCCCC !important;background-color:transparent !important;box-shadow:none !important;border-radius:2px !important}
+.proto div[style*="font-weight: 600"],.proto span[style*="font-weight: 600"]{color:#FFFFFF !important;text-transform:lowercase !important}
+.proto span[style*="width: 32px"]{display:none !important}
+.proto .uu-row:hover,.proto .uu-btn:hover{background-color:#2D2D2D !important}
+.proto .uu-btn{border:1px solid #555555 !important;height:26px !important;padding:0 8px !important}
+.proto [role=switch]{width:32px !important;height:16px !important;padding:2px !important;border-radius:2px !important;background-color:#444444 !important;box-shadow:none !important}
+.proto [role=switch][aria-checked=true]{background-color:#0E7AFE !important}
+.proto [role=switch][role=switch] > span{width:12px !important;height:12px !important;border-radius:1px !important;background-color:#EEEEEE !important;box-shadow:none !important}
+.proto [role=radio]{border-radius:2px !important}
+.proto-trigger.uu-secondary{background:#1E1E1E !important;color:#CCCCCC !important;box-shadow:0 0 0 1px #3C3C3C !important;border-radius:4px !important;height:30px !important}
+.proto-trigger.uu-secondary svg{color:#999999 !important}
+.proto-trigger{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace !important;font-size:11px !important;letter-spacing:0 !important}
+</style>
+</helmet>
+<div style="min-height: 100vh; display: flex; flex-direction: column; background: #FDFDFD; color: #181D27; font-family: Inter, ui-sans-serif, system-ui, sans-serif;">
+  <header style="background: #fff; border-bottom: 1px solid #E9EAEB; padding: clamp(12px, 2.5vh, 20px) max(clamp(16px, 3vw, 32px), calc((100% - 960px) / 2 + clamp(16px, 3vw, 32px)));">
+  <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 16px;">
+      <div>
+        <div style="font-size: 14px; line-height: 20px; color: #535862;">Signed in as admin@ricoh-usa.com · Ricoh admin</div>
+        <h1 style="margin: 4px 0 0; font-size: 24px; line-height: 32px; font-weight: 600; letter-spacing: -0.01em;">Kiosk admin</h1>
+      </div>
+      <a href="Main.dc.html" class="uu-btn uu-secondary" style="height: 48px; padding: 0 18px; font-size: 16px; line-height: 24px;">
+        <svg class="i" width="20" height="20" viewBox="0 0 24 24" style="color: #A4A7AE;"><path d="m16 17 5-5-5-5"></path><path d="M21 12H9"></path><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path></svg>Sign out
+      </a>
+    </div>
+  </header>
+  <div style="flex: 1; width: 100%; max-width: 960px; margin: 0 auto; justify-content: center; padding: clamp(16px, 4vh, 48px) clamp(16px, 3vw, 32px); display: flex; flex-direction: column; gap: 24px;">
+    
+    <sc-if value="{{noDevice}}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; align-items: center; gap: 20px; padding: 20px 24px; border-radius: 12px; background: #FFFCF5; box-shadow: inset 0 0 0 1px #FEDF89;">
+        <span style="width: 56px; height: 56px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; background: #FEF0C7; box-shadow: 0 0 0 6px #FFFAEB; color: #DC6803; flex-shrink: 0;">
+          <svg class="i" width="28" height="28" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"></rect><path d="M12 18h.01"></path></svg>
+        </span>
+        <div style="flex: 1;">
+          <div style="font-size: 18px; line-height: 28px; font-weight: 600; color: #B54708;">This kiosk device isn’t set up</div>
+          <div style="font-size: 16px; line-height: 24px; color: #93370D;">Set it up as one of the kiosks created in Delivery CTRL Configuration.</div>
+        </div>
+      </div>
+    </sc-if>
+    <sc-if value="{{device}}" hint-placeholder-val="{{ true }}">
+      <div style="display: flex; align-items: center; gap: 20px; padding: 20px 24px; border-radius: 12px; background: #fff; box-shadow: inset 0 0 0 1px #E9EAEB, 0 1px 2px rgba(10,13,18,.05);">
+        <span style="width: 56px; height: 56px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: #fff; box-shadow: inset 0 0 0 1px #D5D7DA, inset 0 -2px 0 0 rgba(10,13,18,.05), 0 1px 2px rgba(10,13,18,.05); color: #414651; flex-shrink: 0;">
+          <svg class="i" width="28" height="28" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"></rect><path d="M12 18h.01"></path></svg>
+        </span>
+        <div style="flex: 1; min-width: 0;">
+          <div style="font-size: 14px; line-height: 20px; font-weight: 500; color: #535862;">This kiosk device is</div>
+          <div style="font-size: 18px; line-height: 28px; font-weight: 600;">{{d.path}}</div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px;">
+            <span style="padding: 2px 8px; border-radius: 6px; background: #FAFAFA; box-shadow: inset 0 0 0 1px #E9EAEB; font-size: 12px; line-height: 18px; font-weight: 500; color: #414651; font-family: ui-monospace, Menlo, monospace;">{{d.code}}</span>
+            <span style="padding: 2px 8px; border-radius: 6px; background: #FAFAFA; box-shadow: inset 0 0 0 1px #E9EAEB; font-size: 12px; line-height: 18px; font-weight: 500; color: #414651;">Reader on the {{d.side}}</span>
+            <span style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 6px; background: {{d.tbg}}; box-shadow: inset 0 0 0 1px {{d.tbd}}; font-size: 12px; line-height: 18px; font-weight: 500; color: {{d.tfg}};"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{d.tdot}};"></span>{{d.test}}</span>
+            <span title="Set by {{d.custName}} admins in Account settings" style="display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border-radius: 6px; background: #FAFAFA; box-shadow: inset 0 0 0 1px #E9EAEB; font-size: 12px; line-height: 18px; font-weight: 500; color: #414651;"><span style="width: 10px; height: 10px; border-radius: 9999px; background: {{d.color}}; box-shadow: inset 0 0 0 1px rgba(10,13,18,.12);"></span>Kiosk color: {{d.colorName}} · from account settings</span>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- Order: which kiosk (context) → actions (Start kiosk most used) → rarely changed settings. Not set up: warning, then Set up card. -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;">
+      <sc-if value="{{device}}" hint-placeholder-val="{{ true }}">
+        <a href="Main.dc.html" class="card-a card-p" style="min-height: clamp(112px, 18vh, 156px); display: flex; flex-direction: column; justify-content: space-between; gap: 16px; padding: 24px; border-radius: 12px; background: #7F56D9; color: #fff; text-decoration: none; box-shadow: inset 0 0 0 1px rgba(10,13,18,.18), 0 1px 2px rgba(10,13,18,.05);">
+          <svg class="i" width="28" height="28" viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"></polygon></svg>
+          <span><span style="display: block; font-size: 20px; line-height: 30px; font-weight: 600;">Start kiosk</span><span style="display: block; font-size: 16px; line-height: 24px; color: #E9D7FE;">Open check-in for students</span></span>
+        </a>
+      </sc-if>
+      <a href="Setup.dc.html" class="card-a {{sc.cls}}" style="min-height: clamp(112px, 18vh, 156px); display: flex; flex-direction: column; justify-content: space-between; gap: 16px; padding: 24px; border-radius: 12px; background: {{sc.bg}}; color: {{sc.fg}}; text-decoration: none; box-shadow: inset 0 0 0 1px {{sc.ring}}, 0 1px 2px rgba(10,13,18,.05);">
+        <svg class="i" width="28" height="28" viewBox="0 0 24 24" style="color: {{sc.icon}};"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
+        <span><span style="display: block; font-size: 20px; line-height: 30px; font-weight: 600;">{{setupTitle}}</span><span style="display: block; font-size: 16px; line-height: 24px; color: {{sc.sub}};">{{setupSub}}</span></span>
+      </a>
+      <a href="Diagnostics.dc.html" class="card-a" style="min-height: clamp(112px, 18vh, 156px); display: flex; flex-direction: column; justify-content: space-between; gap: 16px; padding: 24px; border-radius: 12px; background: #fff; color: #181D27; text-decoration: none; box-shadow: inset 0 0 0 1px #E9EAEB, 0 1px 2px rgba(10,13,18,.05);">
+        <svg class="i" width="28" height="28" viewBox="0 0 24 24" style="color: #7F56D9;"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+        <span><span style="display: block; font-size: 20px; line-height: 30px; font-weight: 600;">Diagnostics</span><span style="display: block; font-size: 16px; line-height: 24px; color: #535862;">Check Wi-Fi, service, and reader</span></span>
+      </a>
+    </div>
+
+    <sc-if value="{{device}}" hint-placeholder-val="{{ true }}">
+      <!-- Kiosk screen setting: weather is optional and off by default -->
+      <div style="display: flex; align-items: center; gap: 16px; padding: 16px 24px; border-radius: 12px; background: #fff; box-shadow: inset 0 0 0 1px #E9EAEB, 0 1px 2px rgba(10,13,18,.05);">
+        <div style="flex: 1; min-width: 0;">
+          <div style="font-size: 16px; line-height: 24px; font-weight: 600; color: #181D27;">Show local weather on the kiosk</div>
+          <div style="font-size: 14px; line-height: 20px; color: #535862;">Appears next to the clock in the top right. Hidden while the kiosk is offline.</div>
+        </div>
+        <button class="uu-focus" role="switch" aria-checked="{{wx.on}}" aria-label="Show local weather on the kiosk" onClick="{{wx.flip}}" style="width: 52px; height: 30px; border: 0; border-radius: 9999px; padding: 3px; display: flex; justify-content: {{wx.justify}}; background: {{wx.track}}; cursor: pointer; flex-shrink: 0; transition: background-color .15s linear;"><span style="width: 24px; height: 24px; border-radius: 9999px; background: #fff; box-shadow: 0 1px 3px rgba(10,13,18,.1), 0 1px 2px -1px rgba(10,13,18,.1);"></span></button>
+      </div>
+      <div style="display: flex; align-items: center; gap: 16px; padding: 16px 24px; border-radius: 12px; background: #fff; box-shadow: inset 0 0 0 1px #E9EAEB, 0 1px 2px rgba(10,13,18,.05);">
+        <div style="flex: 1; min-width: 0;">
+          <div style="font-size: 16px; line-height: 24px; font-weight: 600; color: #181D27;">Show campus offers on the welcome screen</div>
+          <div style="font-size: 14px; line-height: 20px; color: #535862;">Small sponsored cards in the lower left that rotate while the kiosk is idle. Hidden during check-in.</div>
+        </div>
+        <button class="uu-focus" role="switch" aria-checked="{{ads.on}}" aria-label="Show campus offers on the welcome screen" onClick="{{ads.flip}}" style="width: 52px; height: 30px; border: 0; border-radius: 9999px; padding: 3px; display: flex; justify-content: {{ads.justify}}; background: {{ads.track}}; cursor: pointer; flex-shrink: 0; transition: background-color .15s linear;"><span style="width: 24px; height: 24px; border-radius: 9999px; background: #fff; box-shadow: 0 1px 3px rgba(10,13,18,.1), 0 1px 2px -1px rgba(10,13,18,.1);"></span></button>
+      </div>
+      <!-- Kiosk setting: how students find themselves when they can't tap an ID -->
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; padding: 16px 24px; border-radius: 12px; background: #fff; box-shadow: inset 0 0 0 1px #E9EAEB, 0 1px 2px rgba(10,13,18,.05);">
+        <div style="flex: 1 1 280px; min-width: 0;">
+          <div style="font-size: 16px; line-height: 24px; font-weight: 600; color: #181D27;">When an ID can’t be tapped, students…</div>
+          <div style="font-size: 14px; line-height: 20px; color: #535862;">Both send a code to the student’s phone or email to confirm it’s them.</div>
+        </div>
+        <div role="radiogroup" aria-label="How students find themselves" style="display: inline-flex; border-radius: 8px; box-shadow: inset 0 0 0 1px #D5D7DA, 0 1px 2px rgba(10,13,18,.05); overflow: hidden; flex-shrink: 0;">
+          <button role="radio" aria-checked="{{findBy.id}}" onClick="{{findBy.pickId}}" class="uu-focus" style="height: 44px; padding: 0 16px; border: 0; border-right: 1px solid #D5D7DA; background: {{findBy.idBg}}; color: {{findBy.idFg}}; font-family: inherit; font-size: 14px; line-height: 20px; font-weight: 600; cursor: pointer;">Enter student ID</button>
+          <button role="radio" aria-checked="{{findBy.name}}" onClick="{{findBy.pickName}}" class="uu-focus" style="height: 44px; padding: 0 16px; border: 0; background: {{findBy.nameBg}}; color: {{findBy.nameFg}}; font-family: inherit; font-size: 14px; line-height: 20px; font-weight: 600; cursor: pointer;">Search their name</button>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{device}}" hint-placeholder-val="{{ true }}">
+      <button class="uu-btn uu-link-error" onClick="{{ask}}" style="align-self: flex-start; height: 44px; font-size: 16px; line-height: 24px;">
+        <svg class="i" width="20" height="20" viewBox="0 0 24 24"><path d="M18.84 12.25l1.72-1.71a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M5.17 11.75l-1.71 1.71a5 5 0 0 0 7.07 7.07l1.71-1.71"></path><path d="M8 2v3"></path><path d="M2 8h3"></path><path d="M16 19v3"></path><path d="M19 16h3"></path></svg>Remove setup from this kiosk device
+      </button>
+    </sc-if>
+    <p style="margin: 0; font-size: 14px; line-height: 20px; color: #717680;">Signs out after 5 minutes of inactivity.</p>
+  </div>
+
+  <!-- Prototype controls: page chrome, not kiosk UI -->
+  <div style="position: fixed; left: 16px; bottom: 16px; z-index: 40; display: flex; flex-direction: column; align-items: flex-start; gap: 8px;">
+    <sc-if value="{{panel}}" hint-placeholder-val="{{ false }}">
+      <aside class="proto" aria-label="Prototype controls" style="width: 280px; border-radius: 12px; background: #fff; box-shadow: inset 0 0 0 1px #E9EAEB, 0 12px 16px -4px rgba(10,13,18,.08), 0 4px 6px -2px rgba(10,13,18,.03); padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+        <div>
+          <div style="font-size: 14px; line-height: 20px; font-weight: 600; color: #181D27;">Simulate</div>
+          <div style="font-size: 12px; line-height: 18px; color: #535862;">Prototype only. Applies to every screen.</div>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+          <div><div style="font-size: 14px; line-height: 20px; font-weight: 500; color: #414651;">Kiosk device set up</div><div style="font-size: 12px; line-height: 18px; color: #535862;">{{simText}}</div></div>
+          <button class="uu-focus" role="switch" aria-checked="{{device}}" aria-label="Kiosk device set up" onClick="{{toggleSetup}}" style="width: 44px; height: 24px; border: 0; border-radius: 9999px; padding: 2px; display: flex; justify-content: {{simJustify}}; background: {{simTrack}}; cursor: pointer; flex-shrink: 0;"><span style="width: 20px; height: 20px; border-radius: 9999px; background: #fff; box-shadow: 0 1px 3px rgba(10,13,18,.1);"></span></button>
+        </div>
+      </aside>
+    </sc-if>
+    <button class="uu-btn uu-secondary proto-trigger" onClick="{{togglePanel}}" aria-expanded="{{panel}}" style="height: 36px; padding: 0 12px; font-size: 14px; line-height: 20px; border-radius: 9999px;">
+      <svg class="i" width="16" height="16" viewBox="0 0 24 24" style="color: #A4A7AE;"><path d="M4 21v-7"></path><path d="M4 10V3"></path><path d="M12 21v-9"></path><path d="M12 8V3"></path><path d="M20 21v-5"></path><path d="M20 12V3"></path><path d="M1 14h6"></path><path d="M9 8h6"></path><path d="M17 16h6"></path></svg>{{panelLabel}}
+    </button>
+  </div>
+
+  <sc-if value="{{confirm}}" hint-placeholder-val="{{ false }}">
+    <div style="position: fixed; inset: 0; z-index: 50; background: rgba(10,13,18,.7); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; padding: 16px;">
+      <div class="fade" role="alertdialog" aria-modal="true" aria-labelledby="rm-title" style="width: 100%; max-width: 480px; border-radius: 16px; background: #fff; box-shadow: 0 24px 48px -12px rgba(10,13,18,.18), 0 4px 4px -2px rgba(10,13,18,.04); padding: 24px;">
+        <span style="width: 48px; height: 48px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; background: #FEE4E2; box-shadow: 0 0 0 8px #FEF3F2; color: #D92D20;">
+          <svg class="i" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v4"></path><path d="M12 16h.01"></path></svg>
+        </span>
+        <h2 id="rm-title" style="margin: 20px 0 0; font-size: 18px; line-height: 28px; font-weight: 600;">Remove setup from this kiosk device?</h2>
+        <p style="margin: 4px 0 0; font-size: 14px; line-height: 20px; color: #535862;">This kiosk device will stop working as {{d.spKiosk}}. The kiosk stays in Delivery CTRL Configuration and can be set up on any kiosk device.</p>
+        <div style="display: flex; gap: 12px; margin-top: 32px;">
+          <button class="uu-btn uu-secondary" onClick="{{cancel}}" style="flex: 1; height: 48px; font-size: 16px; line-height: 24px;">Cancel</button>
+          <button class="uu-btn uu-destructive" onClick="{{remove}}" style="flex: 1; height: 48px; font-size: 16px; line-height: 24px;">Remove setup</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"setUp":{"editor":"boolean","default":true},"$preview":{"width":1180,"height":820}}'>
+class Component extends DCLogic {
+  state = { removed: false, confirm: false, panel: false, tick: 0 };
+  componentDidMount() {
+    /* Prototype: watch the saved kiosk assignment so this screen updates when another screen changes it. */
+    var selfP = this; this._raw = null;
+    this._poll = setInterval(function () { var v = null; try { v = window.localStorage.getItem('kioskProto.device'); } catch (e) {} if (v !== selfP._raw) { selfP._raw = v; selfP.setState({ devTick: (selfP.state.devTick || 0) + 1 }); } }, 600);
+  }
+  componentWillUnmount() { clearInterval(this._poll); }
+  /* Prototype: the kiosk device's assignment is saved by Set up this kiosk device. undefined = nothing saved yet, null = setup removed. */
+  loadDevice() {
+    try { var v = window.localStorage.getItem('kioskProto.device'); if (!v) return undefined; if (v === 'none') return null; return JSON.parse(v); } catch (e) { return undefined; }
+  }
+  renderVals() {
+    var self = this;
+    var DEFAULT = { cust: { id: 'emr', name: 'Emory University' }, loc: { name: 'Main Campus' }, sp: { name: 'Central Receiving', type: 'Service center', today: '8:00 AM to 5:00 PM' }, kiosk: { name: 'Kiosk 1', code: 'EMR-CRS-01' }, side: 'right', test: 'matched', wifi: 'Emory-Kiosk' };
+    var stored = this.loadDevice();
+    var dev = stored === undefined ? ((!this.state.removed && (this.props.setUp ?? true)) ? DEFAULT : null) : stored;
+    var device = !!dev, t = dev ? dev.test : '', ok = t === 'matched';
+    var d = dev ? { path: [dev.cust.name, dev.loc.name, dev.sp.name, dev.kiosk.name].join(' › '), code: dev.kiosk.code, side: dev.side, spKiosk: dev.sp.name + ' · ' + dev.kiosk.name, custName: dev.cust.name,
+      color: dev.cust.id === 'emr' ? '#194185' : '#53389E', colorName: dev.cust.id === 'emr' ? 'Navy (#194185)' : 'Purple (#53389E)',
+      test: ok ? 'Test read matched' : t === 'no match' ? 'Test read: no match' : 'Test read skipped',
+      tbg: ok ? '#ECFDF3' : '#FFFAEB', tbd: ok ? '#ABEFC6' : '#FEDF89', tfg: ok ? '#067647' : '#B54708', tdot: ok ? '#17B26A' : '#F79009' } : {};
+    return {
+      device: device, noDevice: !device, confirm: this.state.confirm, d: d,
+      findBy: (function () { var id = true; try { id = window.localStorage.getItem('kioskProto.findBy') !== 'name'; } catch (e) {}
+        var pick = function (v) { return function () { try { window.localStorage.setItem('kioskProto.findBy', v); } catch (e) {} self.setState({ wxTick: (self.state.wxTick || 0) + 1 }); }; };
+        return { name: !id, id: id, nameBg: id ? '#fff' : '#F5F5F5', nameFg: id ? '#414651' : '#181D27', idBg: id ? '#F5F5F5' : '#fff', idFg: id ? '#181D27' : '#414651', pickName: pick('name'), pickId: pick('id') }; })(),
+      ads: (function () { var on = true; try { on = window.localStorage.getItem('kioskProto.ads') !== 'off'; } catch (e) {}
+        return { on: on, track: on ? '#7F56D9' : '#E9EAEB', justify: on ? 'flex-end' : 'flex-start',
+          flip: function () { try { window.localStorage.setItem('kioskProto.ads', on ? 'off' : 'on'); } catch (e) {} self.setState({ wxTick: (self.state.wxTick || 0) + 1 }); } }; })(),
+      wx: (function () { var on = true; try { on = window.localStorage.getItem('kioskProto.weather') !== 'off'; } catch (e) {}
+        return { on: on, track: on ? '#7F56D9' : '#E9EAEB', justify: on ? 'flex-end' : 'flex-start',
+          flip: function () { try { window.localStorage.setItem('kioskProto.weather', on ? 'off' : 'on'); } catch (e) {} self.setState({ wxTick: (self.state.wxTick || 0) + 1 }); } }; })(),
+      panel: this.state.panel, panelLabel: this.state.panel ? 'Hide controls' : 'Simulate',
+      togglePanel: function () { self.setState({ panel: !self.state.panel }); },
+      simText: device ? 'Set up as ' + dev.sp.name + ' · ' + dev.kiosk.name : 'Not set up',
+      simTrack: device ? '#7F56D9' : '#E9EAEB', simJustify: device ? 'flex-end' : 'flex-start',
+      toggleSetup: function () {
+        try { window.localStorage.setItem('kioskProto.device', device ? 'none' : JSON.stringify(DEFAULT)); window.localStorage.removeItem('kioskProto.themeOverride'); } catch (e) {}
+        self.setState({ removed: device, tick: self.state.tick + 1, panel: false });
+      },
+      sc: device ? { cls: '', bg: '#fff', fg: '#181D27', ring: '#E9EAEB', icon: '#7F56D9', sub: '#535862' }
+        : { cls: 'card-p', bg: '#7F56D9', fg: '#fff', ring: 'rgba(10,13,18,.18)', icon: '#fff', sub: '#E9D7FE' },
+      setupTitle: device ? 'Change kiosk' : 'Set up this kiosk device',
+      setupSub: device ? 'Assign this kiosk device to a different kiosk' : 'Customer, service point, kiosk, reader',
+      ask: function () { self.setState({ confirm: true }); },
+      cancel: function () { self.setState({ confirm: false }); },
+      remove: function () { try { window.localStorage.setItem('kioskProto.device', 'none'); } catch (e) {} self.setState({ confirm: false, removed: true }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Set up this kiosk device</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FDFDFD;font-family:Inter,ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+a{color:#6941C6}a:hover{color:#53389E}
+.i{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.uu-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:8px;font-family:inherit;font-weight:600;cursor:pointer;text-decoration:none;transition:background-color .1s linear,color .1s linear}
+.uu-btn:focus-visible,.uu-focus:focus-visible{outline:2px solid #9E77ED;outline-offset:2px}
+.uu-primary{background:#7F56D9;color:#fff;border:2px solid rgba(255,255,255,.12);box-shadow:inset 0 0 0 1px rgba(10,13,18,.18),inset 0 -2px 0 0 rgba(10,13,18,.05),0 1px 2px rgba(10,13,18,.05)}
+.uu-primary:hover{background:#6941C6;color:#fff}
+.uu-secondary{background:#fff;color:#414651;box-shadow:inset 0 0 0 1px #D5D7DA,inset 0 -2px 0 0 rgba(10,13,18,.05),0 1px 2px rgba(10,13,18,.05)}
+.uu-secondary:hover{background:#FAFAFA;color:#252B37}
+.uu-tertiary{background:transparent;color:#535862}
+.uu-tertiary:hover{background:#F5F5F5;color:#414651}
+.uu-link-gray{background:transparent;color:#535862;padding:0;text-decoration:underline;text-underline-offset:3px}
+.uu-link-gray:hover{color:#414651}
+.uu-btn:disabled{cursor:not-allowed;background:#F5F5F5;color:#A4A7AE;box-shadow:inset 0 0 0 1px #E9EAEB;border-color:transparent}
+.uu-opt{transition:box-shadow .1s linear,background-color .1s linear}
+.uu-opt:hover:not(:disabled){box-shadow:inset 0 0 0 1px #D5D7DA,0 1px 2px rgba(10,13,18,.05);background:#FAFAFA}
+.uu-opt:disabled{cursor:not-allowed}
+.step-btn{transition:filter .1s linear}
+.step-btn:not(:disabled):hover{filter:brightness(.96)}
+.uu-link{background:transparent;color:#6941C6;padding:0}
+.uu-link:hover{color:#53389E}
+.uu-input:focus{outline:none;box-shadow:inset 0 0 0 2px #9E77ED,0 1px 2px rgba(10,13,18,.05)}
+.spin{animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.fade{animation:fadeUp .2s ease-out both}
+@keyframes fadeUp{from{opacity:.001;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.fade,.spin{animation:none}}
+/* Prototype chrome: deliberately "dev tools", not the design system, so it never reads as part of the kiosk. */
+.proto{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace !important;background:#1E1E1E !important;color:#CCCCCC !important;border-radius:4px !important;box-shadow:0 0 0 1px #3C3C3C,0 8px 24px rgba(0,0,0,.4) !important}
+.proto *{font-family:inherit !important;letter-spacing:0 !important;font-size:12px !important;line-height:18px !important;border-color:#3C3C3C !important}
+.proto *:not([role=radio]):not([role=switch]){color:#CCCCCC !important;background-color:transparent !important;box-shadow:none !important;border-radius:2px !important}
+.proto div[style*="font-weight: 600"],.proto span[style*="font-weight: 600"]{color:#FFFFFF !important;text-transform:lowercase !important}
+.proto span[style*="width: 32px"]{display:none !important}
+.proto .uu-row:hover,.proto .uu-btn:hover{background-color:#2D2D2D !important}
+.proto .uu-btn{border:1px solid #555555 !important;height:26px !important;padding:0 8px !important}
+.proto [role=switch]{width:32px !important;height:16px !important;padding:2px !important;border-radius:2px !important;background-color:#444444 !important;box-shadow:none !important}
+.proto [role=switch][aria-checked=true]{background-color:#0E7AFE !important}
+.proto [role=switch][role=switch] > span{width:12px !important;height:12px !important;border-radius:1px !important;background-color:#EEEEEE !important;box-shadow:none !important}
+.proto [role=radio]{border-radius:2px !important}
+.proto-trigger.uu-secondary{background:#1E1E1E !important;color:#CCCCCC !important;box-shadow:0 0 0 1px #3C3C3C !important;border-radius:4px !important;height:30px !important}
+.proto-trigger.uu-secondary svg{color:#999999 !important}
+.proto-trigger{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace !important;font-size:11px !important;letter-spacing:0 !important}
+</style>
+</helmet>
+<div style="height: 100vh; overflow: hidden; display: flex; flex-direction: column; background: #FDFDFD; color: #181D27; font-family: Inter, ui-sans-serif, system-ui, sans-serif;">
+
+  <header style="background: #fff; border-bottom: 1px solid #E9EAEB; padding: clamp(12px, 2.5vh, 20px) clamp(16px, 3vw, 32px) clamp(10px, 2vh, 16px);">
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+      <h1 style="margin: 0; font-size: 24px; line-height: 32px; font-weight: 600;">Set up this kiosk device</h1>
+      <a href="Admin.dc.html" onClick="{{resetFlow}}" class="uu-btn uu-tertiary" style="height: 44px; padding: 0 14px; font-size: 16px; line-height: 24px;">Cancel</a>
+    </div>
+    <ol aria-label="Setup progress" style="list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px;">
+      <sc-for list="{{steps}}" as="st" hint-placeholder-count="7">
+        <li style="flex: 1 1 120px; display: flex; min-width: 0;">
+          <button class="step-btn uu-focus" onClick="{{st.jump}}" disabled="{{st.locked}}" aria-current="{{st.current}}" aria-label="{{st.aria}}" style="flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; padding: 8px 10px; border: 0; border-radius: 8px; background: {{st.bg}}; box-shadow: inset 0 0 0 1px {{st.bd}}; font-family: inherit; font-size: 14px; line-height: 20px; font-weight: 600; color: {{st.fg}}; text-align: left; cursor: {{st.cursor}};">
+            <span style="width: 24px; height: 24px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; background: {{st.dotBg}}; color: {{st.dotFg}}; box-shadow: {{st.dotRing}};">
+              <sc-if value="{{st.done}}" hint-placeholder-val="{{ false }}"><svg class="i" width="14" height="14" viewBox="0 0 24 24" style="stroke-width: 3;"><path d="M20 6 9 17l-5-5"></path></svg></sc-if>
+              <sc-if value="{{st.notDone}}" hint-placeholder-val="{{ true }}">{{st.n}}</sc-if>
+            </span>
+            <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{st.label}}</span>
+          </button>
+        </li>
+      </sc-for>
+    </ol>
+  </header>
+
+  <main style="flex: 1; min-height: 0; overflow-y: auto; width: 100%; padding: clamp(16px, 3vh, 24px) max(clamp(16px, 3vw, 32px), calc((100% - 960px) / 2));">
+
+    <!-- List steps: customer, location, service point, kiosk -->
+    <sc-if value="{{l.show}}" hint-placeholder-val="{{ true }}">
+      <section class="fade" style="display: flex; flex-direction: column; gap: 16px; max-width: 760px;">
+        <sc-if value="{{l.hasAuto}}" hint-placeholder-val="{{ false }}">
+          <div style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px; line-height: 20px; color: #535862;">
+            <svg class="i" width="16" height="16" viewBox="0 0 24 24" style="color: #A4A7AE;"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>{{l.auto}}
+          </div>
+        </sc-if>
+        <div>
+          <h2 style="margin: 0; font-size: 24px; line-height: 32px; font-weight: 600;">{{l.heading}}</h2>
+          <sc-if value="{{l.hasSub}}" hint-placeholder-val="{{ false }}"><p style="margin: 4px 0 0; font-size: 16px; line-height: 24px; color: #535862;">{{l.sub}}</p></sc-if>
+        </div>
+        <sc-if value="{{l.search}}" hint-placeholder-val="{{ false }}">
+          <div style="position: relative;">
+            <svg class="i" width="20" height="20" viewBox="0 0 24 24" style="position: absolute; left: 16px; top: 18px; color: #717680;"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
+            <input class="uu-input" value="{{q}}" onChange="{{onQ}}" placeholder="Search customers" aria-label="Search customers" style="width: 100%; height: 56px; border: 0; border-radius: 8px; background: #fff; box-shadow: inset 0 0 0 1px #D5D7DA, 0 1px 2px rgba(10,13,18,.05); padding: 0 16px 0 48px; font-family: inherit; font-size: 18px; line-height: 28px; color: #181D27;">
+          </div>
+        </sc-if>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <sc-for list="{{l.options}}" as="o" hint-placeholder-count="3">
+            <button class="uu-opt uu-focus" onClick="{{o.pick}}" disabled="{{o.disabled}}" style="width: 100%; min-height: 76px; display: flex; align-items: center; gap: 16px; padding: 14px 20px; border: 0; border-radius: 12px; background: {{o.bg}}; box-shadow: inset 0 0 0 {{o.ring}}, 0 1px 2px rgba(10,13,18,.05); text-align: left; font-family: inherit; cursor: pointer; opacity: {{o.opacity}};">
+              <sc-if value="{{o.isAv}}" hint-placeholder-val="{{ false }}">
+                <!-- Untitled UI Avatar (lg, 48px): customer logo, or initials when the account has no logo -->
+                <span style="position: relative; width: 48px; height: 48px; border-radius: 9999px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #F5F5F5; color: #717680; font-size: 18px; line-height: 28px; font-weight: 600; flex-shrink: 0;">
+                  <sc-if value="{{o.isClemson}}" hint-placeholder-val="{{ false }}"><img src="assets/5173a05283e5ddeb6c5eba5c88922665.png" alt="" style="width: 100%; height: 100%; object-fit: cover;"></sc-if>
+                  <sc-if value="{{o.isEmory}}" hint-placeholder-val="{{ false }}"><img src="assets/df8bfe4204c1d40d54400bdd9dab3060.jpg" alt="" style="width: 100%; height: 100%; object-fit: cover;"></sc-if>
+                  <sc-if value="{{o.noLogo}}" hint-placeholder-val="{{ false }}"><span aria-hidden="true">{{o.initials}}</span></sc-if>
+                  <span aria-hidden="true" style="position: absolute; inset: 0; border-radius: 9999px; box-shadow: inset 0 0 0 1px rgba(10,13,18,.08);"></span>
+                </span>
+              </sc-if>
+              <sc-if value="{{o.isIcon}}" hint-placeholder-val="{{ true }}">
+              <span style="width: 48px; height: 48px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: #fff; box-shadow: inset 0 0 0 1px #D5D7DA, inset 0 -2px 0 0 rgba(10,13,18,.05), 0 1px 2px rgba(10,13,18,.05); color: #414651; flex-shrink: 0;">
+                <svg class="i" width="22" height="22" viewBox="0 0 24 24"><path d="{{l.icon}}"></path></svg>
+              </span>
+              </sc-if>
+              <span style="flex: 1; min-width: 0;">
+                <span style="display: block; font-size: 18px; line-height: 28px; font-weight: 600; color: #181D27;">{{o.title}}</span>
+                <sc-if value="{{o.hasSub}}" hint-placeholder-val="{{ true }}"><span style="display: block; font-size: 14px; line-height: 20px; color: #535862; font-family: {{o.subFont}};">{{o.sub}}</span></sc-if>
+              </span>
+              <sc-if value="{{o.hasBadge}}" hint-placeholder-val="{{ false }}">
+                <span style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; text-align: right;">
+                  <span style="padding: 2px 10px; border-radius: 9999px; font-size: 14px; line-height: 20px; font-weight: 500; background: {{o.bbg}}; color: {{o.bfg}}; box-shadow: inset 0 0 0 1px {{o.bbd}};">{{o.badge}}</span>
+                  <sc-if value="{{o.hasNote}}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; line-height: 18px; color: #535862;">{{o.note}}</span></sc-if>
+                </span>
+              </sc-if>
+              <sc-if value="{{o.chev}}" hint-placeholder-val="{{ true }}"><svg class="i" width="20" height="20" viewBox="0 0 24 24" style="color: #A4A7AE;"><path d="m9 18 6-6-6-6"></path></svg></sc-if>
+              <sc-if value="{{o.selected}}" hint-placeholder-val="{{ false }}"><span aria-label="Selected" style="width: 24px; height: 24px; border-radius: 9999px; background: #7F56D9; color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><svg class="i" width="14" height="14" viewBox="0 0 24 24" style="stroke-width: 3;"><path d="M20 6 9 17l-5-5"></path></svg></span></sc-if>
+            </button>
+          </sc-for>
+          <sc-if value="{{l.empty}}" hint-placeholder-val="{{ false }}">
+            <div style="padding: 24px; border-radius: 12px; background: #fff; box-shadow: inset 0 0 0 1px #E9EAEB; text-align: center; font-size: 16px; line-height: 24px; color: #535862;">No customers match. Check the name or add the kiosk in Delivery CTRL Configuration first.</div>
+          </sc-if>
+        </div>
+        <sc-if value="{{l.hasFoot}}" hint-placeholder-val="{{ false }}"><p style="margin: 0; font-size: 14px; line-height: 20px; color: #535862;">{{l.foot}}</p></sc-if>
+      </section>
+    </sc-if>
+
+    <!-- Reader -->
+    <sc-if value="{{is.reader}}" hint-placeholder-val="{{ false }}">
+      <section class="fade" style="display: flex; flex-direction: column; gap: 16px;">
+        <h2 style="margin: 0; font-size: 24px; line-height: 32px; font-weight: 600;">Connect the badge reader and test it</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <div style="padding: 20px; border-radius: 12px; background: #fff; box-shadow: inset 0 0 0 1px #E9EAEB, 0 1px 2px rgba(10,13,18,.05);">
+              <div style="font-size: 16px; line-height: 24px; font-weight: 600;">1. Connect</div>
+              <ul style="margin: 8px 0 0; padding-left: 20px; font-size: 16px; line-height: 24px; color: #535862; display: flex; flex-direction: column; gap: 4px;"><li>USB-C reader: plug it into the kiosk device or stand.</li><li>Bluetooth reader: pair it in Settings › Bluetooth.</li></ul>
+              <span style="margin-top: 12px; display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px 2px 8px; border-radius: 9999px; background: #ECFDF3; box-shadow: inset 0 0 0 1px #ABEFC6; color: #067647; font-size: 14px; line-height: 20px; font-weight: 500;"><span style="width: 6px; height: 6px; border-radius: 9999px; background: #17B26A;"></span>Reader detected</span>
+            </div>
+            <div style="padding: 20px; border-radius: 12px; background: #fff; box-shadow: inset 0 0 0 1px #E9EAEB, 0 1px 2px rgba(10,13,18,.05);">
+              <div style="font-size: 16px; line-height: 24px; font-weight: 600;">2. Where is the reader mounted?</div>
+              <div role="radiogroup" aria-label="Reader mounted on" style="margin-top: 12px; display: flex; border-radius: 8px; overflow: hidden; box-shadow: inset 0 0 0 1px #D5D7DA, 0 1px 2px rgba(10,13,18,.05);">
+                <button class="uu-focus" role="radio" aria-checked="{{side.left}}" onClick="{{side.pickLeft}}" style="flex: 1; height: 48px; border: 0; border-right: 1px solid #D5D7DA; background: {{side.leftBg}}; color: {{side.leftFg}}; font-family: inherit; font-size: 16px; line-height: 24px; font-weight: 600; cursor: pointer;">Left of kiosk device</button>
+                <button class="uu-focus" role="radio" aria-checked="{{side.right}}" onClick="{{side.pickRight}}" style="flex: 1; height: 48px; border: 0; background: {{side.rightBg}}; color: {{side.rightFg}}; font-family: inherit; font-size: 16px; line-height: 24px; font-weight: 600; cursor: pointer;">Right of kiosk device</button>
+              </div>
+              <p style="margin: 8px 0 0; font-size: 14px; line-height: 20px; color: #535862;">Points the kiosk’s tap animation toward the reader.</p>
+            </div>
+          </div>
+          <div aria-live="polite" style="padding: 20px; border-radius: 12px; display: flex; flex-direction: column; background: {{t.bg}}; box-shadow: inset 0 0 0 1px {{t.bd}}; border: {{t.border}};">
+            <div style="font-size: 16px; line-height: 24px; font-weight: 600;">3. Test read</div>
+            <sc-if value="{{t.waiting}}" hint-placeholder-val="{{ true }}">
+              <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px 0;">
+                <span style="width: 64px; height: 64px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; background: #F4EBFF; box-shadow: 0 0 0 8px #F9F5FF; color: #7F56D9;">
+                  <svg class="i" width="30" height="30" viewBox="0 0 24 24"><path d="M6 8.32a7.43 7.43 0 0 1 0 7.36"></path><path d="M9.46 6.21a11.76 11.76 0 0 1 0 11.58"></path><path d="M12.91 4.1a15.91 15.91 0 0 1 .01 15.8"></path><path d="M16.37 2a20.16 20.16 0 0 1 0 20"></path></svg>
+                </span>
+                <div style="margin-top: 20px; font-size: 20px; line-height: 30px; font-weight: 600;">Tap a campus ID on the reader</div>
+                <div style="margin-top: 4px; font-size: 14px; line-height: 20px; color: #535862;">Use a real student or staff ID from this campus.</div>
+              </div>
+            </sc-if>
+            <sc-if value="{{t.reading}}" hint-placeholder-val="{{ false }}">
+              <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px 0; color: #7F56D9;">
+                <svg class="i spin" width="36" height="36" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-6.22-8.56"></path></svg>
+                <div style="margin-top: 12px; font-size: 18px; line-height: 28px; font-weight: 600; color: #181D27;">Reading…</div>
+              </div>
+            </sc-if>
+            <sc-if value="{{t.result}}" hint-placeholder-val="{{ false }}">
+              <div style="flex: 1; padding: 12px 0;">
+                <div style="display: inline-flex; align-items: center; gap: 8px; font-size: 18px; line-height: 28px; font-weight: 600; color: {{t.fg}};">
+                  <sc-if value="{{t.matched}}" hint-placeholder-val="{{ true }}"><svg class="i" width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path></svg>Matched</sc-if>
+                  <sc-if value="{{t.nomatch}}" hint-placeholder-val="{{ false }}"><svg class="i" width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v4"></path><path d="M12 16h.01"></path></svg>No match</sc-if>
+                </div>
+                <dl style="margin: 12px 0 0; display: grid; grid-template-columns: 150px 1fr; row-gap: 8px; font-size: 16px; line-height: 24px;">
+                  <dt style="color: #535862;">Number received</dt><dd style="margin: 0; font-family: ui-monospace, Menlo, monospace;">{{t.value}}</dd>
+                  <dt style="color: #535862;">Contact</dt><dd style="margin: 0;">{{t.name}}</dd>
+                </dl>
+                <sc-if value="{{t.nomatch}}" hint-placeholder-val="{{ false }}"><p style="margin: 12px 0 0; font-size: 14px; line-height: 20px; color: #B54708;">The reader works, but the number doesn’t match anyone. Check the reader’s output format or the imported Credential IDs, or try another card.</p></sc-if>
+                <p style="margin: 12px 0 0; font-size: 14px; line-height: 20px; color: #535862;">Tap another card to test again.</p>
+              </div>
+            </sc-if>
+            <sc-if value="{{t.canSkip}}" hint-placeholder-val="{{ true }}">
+              <button class="uu-btn uu-link-gray" onClick="{{askSkip}}" style="align-self: flex-start; margin-top: 12px; height: 40px; font-size: 14px; line-height: 20px;">Skip test read</button>
+            </sc-if>
+          </div>
+        </div>
+      </section>
+    </sc-if>
+
+    <!-- Checks -->
+    <sc-if value="{{is.checks}}" hint-placeholder-val="{{ false }}">
+      <section class="fade" style="display: flex; flex-direction: column; gap: 16px; max-width: 820px;">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;">
+          <h2 style="margin: 0; font-size: 24px; line-height: 32px; font-weight: 600;">Device checks</h2>
+          <button class="uu-btn uu-secondary" onClick="{{rerun}}" style="height: 44px; padding: 0 16px; font-size: 14px; line-height: 20px;">
+            <svg class="i" width="18" height="18" viewBox="0 0 24 24" style="color: #A4A7AE;"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M8 16H3v5"></path></svg>Run checks again
+          </button>
+        </div>
+        <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px;">
+          <sc-for list="{{checks}}" as="c" hint-placeholder-count="5">
+            <li style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding: 14px 20px; border-radius: 12px; background: #fff; box-shadow: inset 0 0 0 1px {{c.ringColor}}, 0 1px 2px rgba(10,13,18,.05);">
+              <span style="width: 40px; height: 40px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; background: {{c.iconBg}}; color: {{c.iconFg}}; flex-shrink: 0;">
+                <svg class="i" width="20" height="20" viewBox="0 0 24 24"><path d="{{c.icon}}"></path></svg>
+              </span>
+              <div style="flex: 1; min-width: 0;"><div style="font-size: 16px; line-height: 24px; font-weight: 600;">{{c.label}}</div><div style="font-size: 14px; line-height: 20px; color: #535862;">{{c.detail}}</div></div>
+              <span style="flex-shrink: 0; padding: 2px 10px; border-radius: 9999px; font-size: 14px; line-height: 20px; font-weight: 500; background: {{c.bbg}}; color: {{c.bfg}}; box-shadow: inset 0 0 0 1px {{c.bbd}};">{{c.badge}}</span>
+              <sc-if value="{{c.hasHelp}}" hint-placeholder-val="{{ false }}">
+                <div style="flex-basis: 100%; display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px; padding: 16px; margin-left: 56px; border-radius: 10px; background: #FAFAFA; box-shadow: inset 0 0 0 1px #E9EAEB;">
+                  <div style="flex: 1 1 320px; min-width: 0;">
+                    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px;">
+                      <sc-for list="{{c.steps}}" as="h" hint-placeholder-count="3">
+                        <li style="display: flex; gap: 8px; font-size: 14px; line-height: 20px; color: #414651;"><span style="min-width: 16px; font-weight: 600; color: #717680; font-variant-numeric: tabular-nums; flex-shrink: 0;">{{h.n}}.</span><span>{{h.text}}</span></li>
+                      </sc-for>
+                    </ol>
+                    <sc-if value="{{c.hasNote}}" hint-placeholder-val="{{ false }}"><p style="margin: 12px 0 0; font-size: 14px; line-height: 20px; color: #535862;">{{c.note}}</p></sc-if>
+                  </div>
+                  <button class="uu-btn uu-secondary" onClick="{{c.fix}}" style="height: 44px; padding: 0 16px; font-size: 14px; line-height: 20px; flex-shrink: 0;">
+                    <svg class="i" width="18" height="18" viewBox="0 0 24 24" style="color: #A4A7AE;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>Open Settings
+                  </button>
+                </div>
+              </sc-if>
+            </li>
+          </sc-for>
+        </ul>
+        <p style="margin: 0; font-size: 14px; line-height: 20px; color: #535862;">{{checksNote}}</p>
+      </section>
+    </sc-if>
+
+    <!-- Confirm -->
+    <sc-if value="{{is.confirm}}" hint-placeholder-val="{{ false }}">
+      <section class="fade" style="display: flex; flex-direction: column; gap: 16px; max-width: 760px;">
+        <h2 style="margin: 0; font-size: 24px; line-height: 32px; font-weight: 600;">Confirm and start</h2>
+        <dl style="margin: 0; padding: 24px; border-radius: 12px; background: #fff; box-shadow: inset 0 0 0 1px #E9EAEB, 0 1px 2px rgba(10,13,18,.05); display: grid; grid-template-columns: minmax(110px, 180px) 1fr auto; align-items: center; row-gap: 14px; column-gap: 16px; font-size: 16px; line-height: 24px;">
+          <sc-for list="{{summary}}" as="r" hint-placeholder-count="7">
+            <dt style="color: #535862;">{{r.k}}</dt><dd style="margin: 0; font-weight: 500;">{{r.v}}</dd>
+            <div><sc-if value="{{r.hasEdit}}" hint-placeholder-val="{{ true }}"><button class="uu-btn uu-link" onClick="{{r.edit}}" aria-label="{{r.aria}}" style="height: 32px; font-size: 14px; line-height: 20px;">Edit</button></sc-if></div>
+          </sc-for>
+        </dl>
+        <sc-if value="{{noHours}}" hint-placeholder-val="{{ false }}">
+          <div style="padding: 12px 16px; border-radius: 12px; background: #FFFCF5; box-shadow: inset 0 0 0 1px #FEDF89; font-size: 14px; line-height: 20px; color: #B54708;">{{noHoursText}}</div>
+        </sc-if>
+        <p style="margin: 0; font-size: 14px; line-height: 20px; color: #535862;">Starting signs you out. The kiosk then runs on its own credential, not your account.</p>
+      </section>
+    </sc-if>
+  </main>
+
+  <footer style="background: #fff; border-top: 1px solid #E9EAEB; padding: clamp(10px, 2vh, 16px) clamp(16px, 3vw, 32px); display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px;">
+    <sc-if value="{{f.first}}" hint-placeholder-val="{{ true }}">
+      <a href="Admin.dc.html" class="uu-btn uu-secondary" style="height: 56px; padding: 0 24px 0 18px; font-size: 18px; line-height: 28px;">
+        <svg class="i" width="20" height="20" viewBox="0 0 24 24" style="color: #A4A7AE;"><path d="m15 18-6-6 6-6"></path></svg>Back
+      </a>
+    </sc-if>
+    <sc-if value="{{f.notFirst}}" hint-placeholder-val="{{ false }}">
+      <button class="uu-btn uu-secondary" onClick="{{back}}" style="height: 56px; padding: 0 24px 0 18px; font-size: 18px; line-height: 28px;">
+        <svg class="i" width="20" height="20" viewBox="0 0 24 24" style="color: #A4A7AE;"><path d="m15 18-6-6 6-6"></path></svg>Back
+      </button>
+    </sc-if>
+    <div style="flex: 1 1 200px; min-width: 0; font-size: 14px; line-height: 20px; color: #535862; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{crumbs}}</div>
+    <sc-if value="{{f.cont}}" hint-placeholder-val="{{ false }}">
+      <button class="uu-btn uu-primary" onClick="{{next}}" disabled="{{f.disabled}}" style="height: 56px; padding: 0 40px; font-size: 18px; line-height: 28px;">Continue</button>
+    </sc-if>
+    <sc-if value="{{f.start}}" hint-placeholder-val="{{ false }}">
+      <a href="Main.dc.html" onClick="{{save}}" class="uu-btn uu-primary" style="height: 56px; padding: 0 40px; font-size: 18px; line-height: 28px;">
+        <svg class="i" width="20" height="20" viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"></polygon></svg>Start kiosk
+      </a>
+    </sc-if>
+  </footer>
+
+  <!-- Prototype controls: page chrome, not kiosk UI -->
+  <div style="position: fixed; left: 16px; bottom: 104px; z-index: 40; display: flex; flex-direction: column; align-items: flex-start; gap: 8px;">
+    <sc-if value="{{panel}}" hint-placeholder-val="{{ false }}">
+      <aside class="proto" aria-label="Prototype controls" style="width: 300px; max-height: calc(100vh - 168px); overflow-y: auto; border-radius: 12px; background: #fff; box-shadow: inset 0 0 0 1px #E9EAEB, 0 12px 16px -4px rgba(10,13,18,.08), 0 4px 6px -2px rgba(10,13,18,.03); padding: 16px; display: flex; flex-direction: column; gap: 16px;">
+        <div>
+          <div style="font-size: 14px; line-height: 20px; font-weight: 600; color: #181D27;">Simulate</div>
+          <div style="font-size: 12px; line-height: 18px; color: #535862;">Prototype only. Wi-Fi and Guided Access feed the device checks.</div>
+        </div>
+        <sc-if value="{{is.reader}}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div style="font-size: 14px; line-height: 20px; font-weight: 600; color: #181D27;">Tap an ID on the reader</div>
+            <button class="uu-btn uu-secondary" onClick="{{tapKnown}}" disabled="{{t.reading}}" style="justify-content: flex-start; height: 40px; padding: 0 12px; font-size: 14px; line-height: 20px;">Emma Johnson’s ID</button>
+            <button class="uu-btn uu-secondary" onClick="{{tapUnknown}}" disabled="{{t.reading}}" style="justify-content: flex-start; height: 40px; padding: 0 12px; font-size: 14px; line-height: 20px;">Unregistered card</button>
+          </div>
+        </sc-if>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <sc-for list="{{toggles}}" as="g" hint-placeholder-count="2">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+              <span style="font-size: 14px; line-height: 20px; font-weight: 500; color: #414651;">{{g.label}}</span>
+              <button class="uu-focus" role="switch" aria-checked="{{g.on}}" aria-label="{{g.label}}" onClick="{{g.flip}}" style="width: 44px; height: 24px; border: 0; border-radius: 9999px; padding: 2px; display: flex; justify-content: {{g.justify}}; background: {{g.track}}; cursor: pointer; flex-shrink: 0;"><span style="width: 20px; height: 20px; border-radius: 9999px; background: #fff; box-shadow: 0 1px 3px rgba(10,13,18,.1);"></span></button>
+            </div>
+          </sc-for>
+        </div>
+      </aside>
+    </sc-if>
+    <button class="uu-btn uu-secondary proto-trigger" onClick="{{togglePanel}}" aria-expanded="{{panel}}" style="height: 36px; padding: 0 12px; font-size: 14px; line-height: 20px; border-radius: 9999px;">
+      <svg class="i" width="16" height="16" viewBox="0 0 24 24" style="color: #A4A7AE;"><path d="M4 21v-7"></path><path d="M4 10V3"></path><path d="M12 21v-9"></path><path d="M12 8V3"></path><path d="M20 21v-5"></path><path d="M20 12V3"></path><path d="M1 14h6"></path><path d="M9 8h6"></path><path d="M17 16h6"></path></svg>{{panelLabel}}
+    </button>
+  </div>
+
+  <sc-if value="{{modal.show}}" hint-placeholder-val="{{ false }}">
+    <div style="position: fixed; inset: 0; z-index: 50; background: rgba(10,13,18,.7); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; padding: 16px;">
+      <div class="fade" role="alertdialog" aria-modal="true" aria-labelledby="m-title" style="width: 100%; max-width: 480px; border-radius: 16px; background: #fff; box-shadow: 0 24px 48px -12px rgba(10,13,18,.18), 0 4px 4px -2px rgba(10,13,18,.04); padding: 24px;">
+        <span style="width: 48px; height: 48px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; background: #FEF0C7; box-shadow: 0 0 0 8px #FFFAEB; color: #DC6803;">
+          <svg class="i" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v4"></path><path d="M12 16h.01"></path></svg>
+        </span>
+        <h2 id="m-title" style="margin: 20px 0 0; font-size: 18px; line-height: 28px; font-weight: 600;">{{modal.title}}</h2>
+        <p style="margin: 4px 0 0; font-size: 14px; line-height: 20px; color: #535862;">{{modal.body}}</p>
+        <div style="display: flex; gap: 12px; margin-top: 32px;">
+          <button class="uu-btn uu-secondary" onClick="{{modal.cancel}}" style="flex: 1; height: 48px; font-size: 16px; line-height: 24px;">{{modal.cancelLabel}}</button>
+          <button class="uu-btn uu-primary" onClick="{{modal.ok}}" style="flex: 1; height: 48px; font-size: 16px; line-height: 24px;">{{modal.okLabel}}</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1180,"height":820}}'>
+class Component extends DCLogic {
+  /* Fresh answers every time setup starts. */
+  initial() { return { step: 'customer', cust: null, loc: null, sp: null, kiosk: null, side: 'right', test: { status: 'waiting' }, auto: {}, replacing: false, q: '', replace: null, skipAsk: false, network: true, lock: false, run: 0, panel: false, reached: 0 }; }
+  state = this.initial();
+  reset() { this.timers.forEach(clearTimeout); this.setState(this.initial()); }
+  componentDidMount() {
+    /* Prototype: start over whenever the saved kiosk assignment changes (setup finished elsewhere, or removed). */
+    var self = this; try { this._raw = window.localStorage.getItem('kioskProto.device'); } catch (e) { this._raw = null; }
+    this._poll = setInterval(function () { var v = null; try { v = window.localStorage.getItem('kioskProto.device'); } catch (e) {} if (v !== self._raw) { self._raw = v; self.reset(); } }, 600);
+  }
+  timers = [];
+  componentWillUnmount() { this.timers.forEach(clearTimeout); clearInterval(this._poll); }
+
+  org() {
+    return [
+      { id: 'emr', name: 'Emory University', recent: true, locations: [
+        { id: 'main', name: 'Main Campus', sps: [
+          { id: 'crs', name: 'Central Receiving', type: 'Service center', today: '8:00 AM to 5:00 PM', kiosks: [
+            { name: 'Kiosk 1', code: 'EMR-CRS-01', inUse: 'iPad Air (M2) · last seen 1 min ago' },
+            { name: 'Kiosk 2', code: 'EMR-CRS-02', inUse: 'iPad (10th gen) · last seen today 1:42 PM' }] },
+          { id: 'dob', name: 'Dobbs Hall Mailroom', type: 'Service point', today: '10:00 AM to 6:00 PM', kiosks: [{ name: 'Kiosk 1', code: 'EMR-DOB-01', inUse: 'iPad Air (M2) · last seen 3 min ago' }] },
+          { id: 'cox', name: 'Cox Hall Mailroom', type: 'Service point', today: null, kiosks: [{ name: 'Kiosk 1', code: 'EMR-COX-01' }, { name: 'Kiosk 2', code: 'EMR-COX-02' }] }] },
+        { id: 'clr', name: 'Clairmont Campus', sps: [] }] },
+      { id: 'clm', name: 'Clemson University', locations: [
+        { id: 'core', name: 'Core Campus', sps: [{ id: 'ccm', name: 'Core Campus Mailroom', type: 'Service point', today: '9:00 AM to 7:00 PM', kiosks: [{ name: 'Kiosk 1', code: 'CLM-CCM-01' }] }] },
+        { id: 'west', name: 'West Campus', sps: [{ id: 'wcm', name: 'West Campus Mailroom', type: 'Service point', today: '10:00 AM to 6:00 PM', kiosks: [{ name: 'Kiosk 1', code: 'CLM-WCM-01' }, { name: 'Kiosk 2', code: 'CLM-WCM-02' }] }] }] },
+      { id: 'c2', name: 'Company 2', locations: [] },
+      { id: 'c3', name: 'Company 3', locations: [] }
+    ];
+  }
+  stepsDef() { return [['customer', 'Customer'], ['location', 'Location'], ['sp', 'Service point'], ['kiosk', 'Kiosk'], ['reader', 'Badge reader'], ['checks', 'Checks'], ['confirm', 'Confirm']]; }
+  locsWith(c) { return c.locations.filter(function (l) { return l.sps.some(function (s) { return s.kiosks.length; }); }); }
+  plural(n, w) { return n + ' ' + w + (n === 1 ? '' : 's'); }
+  idxOf(k) { return this.stepsDef().map(function (d) { return d[0]; }).indexOf(k); }
+  /* Move to a step. `reset` means an earlier answer changed, so later steps must be redone. */
+  moveTo(step, patch, reset) {
+    var i = this.idxOf(step), r = reset ? i : Math.max(this.state.reached, i);
+    this.setState(Object.assign({}, patch || {}, { step: step, q: '', reached: r }));
+  }
+  go(step) { this.moveTo(step); }
+
+  /* Re-picking the same answer keeps everything after it; a different answer clears only what depends on it. */
+  pickCustomer(c) {
+    var s = this.state;
+    if (s.cust && s.cust.id === c.id) { this.moveTo(s.auto.location ? 'sp' : 'location'); return; }
+    var locs = this.locsWith(c), a = Object.assign({}, s.auto);
+    var base = { cust: c, sp: null, kiosk: null, replacing: false, test: { status: 'waiting' } };
+    if (locs.length === 1) { a.location = true; this.moveTo('sp', Object.assign(base, { loc: locs[0], auto: a }), true); }
+    else { a.location = false; this.moveTo('location', Object.assign(base, { loc: null, auto: a }), true); }
+  }
+  pickLoc(l) {
+    var s = this.state;
+    if (s.loc && s.loc.id === l.id) { this.moveTo(s.auto.sp ? 'kiosk' : 'sp'); return; }
+    var sps = l.sps.filter(function (x) { return x.kiosks.length; }), a = Object.assign({}, s.auto);
+    if (sps.length === 1) { a.sp = true; this.moveTo('kiosk', { loc: l, sp: sps[0], kiosk: null, replacing: false, auto: a }, true); }
+    else { a.sp = false; this.moveTo('sp', { loc: l, sp: null, kiosk: null, replacing: false, auto: a }, true); }
+  }
+  pickSp(x) {
+    var s = this.state;
+    if (s.sp && s.sp.id === x.id) { this.moveTo('kiosk'); return; }
+    this.moveTo('kiosk', { sp: x, kiosk: null, replacing: false }, true);
+  }
+  pickKiosk(k) {
+    var s = this.state;
+    if (s.kiosk && s.kiosk.code === k.code) { this.moveTo('reader'); return; }
+    if (k.inUse) this.setState({ replace: k });
+    else this.moveTo('reader', { kiosk: k, replacing: false }, true);
+  }
+  tap(id) {
+    var self = this;
+    this.setState({ test: { status: 'reading' } });
+    this.timers.push(setTimeout(function () {
+      self.setState({ test: id === 'U2048193' ? { status: 'matched', value: id, name: 'Emma Johnson' } : { status: 'nomatch', value: id } });
+    }, 700));
+  }
+  checksList() {
+    var s = this.state, t = s.test.status;
+    return [
+      ['Network', s.network ? 'ok' : 'bad', s.network ? 'Connected to Delivery CTRL · Wi-Fi network ' + (s.cust && s.cust.id === 'clm' ? 'Clemson-Kiosk' : 'Emory-Kiosk') + ' recorded for diagnostics' : 'Can’t reach Delivery CTRL. This kiosk device isn’t connected to Wi-Fi.'],
+      ['Badge reader', t === 'matched' ? 'ok' : 'warn', t === 'matched' ? 'Test read matched ' + s.test.name : t === 'nomatch' ? 'Reader works, but the test card didn’t match a contact' : 'Test read skipped'],
+      ['Kiosk lock', s.lock ? 'ok' : 'warn', s.lock ? 'Guided Access is on. Students can’t leave the kiosk app.' : 'Not locked. Students could leave the kiosk app.'],
+      ['Orientation', 'ok', 'Landscape'],
+      ['App version', 'ok', '2.4.1 (current)']
+    ];
+  }
+
+  renderVals() {
+    var self = this, s = this.state, defs = this.stepsDef();
+    var idx = defs.map(function (d) { return d[0]; }).indexOf(s.step);
+    var steps = defs.map(function (d, i) {
+      var cur = i === idx, done = !cur && i < s.reached, locked = cur || i > s.reached;
+      return { label: d[1] + (s.auto[d[0]] && done ? ' (auto)' : ''), n: i + 1, done: done, notDone: !done, current: cur ? 'step' : null,
+        locked: locked, cursor: locked ? 'default' : 'pointer', jump: function () { self.moveTo(d[0]); },
+        aria: d[1] + (cur ? ', current step' : done ? ', completed. Go back to this step' : locked ? ', not started' : ''),
+        bg: cur ? '#F9F5FF' : '#fff', bd: cur ? '#D6BBFB' : '#E9EAEB', fg: cur ? '#6941C6' : done ? '#414651' : '#717680',
+        dotBg: cur || done ? '#7F56D9' : '#fff', dotFg: cur || done ? '#fff' : '#717680', dotRing: cur ? '0 0 0 4px #F4EBFF' : done ? 'none' : 'inset 0 0 0 1px #D5D7DA' };
+    });
+    var ICON = {
+      building: 'M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2 M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2 M10 6h4 M10 10h4 M10 14h4 M10 18h4',
+      pin: 'M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z M12 7a3 3 0 1 0 0 6a3 3 0 1 0 0-6',
+      inbox: 'M22 12h-6l-2 3h-4l-2-3H2 M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z',
+      tablet: 'M6 2h12a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z M12 18h.01',
+      ok: 'M22 11.08V12a10 10 0 1 1-5.93-9.14 M22 4 12 14.01l-3-3',
+      warn: 'M12 2a10 10 0 1 0 0 20a10 10 0 1 0 0-20 M12 8v4 M12 16h.01',
+      bad: 'M12 2a10 10 0 1 0 0 20a10 10 0 1 0 0-20 M15 9l-6 6 M9 9l6 6'
+    };
+    var B = { ok: ['#ECFDF3', '#067647', '#ABEFC6'], warn: ['#FFFAEB', '#B54708', '#FEDF89'], bad: ['#FEF3F2', '#B42318', '#FECDCA'], mute: ['#FAFAFA', '#414651', '#E9EAEB'] };
+    var opt = function (o) {
+      var b = o.kind ? B[o.kind] : null;
+      return { title: o.title, sub: o.sub || '', hasSub: !!o.sub, subFont: o.mono ? 'ui-monospace, Menlo, monospace' : 'inherit',
+        disabled: !!o.disabled, opacity: o.disabled ? '0.55' : '1', chev: !o.disabled && !o.selected, pick: o.pick,
+        selected: !!o.selected, bg: o.selected ? '#F9F5FF' : '#fff', ring: o.selected ? '2px #7F56D9' : '1px #E9EAEB',
+        isAv: !!o.av, isIcon: !o.av, isClemson: o.av === 'clm', isEmory: o.av === 'emr', noLogo: !!o.av && o.av !== 'clm' && o.av !== 'emr',
+        initials: o.av ? o.title.replace(/[^A-Za-z0-9 ]/g, '').split(' ').filter(Boolean).map(function (w) { return w[0]; }).join('').slice(0, 2).toUpperCase() : '',
+        hasBadge: !!b, badge: o.badge || '', bbg: b ? b[0] : '', bfg: b ? b[1] : '', bbd: b ? b[2] : '', hasNote: !!o.note, note: o.note || '' };
+    };
+
+    var l = { show: false, options: [], icon: '', hasAuto: false, hasSub: false, search: false, empty: false, hasFoot: false };
+    if (s.step === 'customer') {
+      var term = s.q.trim().toLowerCase();
+      var list = this.org().filter(function (c) { return term.length < 2 || c.name.toLowerCase().indexOf(term) >= 0; });
+      l = { show: true, heading: 'Which customer is this kiosk for?', search: true, icon: ICON.building, empty: list.length === 0,
+        options: list.map(function (c) { var has = self.locsWith(c).length > 0; return opt({ av: c.id, title: c.name, sub: has ? (c.recent ? 'Recently used' : '') : 'No kiosks', disabled: !has, selected: !!(s.cust && s.cust.id === c.id), pick: function () { self.pickCustomer(c); } }); }) };
+    } else if (s.step === 'location') {
+      l = { show: true, heading: 'Which location?', hasSub: true, sub: 'Locations at ' + s.cust.name + ' that have kiosks.', icon: ICON.pin,
+        options: this.locsWith(s.cust).map(function (loc) { var n = loc.sps.filter(function (x) { return x.kiosks.length; }).length; return opt({ title: loc.name, sub: self.plural(n, 'service point'), selected: !!(s.loc && s.loc.id === loc.id), pick: function () { self.pickLoc(loc); } }); }) };
+    } else if (s.step === 'sp') {
+      var sps = s.loc.sps.filter(function (x) { return x.kiosks.length; });
+      l = { show: true, heading: 'Which service point does this kiosk serve?', icon: ICON.inbox, hasAuto: !!s.auto.location, auto: s.loc.name + ' is the only location with kiosks, so it was selected.',
+        hasFoot: sps.some(function (x) { return !x.today; }), foot: 'A service point with no hours set keeps its kiosks closed until hours are set in Delivery CTRL Configuration.',
+        options: sps.map(function (x) { return opt({ title: x.name, sub: x.type + ' · ' + self.plural(x.kiosks.length, 'kiosk') + ' · ' + (x.today ? 'Today ' + x.today : 'No pickup hours set'), kind: x.today ? null : 'warn', badge: 'No hours', selected: !!(s.sp && s.sp.id === x.id), pick: function () { self.pickSp(x); } }); }) };
+    } else if (s.step === 'kiosk') {
+      l = { show: true, heading: 'Which kiosk is this device?', hasSub: true, sub: s.sp.name + ' · ' + s.sp.type, icon: ICON.tablet, hasAuto: !!s.auto.sp, auto: s.sp.name + ' is the only service point here with kiosks, so it was selected.',
+        options: s.sp.kiosks.map(function (k) { return opt({ title: k.name, sub: k.code, mono: true, kind: k.inUse ? 'mute' : 'ok', badge: k.inUse ? 'In use on another kiosk device' : 'Available', note: k.inUse || '', selected: !!(s.kiosk && s.kiosk.code === k.code), pick: function () { self.pickKiosk(k); } }); }) };
+    }
+
+    var ts = s.test.status, matched = ts === 'matched', nomatch = ts === 'nomatch';
+    var t = { waiting: ts === 'waiting' || ts === 'skipped', reading: ts === 'reading', result: matched || nomatch, matched: matched, nomatch: nomatch,
+      value: s.test.value || '', name: s.test.name || 'No contact with this Credential ID', canSkip: !matched,
+      fg: matched ? '#067647' : '#B54708',
+      bg: matched ? '#ECFDF3' : nomatch ? '#FFFCF5' : '#fff', bd: matched ? '#ABEFC6' : nomatch ? '#FEDF89' : 'transparent',
+      border: matched || nomatch ? '0' : '1.5px dashed #D5D7DA' };
+
+    var checks = this.checksList();
+    var blocked = checks.some(function (c) { return c[1] === 'bad'; });
+    var warns = checks.filter(function (c) { return c[1] === 'warn'; }).length;
+    var tg = function (label, key) { var on = !!s[key]; return { label: label, on: on, track: on ? '#7F56D9' : '#E9EAEB', justify: on ? 'flex-end' : 'flex-start', flip: function () { var o = { panel: false }; o[key] = !self.state[key]; self.setState(o); } }; };
+
+    var summary = [];
+    if (s.step === 'confirm') {
+      summary = [['Customer', s.cust.name], ['Location', s.loc.name], ['Service point', s.sp.name + ' · ' + s.sp.type], ['Kiosk', s.kiosk.name + ' · ' + s.kiosk.code],
+        ['Reader mounted', s.side === 'left' ? 'Left of kiosk device' : 'Right of kiosk device'], ['Test read', matched ? 'Matched ' + s.test.name : nomatch ? 'Reader works, no contact matched' : 'Skipped'],
+        ['Checks', warns ? this.plural(warns, 'warning') : 'All passed']].concat(s.replacing ? [['Replaces', 'The kiosk device currently running this kiosk']] : []).map(function (r) {
+        var EK = { Customer: 'customer', Location: 'location', 'Service point': 'sp', Kiosk: 'kiosk', 'Reader mounted': 'reader', 'Test read': 'reader', Checks: 'checks' };
+        return { k: r[0], v: r[1], hasEdit: !!EK[r[0]], aria: 'Edit ' + r[0].toLowerCase(), edit: function () { self.moveTo(EK[r[0]]); } };
+      });
+    }
+
+    var modal = { show: false };
+    if (s.replace) modal = { show: true, title: 'Replace the other kiosk device?', body: 'This kiosk device will replace the kiosk device currently running ' + s.sp.name + ' · ' + s.replace.name + '. The other kiosk device will stop working as a kiosk when setup finishes.',
+      cancelLabel: 'Cancel', okLabel: 'Replace and continue', cancel: function () { self.setState({ replace: null }); },
+      ok: function () { var k = self.state.replace; self.setState({ replace: null }); self.moveTo('reader', { kiosk: k, replacing: true }, true); } };
+    else if (s.skipAsk) modal = { show: true, title: 'Skip the test read?', body: 'Students may not be able to check in by ID until this is tested. Skipping is logged on the kiosk’s history.',
+      cancelLabel: 'Keep testing', okLabel: 'Skip', cancel: function () { self.setState({ skipAsk: false }); },
+      ok: function () { self.moveTo('checks', { skipAsk: false, test: { status: 'skipped' } }); } };
+
+    var crumbs = [s.cust && s.cust.name, s.loc && s.loc.name, s.sp && s.sp.name, s.kiosk && s.kiosk.name].filter(Boolean).join(' › ');
+    var nextStep = { reader: 'checks', checks: 'confirm' }[s.step];
+
+    return {
+      steps: steps, l: l, q: s.q, t: t, crumbs: crumbs, modal: modal, summary: summary,
+      is: { reader: s.step === 'reader', checks: s.step === 'checks', confirm: s.step === 'confirm' },
+      noHours: s.step === 'confirm' && !s.sp.today, noHoursText: s.sp ? s.sp.name + ' has no pickup hours yet. The kiosk will show the closed screen until hours are set.' : '',
+      side: { left: s.side === 'left', right: s.side === 'right', leftBg: s.side === 'left' ? '#F9F5FF' : '#fff', leftFg: s.side === 'left' ? '#6941C6' : '#414651',
+        rightBg: s.side === 'right' ? '#F9F5FF' : '#fff', rightFg: s.side === 'right' ? '#6941C6' : '#414651',
+        pickLeft: function () { self.setState({ side: 'left' }); }, pickRight: function () { self.setState({ side: 'right' }); } },
+      openSettings: function () { /* Prototype: would open the Settings app. */ },
+      /* Prototype: remember this kiosk device's assignment so the other screens can show it. */
+      save: function () {
+        var x = self.state, ts2 = x.test.status;
+        var d = { cust: { id: x.cust.id, name: x.cust.name }, loc: { name: x.loc.name }, sp: { name: x.sp.name, type: x.sp.type, today: x.sp.today },
+          kiosk: { name: x.kiosk.name, code: x.kiosk.code }, side: x.side,
+          test: ts2 === 'matched' ? 'matched' : ts2 === 'nomatch' ? 'no match' : 'skipped',
+          wifi: x.cust.id === 'clm' ? 'Clemson-Kiosk' : 'Emory-Kiosk' };
+        try { window.localStorage.setItem('kioskProto.device', JSON.stringify(d)); window.localStorage.removeItem('kioskProto.themeOverride'); self._raw = JSON.stringify(d); } catch (e) {}
+        self.reset();
+      },
+      resetFlow: function () { self.reset(); },
+      checks: checks.map(function (c) { var k = c[1], b = B[k];
+        var HELP = {
+          'Kiosk lock': { steps: ['Tap Open Settings, then go to Accessibility › Guided Access.', 'Turn on Guided Access and set a passcode.', 'Come back to this app and triple-click the top button to start it. This check updates by itself.'],
+            note: 'Managed by campus IT? Ask them to lock this kiosk device to the kiosk app (Single App Mode).' },
+          Network: { steps: ['Tap Open Settings, then Wi-Fi.', 'Join the kiosk Wi-Fi network for this campus.', 'Come back to this app and tap Run checks again.'], note: '' }
+        };
+        var h = k !== 'ok' ? HELP[c[0]] : null;
+        /* Prototype: "Open Settings" stands in for the admin fixing it in Settings and coming back. */
+        var fixKey = c[0] === 'Kiosk lock' ? 'lock' : c[0] === 'Network' ? 'network' : null;
+        return { label: c[0], detail: c[2], ringColor: '#E9EAEB',
+          fix: function () { if (fixKey) { var o = {}; o[fixKey] = true; self.setState(o); } },
+          hasHelp: !!h, hasNote: !!(h && h.note), note: h ? h.note : '', steps: h ? h.steps.map(function (t, i) { return { n: i + 1, text: t }; }) : [], icon: ICON[k], badge: k === 'ok' ? 'Pass' : k === 'warn' ? 'Warning' : 'Fail', bbg: b[0], bfg: b[1], bbd: b[2],
+          iconBg: k === 'ok' ? '#DCFAE6' : k === 'warn' ? '#FEF0C7' : '#FEE4E2', iconFg: k === 'ok' ? '#079455' : k === 'warn' ? '#DC6803' : '#D92D20' }; }),
+      checksNote: blocked ? 'Fix the failed check to continue.' : 'Warnings don’t block setup, but fix them before students use the kiosk.',
+      toggles: [tg('Wi-Fi connected', 'network'), tg('Guided Access on', 'lock')],
+      panel: s.panel, panelLabel: s.panel ? 'Hide controls' : 'Simulate',
+      togglePanel: function () { self.setState({ panel: !self.state.panel }); },
+      f: { first: s.step === 'customer', notFirst: s.step !== 'customer', cont: s.step === 'reader' || s.step === 'checks', start: s.step === 'confirm', disabled: s.step === 'reader' ? !(matched || nomatch) : blocked },
+      onQ: function (e) { self.setState({ q: e.target.value }); },
+      tapKnown: function () { self.setState({ panel: false }); self.tap('U2048193'); },
+      tapUnknown: function () { self.setState({ panel: false }); self.tap('V0009127'); },
+      askSkip: function () { self.setState({ skipAsk: true }); },
+      rerun: function () { self.setState({ run: self.state.run + 1 }); },
+      next: function () { if (nextStep) self.go(nextStep); },
+      back: function () {
+        if (s.step === 'customer') return;
+        var i = idx - 1;
+        while (i > 0 && s.auto[defs[i][0]]) i--;
+        self.go(defs[i][0]);
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

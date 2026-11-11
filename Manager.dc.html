@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Site manager</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FDFDFD;font-family:Inter,ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+a{color:#6941C6}a:hover{color:#53389E}
+.i{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.uu-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:8px;font-family:inherit;font-weight:600;cursor:pointer;text-decoration:none;transition:background-color .1s linear,color .1s linear}
+.uu-btn:focus-visible,.uu-focus:focus-visible{outline:2px solid #9E77ED;outline-offset:2px}
+.uu-primary{background:#7F56D9;color:#fff;border:2px solid rgba(255,255,255,.12);box-shadow:inset 0 0 0 1px rgba(10,13,18,.18),inset 0 -2px 0 0 rgba(10,13,18,.05),0 1px 2px rgba(10,13,18,.05)}
+.uu-primary:hover{background:#6941C6;color:#fff}
+.uu-secondary{background:#fff;color:#414651;box-shadow:inset 0 0 0 1px #D5D7DA,inset 0 -2px 0 0 rgba(10,13,18,.05),0 1px 2px rgba(10,13,18,.05)}
+.uu-secondary:hover{background:#FAFAFA;color:#252B37}
+.uu-secondary-error{background:#fff;color:#B42318;box-shadow:inset 0 0 0 1px #FDA29B,inset 0 -2px 0 0 rgba(10,13,18,.05),0 1px 2px rgba(10,13,18,.05)}
+.uu-secondary-error:hover{background:#FEF3F2;color:#912018}
+.uu-destructive{background:#D92D20;color:#fff;border:2px solid rgba(255,255,255,.12);box-shadow:inset 0 0 0 1px rgba(10,13,18,.18),inset 0 -2px 0 0 rgba(10,13,18,.05),0 1px 2px rgba(10,13,18,.05)}
+.uu-destructive:hover{background:#B42318;color:#fff}
+.fade{animation:fadeUp .2s ease-out both}
+@keyframes fadeUp{from{opacity:.001;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.fade{animation:none}}
+</style>
+</helmet>
+<div style="min-height: 100vh; display: flex; flex-direction: column; background: #FDFDFD; color: #181D27; font-family: Inter, ui-sans-serif, system-ui, sans-serif;">
+  <header style="background: #fff; border-bottom: 1px solid #E9EAEB; padding: clamp(12px, 2.5vh, 20px) max(clamp(16px, 3vw, 32px), calc((100% - 760px) / 2 + clamp(16px, 3vw, 32px)));">
+  <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 16px;">
+      <div>
+        <div style="font-size: 14px; line-height: 20px; color: #535862;">Signed in as {{who}} · Site manager</div>
+        <h1 style="margin: 4px 0 0; font-size: 24px; line-height: 32px; font-weight: 600; letter-spacing: -0.01em;">{{title}}</h1>
+      </div>
+      <a href="Main.dc.html" class="uu-btn uu-secondary" style="height: 48px; padding: 0 22px; font-size: 16px; line-height: 24px;">Done</a>
+    </div>
+  </header>
+  <div style="flex: 1; width: 100%; max-width: 760px; margin: 0 auto; justify-content: center; padding: clamp(16px, 4vh, 48px) clamp(16px, 3vw, 32px); display: flex; flex-direction: column; gap: 20px;">
+    
+    <dl style="margin: 0; padding: 20px 24px; border-radius: 12px; background: #fff; box-shadow: inset 0 0 0 1px #E9EAEB, 0 1px 2px rgba(10,13,18,.05); display: grid; grid-template-columns: minmax(120px, 160px) 1fr; row-gap: 14px; column-gap: 16px; align-items: center; font-size: 16px; line-height: 24px;">
+      <dt style="color: #535862;">Status</dt>
+      <dd style="margin: 0;"><span style="display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px 2px 8px; border-radius: 9999px; font-size: 14px; line-height: 20px; font-weight: 500; background: {{badge.bg}}; color: {{badge.fg}}; box-shadow: inset 0 0 0 1px {{badge.bd}};"><span style="width: 6px; height: 6px; border-radius: 9999px; background: {{badge.dot}};"></span>{{badge.text}}</span></dd>
+      <dt style="color: #535862;">Today’s hours</dt><dd style="margin: 0;">{{hours}}</dd>
+      <dt style="color: #535862;">Kiosk ID</dt><dd style="margin: 0; font-family: ui-monospace, Menlo, monospace;">{{code}}</dd>
+    </dl>
+
+    <sc-if value="{{notAsking}}" hint-placeholder-val="{{ true }}">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;">
+        <sc-if value="{{running}}" hint-placeholder-val="{{ true }}">
+          <button class="uu-btn uu-secondary-error" onClick="{{ask}}" style="height: 80px; font-size: 18px; line-height: 28px; border-radius: 12px;">
+            <svg class="i" width="22" height="22" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2"></rect></svg>Stop kiosk
+          </button>
+        </sc-if>
+        <sc-if value="{{stopped}}" hint-placeholder-val="{{ false }}">
+          <button class="uu-btn uu-primary" onClick="{{start}}" style="height: 80px; font-size: 18px; line-height: 28px; border-radius: 12px;">
+            <svg class="i" width="22" height="22" viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"></polygon></svg>Start kiosk
+          </button>
+        </sc-if>
+        <a href="Diagnostics.dc.html" class="uu-btn uu-secondary" style="height: 80px; font-size: 18px; line-height: 28px; border-radius: 12px;">
+          <svg class="i" width="22" height="22" viewBox="0 0 24 24" style="color: #A4A7AE;"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>Diagnostics
+        </a>
+      </div>
+      <sc-if value="{{stopped}}" hint-placeholder-val="{{ false }}">
+        <p style="margin: 0; font-size: 14px; line-height: 20px; color: #535862;">Stopped for: {{reason}}. Starting reopens check-in now. The schedule takes over again at the next scheduled change.</p>
+      </sc-if>
+    </sc-if>
+
+    <sc-if value="{{asking}}" hint-placeholder-val="{{ false }}">
+      <div class="fade" style="padding: 24px; border-radius: 12px; background: #fff; box-shadow: inset 0 0 0 1px #FECDCA, 0 1px 2px rgba(10,13,18,.05);">
+        <div style="display: flex; align-items: flex-start; gap: 16px;">
+          <span style="width: 48px; height: 48px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; background: #FEE4E2; box-shadow: 0 0 0 8px #FEF3F2; color: #D92D20; flex-shrink: 0;">
+            <svg class="i" width="24" height="24" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2"></rect></svg>
+          </span>
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-size: 18px; line-height: 28px; font-weight: 600;">Stop check-in now?</div>
+            <div id="reason-label" style="margin-top: 12px; font-size: 14px; line-height: 20px; font-weight: 500; color: #414651;">Reason (optional)</div>
+            <div role="radiogroup" aria-labelledby="reason-label" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;">
+              <sc-for list="{{reasons}}" as="r" hint-placeholder-count="3">
+                <button class="uu-focus" role="radio" aria-checked="{{r.on}}" onClick="{{r.pick}}" style="height: 44px; padding: 0 18px; border: 0; border-radius: 9999px; background: {{r.bg}}; color: {{r.fg}}; box-shadow: inset 0 0 0 1px {{r.bd}}; font-family: inherit; font-size: 16px; line-height: 24px; font-weight: 600; cursor: pointer;">{{r.label}}</button>
+              </sc-for>
+            </div>
+            <p style="margin: 12px 0 0; font-size: 14px; line-height: 20px; color: #535862;">{{resume}}</p>
+          </div>
+        </div>
+        <div style="display: flex; gap: 12px; margin-top: 24px;">
+          <button class="uu-btn uu-secondary" onClick="{{cancel}}" style="flex: 1; height: 52px; font-size: 16px; line-height: 24px;">Cancel</button>
+          <button class="uu-btn uu-destructive" onClick="{{stop}}" style="flex: 1; height: 52px; font-size: 16px; line-height: 24px;">Stop kiosk</button>
+        </div>
+      </div>
+    </sc-if>
+
+    <p style="margin: 0; font-size: 14px; line-height: 20px; color: #717680;">Site managers can start, stop, and run diagnostics. Setup changes need a Ricoh admin. Signs out after 2 minutes of inactivity.</p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1180,"height":820}}'>
+class Component extends DCLogic {
+  state = { stopped: false, asking: false, reason: 'Fire drill' };
+  componentDidMount() {
+    /* Prototype: watch the saved kiosk assignment so this screen updates when another screen changes it. */
+    var selfP = this; this._raw = null;
+    this._poll = setInterval(function () { var v = null; try { v = window.localStorage.getItem('kioskProto.device'); } catch (e) {} if (v !== selfP._raw) { selfP._raw = v; selfP.setState({ devTick: (selfP.state.devTick || 0) + 1 }); } }, 600);
+  }
+  componentWillUnmount() { clearInterval(this._poll); }
+  renderVals() {
+    var self = this, s = this.state;
+    var badge = s.stopped ? { text: 'Stopped manually', bg: '#FFFAEB', fg: '#B54708', bd: '#FEDF89', dot: '#F79009' } : { text: 'Open', bg: '#ECFDF3', fg: '#067647', bd: '#ABEFC6', dot: '#17B26A' };
+    var dev = null;
+    try { var raw = window.localStorage.getItem('kioskProto.device'); if (raw && raw !== 'none') dev = JSON.parse(raw); } catch (e) {}
+    if (!dev) dev = { cust: { id: 'emr' }, sp: { name: 'Central Receiving', today: '8:00 AM to 5:00 PM' }, kiosk: { name: 'Kiosk 1', code: 'EMR-CRS-01' } };
+    var today = dev.sp.today;
+    return {
+      who: dev.cust.id === 'clm' ? 'sam@clemson.edu' : 'dana@emory.edu',
+      title: dev.sp.name + ' · ' + dev.kiosk.name, code: dev.kiosk.code, hours: today || 'No pickup hours set',
+      resume: today ? 'The schedule will take over again at ' + today.split(' to ')[0] + ' tomorrow.' : 'The schedule will take over again at the next scheduled opening.',
+      badge: badge, running: !s.stopped, stopped: s.stopped, asking: s.asking, notAsking: !s.asking, reason: s.reason,
+      ask: function () { self.setState({ asking: true }); },
+      cancel: function () { self.setState({ asking: false }); },
+      stop: function () { self.setState({ asking: false, stopped: true }); },
+      start: function () { self.setState({ stopped: false }); },
+      reasons: ['Closure', 'Fire drill', 'Other'].map(function (r) {
+        var on = s.reason === r;
+        return { label: r, on: on, bg: on ? '#F9F5FF' : '#fff', fg: on ? '#6941C6' : '#414651', bd: on ? '#D6BBFB' : '#D5D7DA', pick: function () { self.setState({ reason: r }); } };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

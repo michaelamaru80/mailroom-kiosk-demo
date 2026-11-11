@@ -1,0 +1,1355 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Student choosing who they’re picking up for (example)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FDFDFD;font-family:Inter,ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+a{color:#6941C6}a:hover{color:#53389E}
+.i{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.qr{fill:#181D27;fill-rule:evenodd;stroke:none;shape-rendering:crispEdges}
+.uu-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:8px;font-family:inherit;font-weight:600;cursor:pointer;text-decoration:none;transition:background-color .1s linear,color .1s linear,box-shadow .1s linear}
+.uu-btn:focus-visible,.uu-focus:focus-visible{outline:2px solid var(--brand-400, #9E77ED);outline-offset:2px}
+.uu-primary{background:var(--brand-solid,#7F56D9);color:#fff;border:2px solid rgba(255,255,255,.12);box-shadow:inset 0 0 0 1px rgba(10,13,18,.18),inset 0 -2px 0 0 rgba(10,13,18,.05),0 1px 2px rgba(10,13,18,.05)}
+.uu-primary:hover{background:var(--brand-solid,#6941C6);filter:brightness(.9);color:#fff}
+.uu-secondary{background:#fff;color:#414651;box-shadow:inset 0 0 0 1px #D5D7DA,inset 0 -2px 0 0 rgba(10,13,18,.05),0 1px 2px rgba(10,13,18,.05)}
+.uu-secondary:hover{background:#FAFAFA;color:#252B37}
+.uu-tertiary{background:transparent;color:#535862}
+.uu-tertiary:hover{background:#F5F5F5;color:#414651}
+.uu-on-dark{background:transparent;color:#E9D7FE}
+.uu-on-dark:hover{background:rgba(255,255,255,.1);color:#fff}
+.uu-btn:disabled{cursor:not-allowed;background:#F5F5F5;color:#A4A7AE;box-shadow:inset 0 0 0 1px #E9EAEB;border-color:transparent}
+.uu-on-dark:disabled{background:transparent;color:rgba(233,215,254,.45);box-shadow:none}
+/* Visible at rest: kiosks are touch-only, so nothing can rely on hover to look tappable. */
+.uu-dark-solid{background:rgba(255,255,255,.14);color:#fff;box-shadow:none}
+.uu-dark-solid:hover{background:rgba(255,255,255,.2);color:#fff}
+.uu-dark-solid:active{background:rgba(255,255,255,.28)}
+.uu-dark-solid:disabled{background:rgba(255,255,255,.06);color:rgba(255,255,255,.5);box-shadow:none}
+.uu-light{background:#fff;color:var(--brand,#53389E);box-shadow:inset 0 0 0 1px rgba(10,13,18,.12),inset 0 -2px 0 0 rgba(10,13,18,.05),0 1px 2px rgba(10,13,18,.05)}
+.uu-light:hover{background:#F5F5F5;color:var(--brand,#42307D)}
+.uu-light:disabled{background:rgba(255,255,255,.16);color:rgba(255,255,255,.6);box-shadow:none}
+.staff-gear{opacity:.6;transition:opacity .1s linear,background-color .1s linear}
+.staff-gear:hover,.staff-gear:focus-visible{opacity:1;background:rgba(255,255,255,.12)}
+.staff-gear:focus-visible{outline:2px solid #9E77ED;outline-offset:2px}
+.uu-row{transition:background-color .1s linear,box-shadow .1s linear}
+.uu-row-dark{transition:background-color .1s linear}
+.uu-key{transition:background-color .08s linear}
+.name-field::placeholder{text-transform:none;color:#717680;font-weight:400}
+.uu-key:hover{background:rgba(255,255,255,.2) !important}
+.uu-key:active{background:rgba(255,255,255,.3) !important}
+.uu-row-dark:hover{background:rgba(255,255,255,.18) !important}
+.uu-row:hover{background:#FAFAFA}
+.uu-row:disabled{cursor:not-allowed;opacity:.5}
+.uu-link{background:transparent;color:#6941C6;padding:0}
+.uu-link:hover{color:#53389E}
+@media (max-width: 900px), (max-height: 560px){.signin-aside{display:none !important}}
+.st-kb{flex:1 1 360px;min-height:240px;display:flex;align-items:center;padding:24px clamp(16px, 3vw, 32px);background:#F5F5F5;box-shadow:inset 1px 0 0 #E9EAEB}
+.st-key{transition:background-color .08s linear}
+.st-key:active{background:#E9EAEB !important}
+.st-key-primary:active{background:#6941C6 !important}
+@media (max-width: 900px), (max-height: 560px){.st-kb{position:fixed;left:0;right:0;bottom:0;z-index:2;min-height:0;box-shadow:0 -12px 24px -4px rgba(10,13,18,.14)}.st-sec-kb{padding-bottom:360px !important}}
+.uu-input:focus{outline:none;box-shadow:inset 0 0 0 2px var(--brand-400, #9E77ED),0 1px 2px rgba(10,13,18,.05)}
+.glide{animation:glide 2.4s ease-in-out infinite}
+@keyframes glide{0%{transform:translateX(-30px) rotate(-6deg);opacity:0}15%{opacity:1}60%{transform:translateX(70px) rotate(0);opacity:1}85%,100%{transform:translateX(70px);opacity:0}}
+.ripple{animation:ripple 2.4s ease-out infinite}
+@keyframes ripple{0%,55%{transform:scale(.6);opacity:0}65%{opacity:.55}100%{transform:scale(1.5);opacity:0}}
+.spin{animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.fade{animation:fadeUp .25s ease-out both}
+@keyframes fadeUp{from{opacity:.001;transform:translateY(8px)}to{opacity:1;transform:none}}
+.ad-slide{transition:opacity .6s ease, transform .6s ease}
+@media (prefers-reduced-motion: reduce){.glide,.ripple,.spin,.fade{animation:none}.ad-slide{transition:none}}
+/* Prototype chrome: deliberately "dev tools", not the design system, so it never reads as part of the kiosk. */
+.proto{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace !important;background:#1E1E1E !important;color:#CCCCCC !important;border-radius:4px !important;box-shadow:0 0 0 1px #3C3C3C,0 8px 24px rgba(0,0,0,.4) !important}
+.proto *{font-family:inherit !important;letter-spacing:0 !important;font-size:12px !important;line-height:18px !important;border-color:#3C3C3C !important}
+.proto *:not([role=radio]):not([role=switch]){color:#CCCCCC !important;background-color:transparent !important;box-shadow:none !important;border-radius:2px !important}
+.proto div[style*="font-weight: 600"],.proto span[style*="font-weight: 600"]{color:#FFFFFF !important;text-transform:lowercase !important}
+.proto span[style*="width: 32px"]{display:none !important}
+.proto .uu-row:hover,.proto .uu-btn:hover{background-color:#2D2D2D !important}
+.proto .uu-btn{border:1px solid #555555 !important;height:26px !important;padding:0 8px !important}
+.proto [role=switch]{width:32px !important;height:16px !important;padding:2px !important;border-radius:2px !important;background-color:#444444 !important;box-shadow:none !important}
+.proto [role=switch][aria-checked=true]{background-color:#0E7AFE !important}
+.proto [role=switch][role=switch] > span{width:12px !important;height:12px !important;border-radius:1px !important;background-color:#EEEEEE !important;box-shadow:none !important}
+.proto [role=radio]{border-radius:2px !important}
+.proto-trigger{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace !important;font-size:11px !important;letter-spacing:0 !important}
+</style>
+</helmet>
+<div style="--brand: {{ui.brand}}; --brand-solid: {{ui.brandSolid}}; --on-brand-sub: color-mix(in srgb, var(--brand) 12%, #FFFFFF); --on-brand-muted: color-mix(in srgb, var(--brand) 22%, #FFFFFF); --brand-50: color-mix(in srgb, var(--brand) 5%, #FFFFFF); --brand-100: color-mix(in srgb, var(--brand) 10%, #FFFFFF); --brand-200: color-mix(in srgb, var(--brand) 20%, #FFFFFF); --brand-400: color-mix(in srgb, var(--brand-solid) 65%, #FFFFFF);  height: 100vh; overflow: hidden; display: flex; flex-direction: column; position: relative; background-color: {{ui.bg}}; background-image: radial-gradient(130% 110% at 0% 0%, color-mix(in srgb, var(--brand) 90%, #FFFFFF) 0%, var(--brand) 48%, color-mix(in srgb, var(--brand) 86%, #000000) 100%); color: #181D27; font-family: Inter, ui-sans-serif, system-ui, sans-serif;">
+
+  <header style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: clamp(12px, 2.5vh, 20px) clamp(16px, 3vw, 32px) 8px;">
+    <div style="display: flex; align-items: center; gap: 12px; min-width: 0;">
+      <!-- Untitled UI Avatar (xl, 56px): initials now; swaps to the school logo image when one is provided. -->
+      <span style="position: relative; width: 56px; height: 56px; border-radius: 9999px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #F5F5F5; color: #717680; font-size: 20px; line-height: 30px; font-weight: 600; flex-shrink: 0;">
+        <sc-if value="{{ui.isClemson}}" hint-placeholder-val="{{ false }}"><img src="assets/5173a05283e5ddeb6c5eba5c88922665.png" alt="Clemson University" style="width: 100%; height: 100%; object-fit: cover;"></sc-if>
+        <sc-if value="{{ui.isEmory}}" hint-placeholder-val="{{ false }}"><img src="assets/df8bfe4204c1d40d54400bdd9dab3060.jpg" alt="Emory University" style="width: 100%; height: 100%; object-fit: cover;"></sc-if>
+        <sc-if value="{{ui.noLogo}}" hint-placeholder-val="{{ true }}"><span aria-hidden="true">{{ui.initials}}</span></sc-if>
+        <span aria-hidden="true" style="position: absolute; inset: 0; border-radius: 9999px; box-shadow: inset 0 0 0 1px rgba(10,13,18,.08);"></span>
+      </span>
+      <div style="min-width: 0;">
+        <div style="font-size: 18px; line-height: 28px; font-weight: 600; color: {{ui.title}};">{{ui.campus}}</div>
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 16px; line-height: 24px; color: {{ui.sub}};">
+          <span style="width: 8px; height: 8px; border-radius: 9999px; background: {{ui.dot}};" aria-hidden="true"></span>{{ui.mailroom}} · {{ui.status}}
+        </div>
+      </div>
+    </div>
+    <!-- Ambient info: weather (off by default, set in Kiosk admin) + clock. Quiet, top-right, never competes with the headline. -->
+    <div style="display: flex; align-items: center; gap: 32px; flex-shrink: 0; text-align: right; color: {{ui.title}};">
+      <sc-if value="{{clk.weather}}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; align-items: center; gap: 8px;" aria-label="{{clk.wxLabel}}">
+          <svg class="i" width="32" height="32" viewBox="0 0 24 24" style="color: {{ui.title}}; stroke-width: 1.75;" aria-hidden="true"><path d="M12 2v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="M20 12h2"></path><path d="m19.07 4.93-1.41 1.41"></path><path d="M15.95 12.64A4 4 0 0 0 8.02 11.5"></path><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"></path></svg>
+          <div style="text-align: left;">
+            <div style="font-size: 20px; line-height: 30px; font-weight: 600; font-variant-numeric: tabular-nums;">{{clk.temp}}</div>
+            <div style="font-size: 14px; line-height: 20px; color: {{ui.sub}}; white-space: nowrap;">{{clk.cond}}</div>
+          </div>
+        </div>
+      </sc-if>
+      <div>
+        <div style="font-size: 20px; line-height: 30px; font-weight: 600; font-variant-numeric: tabular-nums;">{{clk.time}}</div>
+        <div style="font-size: 14px; line-height: 20px; color: {{ui.sub}}; white-space: nowrap;">{{clk.date}}</div>
+      </div>
+    </div>
+  </header>
+
+  <main style="flex: 1; display: flex; flex-direction: column; min-height: 0; overflow-y: auto; overflow-x: hidden;">
+
+    <!-- Welcome: tap your ID -->
+    <sc-if value="{{v.welcome}}" hint-placeholder-val="{{ true }}">
+      <section class="fade" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px clamp(16px, 4vw, 48px);">
+        <div aria-hidden="true" style="position: relative; width: 340px; max-width: 100%; height: 156px; margin-bottom: clamp(12px, 4vh, 40px); transform: {{w.flip}};">
+          <div style="position: absolute; right: 8px; top: 12px; width: 92px; height: 132px; border-radius: 16px; background: rgba(255,255,255,.08); box-shadow: inset 0 0 0 1px rgba(255,255,255,.24); display: flex; align-items: center; justify-content: center; color: var(--on-brand-sub);">
+            <div class="ripple" style="position: absolute; inset: 0; border-radius: 16px; border: 3px solid rgba(255,255,255,.7);"></div>
+            <div class="ripple" style="position: absolute; inset: -12px; border-radius: 22px; border: 2px solid rgba(255,255,255,.3); animation-delay: .25s;"></div>
+            <svg class="i" width="42" height="42" viewBox="0 0 24 24" style="stroke-width: 1.75;"><path d="M6 8.32a7.43 7.43 0 0 1 0 7.36"></path><path d="M9.46 6.21a11.76 11.76 0 0 1 0 11.58"></path><path d="M12.91 4.1a15.91 15.91 0 0 1 .01 15.8"></path><path d="M16.37 2a20.16 20.16 0 0 1 0 20"></path></svg>
+          </div>
+          <div class="{{w.cardClass}}" style="position: absolute; left: 16px; top: 26px; width: 164px; height: 104px; border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 24px 48px -12px rgba(10,13,18,.35); transform: {{w.cardTransform}};">
+            <div style="height: 28px; background: {{ui.cardTop}}; display: flex; align-items: center; gap: 6px; padding: 0 10px;"><span style="width: 12px; height: 12px; border-radius: 3px; background: rgba(255,255,255,.7);"></span><span style="height: 6px; width: 56px; border-radius: 4px; background: rgba(255,255,255,.5);"></span></div>
+            <div style="display: flex; gap: 10px; padding: 10px;"><div style="width: 40px; height: 48px; border-radius: 6px; background: #E9EAEB;"></div><div style="flex: 1; padding-top: 4px; display: flex; flex-direction: column; gap: 8px;"><div style="height: 8px; border-radius: 4px; background: #E9EAEB;"></div><div style="height: 8px; width: 66%; border-radius: 4px; background: #E9EAEB;"></div><div style="height: 8px; width: 50%; border-radius: 4px; background: #F5F5F5;"></div></div></div>
+          </div>
+        </div>
+        <sc-if value="{{w.reading}}" hint-placeholder-val="{{ false }}">
+          <!-- Transient status, not a headline: small, and in a box the hero's height so nothing shifts -->
+          <p role="status" aria-live="polite" style="margin: 0; min-height: 72px; display: flex; align-items: center; justify-content: center; gap: 14px; font-size: 36px; line-height: 44px; font-weight: 500; letter-spacing: -0.72px; color: var(--on-brand-sub);">
+            <svg class="i spin" width="32" height="32" viewBox="0 0 24 24" aria-hidden="true" style="color: var(--on-brand-muted);"><path d="M21 12a9 9 0 1 1-6.22-8.56"></path></svg>Reading your ID…
+          </p>
+          
+        </sc-if>
+        <sc-if value="{{w.idle}}" hint-placeholder-val="{{ true }}">
+          <h1 style="margin: 0; font-size: 60px; line-height: 1.2; font-weight: 600; letter-spacing: -1.2px; color: #fff; text-wrap: balance;">Tap your ID to check in</h1>
+          <p style="margin: 20px 0 0; font-size: clamp(18px, 2vw, 24px); line-height: 1.4; color: var(--on-brand-sub);">Hold your ID card or phone wallet to the reader</p>
+        </sc-if>
+        <!-- Fallback actions: same button type, one row. Guest check-in is the short one (people who aren't in the system). -->
+        <div style="margin-top: clamp(16px, 4vh, 40px); display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;">
+          <button class="uu-btn uu-dark-solid" onClick="{{toSearch}}" disabled="{{w.reading}}" style="height: 60px; padding: 0 28px; font-size: 18px; line-height: 28px; font-weight: 600;">
+            <svg class="i" width="20" height="20" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>{{ui.findAlt}}
+          </button>
+          <button class="uu-btn uu-dark-solid" onClick="{{toGuest}}" disabled="{{w.reading}}" style="height: 60px; padding: 0 28px; font-size: 18px; line-height: 28px; font-weight: 600;">
+            <svg class="i" width="20" height="20" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>Guest check-in
+          </button>
+        </div>
+      </section>
+    </sc-if>
+
+    <!-- Reader down: search becomes the main path -->
+    <sc-if value="{{v.readerDown}}" hint-placeholder-val="{{ false }}">
+      <section class="fade" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px clamp(16px, 4vw, 48px);">
+        <h1 style="margin: 0; font-size: 60px; line-height: 1.2; font-weight: 600; letter-spacing: -1.2px; color: #fff; text-wrap: balance;">{{ui.findHeading}}</h1>
+        <p style="margin: 20px 0 0; max-width: 640px; font-size: clamp(18px, 2vw, 22px); line-height: 1.45; color: var(--on-brand-sub); text-wrap: balance;">The ID reader isn’t working right now. Staff will check your ID at the window.</p>
+        <button class="uu-btn uu-secondary" onClick="{{toSearch}}" style="margin-top: 40px; height: 64px; padding: 0 32px 0 36px; font-size: 20px; line-height: 30px; color: var(--brand, #53389E);">
+          {{ui.findLabel}}<svg class="i" width="24" height="24" viewBox="0 0 24 24"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+        </button>
+      </section>
+    </sc-if>
+
+    <!-- Closed -->
+    <sc-if value="{{v.closed}}" hint-placeholder-val="{{ false }}">
+      <section class="fade" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px clamp(16px, 4vw, 48px);">
+        <span style="width: 96px; height: 96px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,.1); box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); color: #fff;">
+          <svg class="i" width="44" height="44" viewBox="0 0 24 24" style="stroke-width: 1.75;"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+        </span>
+        <h1 style="margin: 32px 0 0; font-size: 60px; line-height: 1.2; font-weight: 600; letter-spacing: -1.2px; color: #fff;">Closed</h1>
+        <p style="margin: 20px 0 0; font-size: clamp(18px, 2vw, 24px); line-height: 1.4; color: var(--on-brand-sub);">{{ui.opens}}</p>
+      </section>
+    </sc-if>
+
+    <!-- Offline -->
+    <sc-if value="{{v.offline}}" hint-placeholder-val="{{ false }}">
+      <section class="fade" role="alert" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px clamp(16px, 4vw, 48px);">
+        <span style="width: 112px; height: 112px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,.1); box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); color: #fff;">
+          <svg class="i" width="52" height="52" viewBox="0 0 24 24" style="stroke-width: 1.75;"><path d="M12 20h.01"></path><path d="M8.5 16.43a5 5 0 0 1 7 0"></path><path d="M5 12.86a10 10 0 0 1 5.17-2.69"></path><path d="M19 12.86a10 10 0 0 0-2-1.52"></path><path d="M2 8.82a15 15 0 0 1 4.18-2.64"></path><path d="M22 8.82a15 15 0 0 0-11.29-3.76"></path><path d="m2 2 20 20"></path></svg>
+        </span>
+        <h1 style="margin: 32px 0 0; font-size: 60px; line-height: 1.2; font-weight: 600; letter-spacing: -1.2px; color: #fff; text-wrap: balance;">Check-in is temporarily unavailable</h1>
+        <p style="margin: 12px 0 0; max-width: 620px; font-size: clamp(18px, 2vw, 22px); line-height: 1.45; color: var(--on-brand-sub); text-wrap: balance;">Please line up at the window. Staff will help you there.</p>
+        <span style="margin-top: 28px; display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px 6px 10px; border-radius: 9999px; background: rgba(255,255,255,.1); box-shadow: inset 0 0 0 1px rgba(255,255,255,.24); color: #fff; font-size: 16px; line-height: 24px; font-weight: 500;">
+          <svg class="i" width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path></svg>Already have a number? It’s still valid.
+        </span>
+      </section>
+    </sc-if>
+
+    <!-- Message: unknown ID or nothing ready -->
+    <sc-if value="{{v.message}}" hint-placeholder-val="{{ false }}">
+      <section class="fade" role="alert" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px clamp(16px, 4vw, 48px);">
+        <sc-if value="{{m.unknown}}" hint-placeholder-val="{{ true }}">
+          <span style="width: 112px; height: 112px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,.1); box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); color: #fff;">
+            <svg class="i" width="52" height="52" viewBox="0 0 24 24" style="stroke-width: 1.75;"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v4"></path><path d="M12 16h.01"></path></svg>
+          </span>
+        </sc-if>
+        <sc-if value="{{m.none}}" hint-placeholder-val="{{ false }}">
+          <span style="width: 112px; height: 112px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,.1); box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); color: #fff;">
+            <svg class="i" width="52" height="52" viewBox="0 0 24 24" style="stroke-width: 1.75;"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><path d="M3.27 6.96 12 12.01l8.73-5.05"></path><path d="M12 22.08V12"></path></svg>
+          </span>
+        </sc-if>
+        <h1 style="margin: 40px 0 0; font-size: 60px; line-height: 1.2; font-weight: 600; letter-spacing: -1.2px; color: #fff; text-wrap: balance;">{{m.title}}</h1>
+        <p style="margin: 12px 0 0; max-width: 620px; font-size: clamp(18px, 2vw, 22px); line-height: 1.45; color: var(--on-brand-sub); text-wrap: balance;">{{m.body}}</p>
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-top: 40px;">
+          <sc-if value="{{m.unknown}}" hint-placeholder-val="{{ true }}">
+            <button class="uu-btn uu-dark-solid" onClick="{{toSearch}}" style="height: 64px; padding: 0 28px; font-size: 18px; line-height: 28px;">
+              <svg class="i" width="22" height="22" viewBox="0 0 24 24" style="color: var(--on-brand-muted);"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>{{ui.findLabel}}
+            </button>
+          </sc-if>
+          <button class="uu-btn uu-light" onClick="{{done}}" style="height: 64px; padding: 0 56px; font-size: 18px; line-height: 28px;">Done</button>
+        </div>
+        <p style="margin: 24px 0 0; font-size: 16px; line-height: 24px; color: var(--on-brand-muted); font-variant-numeric: tabular-nums;">Returning to start in {{left}}s</p>
+      </section>
+    </sc-if>
+
+    <!-- Search by name. Kiosk pattern: the field sits directly on the keyboard (eyes and hands in one place, low for reach);
+         results get their own full-height column so they are never covered. Portrait: results above, field + keyboard at the bottom. -->
+    <sc-if value="{{v.search}}" hint-placeholder-val="{{ false }}">
+      <section class="fade" style="flex: 1; min-height: 0; width: 100%; max-width: 1240px; margin: 0 auto; padding: clamp(16px, 4vh, 32px) clamp(16px, 3vw, 32px) clamp(16px, 3vh, 24px); display: flex; flex-direction: column; gap: clamp(16px, 3vh, 24px);">
+        <sc-if value="{{s.intro}}" hint-placeholder-val="{{ true }}">
+          <div style="flex-shrink: 0;">
+            <h1 style="margin: 0; font-size: clamp(28px, 3.2vw, 36px); line-height: 1.2; font-weight: 600; letter-spacing: -0.02em; color: #fff;">{{s.introTitle}}</h1>
+            <p style="margin: 6px 0 0; font-size: 18px; line-height: 28px; color: var(--on-brand-sub);">{{s.introSub}}</p>
+          </div>
+        </sc-if>
+        <div style="flex: 1; min-height: 0; display: flex; flex-wrap: wrap; align-items: stretch; gap: 20px clamp(24px, 3vw, 48px);">
+
+          <!-- Results (name search only; student ID goes straight to verification) -->
+          <sc-if value="{{ui.byName}}" hint-placeholder-val="{{ true }}">
+          <div aria-label="Matching names" style="flex: 1 1 340px; min-width: 0; min-height: 200px; display: flex; flex-direction: column;">
+            <div style="flex: 1 1 0; min-height: 0; overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; gap: 10px; padding-right: 4px;">
+              <sc-if value="{{s.panel}}" hint-placeholder-val="{{ true }}">
+                <div style="flex: 1; min-height: 160px; border-radius: 16px; border: 1.5px dashed rgba(255,255,255,.25); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; padding: 24px;">
+                  <span style="width: 48px; height: 48px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,.1); color: #fff;"><svg class="i" width="22" height="22" viewBox="0 0 24 24"><path d="{{s.panelIcon}}"></path></svg></span>
+                  <div aria-live="polite"><div style="font-size: 18px; line-height: 28px; font-weight: 600; color: #fff;">{{s.panelTitle}}</div><div style="max-width: 320px; font-size: 16px; line-height: 24px; color: var(--on-brand-sub);">{{s.panelSub}}</div></div>
+                </div>
+              </sc-if>
+              <sc-if value="{{s.hasCount}}" hint-placeholder-val="{{ false }}">
+            <p aria-live="polite" style="margin: 0; font-size: 14px; line-height: 20px; color: var(--on-brand-muted); flex-shrink: 0;">{{s.countText}}</p>
+          </sc-if>
+          <sc-for list="{{s.results}}" as="r" hint-placeholder-count="2">
+            <button class="uu-row-dark uu-focus" onClick="{{r.pick}}" aria-label="{{r.aria}}" style="width: 100%; min-height: 72px; flex-shrink: 0; text-align: left; display: flex; align-items: center; gap: 16px; padding: 12px 20px; border: 0; border-radius: 12px; background: rgba(255,255,255,.1); box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); font-family: inherit; cursor: pointer;">
+              <span style="width: 48px; height: 48px; border-radius: 9999px; background: rgba(255,255,255,.14); box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 600; color: #fff; flex-shrink: 0;">{{r.initials}}</span>
+              <span style="flex: 1; min-width: 0;">
+                <span style="display: block; font-size: 18px; line-height: 28px; font-weight: 600; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{r.name}}</span>
+                <span style="display: block; font-size: 14px; line-height: 20px; color: var(--on-brand-sub);">{{r.sub}}</span>
+              </span>
+              <svg class="i" width="22" height="22" viewBox="0 0 24 24" style="color: var(--on-brand-muted);"><path d="m9 18 6-6-6-6"></path></svg>
+            </button>
+          </sc-for>
+            </div>
+          </div>
+          </sc-if>
+
+          <!-- Field sits directly on the keyboard -->
+          <div style="flex: 1 1 460px; max-width: 620px; min-width: 0; align-self: center; margin: 0 auto; display: flex; flex-direction: column; gap: 12px;">
+            <div style="position: relative;">
+              <label for="name-search" style="display: block; font-size: 16px; line-height: 24px; font-weight: 500; color: var(--on-brand-sub); margin-bottom: 8px;">{{s.fieldLabel}}</label>
+              <svg class="i" width="24" height="24" viewBox="0 0 24 24" style="position: absolute; left: 20px; bottom: 20px; color: var(--brand-solid);"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
+              <input id="name-search" class="name-field" value="{{q}}" onChange="{{onQ}}" inputmode="none" autofocus="" autocomplete="off" spellcheck="false" placeholder="{{s.placeholder}}" style="width: 100%; height: 64px; border: 0; border-radius: 12px; background: #fff; box-shadow: inset 0 0 0 2px var(--brand-400), 0 0 0 4px color-mix(in srgb, var(--brand-solid) 35%, transparent); padding: 0 64px 0 56px; font-family: inherit; font-size: 22px; line-height: 30px; font-weight: 500; color: #181D27; caret-color: var(--brand-solid); text-transform: {{s.tt}}; outline: none;">
+              <sc-if value="{{s.hasQ}}" hint-placeholder-val="{{ false }}">
+              <button class="uu-btn uu-tertiary" onClick="{{clearQ}}" aria-label="Clear name" style="position: absolute; right: 8px; bottom: 8px; width: 48px; height: 48px; padding: 0; border-radius: 9999px;"><svg class="i" width="20" height="20" viewBox="0 0 24 24"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+            </sc-if>
+            </div>
+            <div role="group" aria-label="Keyboard" style="display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); gap: 8px 6px; padding: 12px; border-radius: 16px; background: rgba(255,255,255,.06); box-shadow: inset 0 0 0 1px rgba(255,255,255,.12);">
+            <sc-for list="{{s.kb}}" as="k" hint-placeholder-count="30">
+              <sc-if value="{{k.spacer}}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="grid-column: span 1;"></span></sc-if>
+              <sc-if value="{{k.key}}" hint-placeholder-val="{{ true }}">
+                <button class="uu-key uu-focus" onClick="{{k.press}}" disabled="{{k.disabled}}" aria-label="{{k.aria}}" style="grid-column: span {{k.span}}; height: clamp(46px, 7vh, 60px); border: 0; border-radius: 10px; background: {{k.bg}}; box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); color: {{k.fg}}; font-family: inherit; font-size: {{k.fs}}; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0;">
+                  <sc-if value="{{k.isBack}}" hint-placeholder-val="{{ false }}"><svg class="i" width="24" height="24" viewBox="0 0 24 24"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path><path d="m18 9-6 6"></path><path d="m12 9 6 6"></path></svg></sc-if>
+                  <sc-if value="{{k.isText}}" hint-placeholder-val="{{ true }}">{{k.label}}</sc-if>
+                </button>
+              </sc-if>
+            </sc-for>
+          </div>
+          </div>
+        </div>
+      </section>
+    </sc-if>
+
+    <!-- Guest check-in: first and last name only. No code check, no package list; staff sort it out at the window. -->
+    <sc-if value="{{v.guest}}" hint-placeholder-val="{{ false }}">
+      <section class="fade" style="flex: 1; min-height: 0; width: 100%; max-width: 1240px; margin: 0 auto; padding: clamp(16px, 4vh, 32px) clamp(16px, 3vw, 32px) clamp(16px, 3vh, 24px); display: flex; flex-direction: column; justify-content: center; gap: clamp(20px, 3vh, 32px);">
+        <div>
+          <h1 style="margin: 0; font-size: clamp(28px, 3.2vw, 36px); line-height: 1.2; font-weight: 600; letter-spacing: -0.02em; color: #fff;">Check in as a guest</h1>
+          <p style="margin: 6px 0 0; font-size: 18px; line-height: 28px; color: var(--on-brand-sub);">Picking up for a student? Type your name. Staff will check your ID and find the packages at the window.</p>
+        </div>
+        <!-- Fields and keyboard share a top edge; Check in sits at the keyboard's bottom edge -->
+        <div style="display: flex; flex-wrap: wrap; align-items: stretch; gap: 24px clamp(24px, 3vw, 48px);">
+        <div style="flex: 1 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+          <sc-for list="{{gv.fields}}" as="f" hint-placeholder-count="2">
+            <div>
+              <label for="{{f.id}}" style="display: block; font-size: 16px; line-height: 24px; font-weight: 500; color: var(--on-brand-sub); margin-bottom: 8px;">{{f.label}}</label>
+              <input id="{{f.id}}" class="name-field" value="{{f.value}}" onFocus="{{f.focus}}" onClick="{{f.focus}}" readonly="" inputmode="none" autocomplete="off" spellcheck="false" placeholder="{{f.label}}" style="width: 100%; height: 64px; border: 0; border-radius: 12px; background: #fff; box-shadow: {{f.ring}}; padding: 0 20px; box-sizing: border-box; font-family: inherit; font-size: 22px; font-weight: 600; color: #181D27; text-transform: capitalize; outline: none; cursor: pointer;">
+            </div>
+          </sc-for>
+          <button class="uu-btn uu-light" onClick="{{gv.go}}" disabled="{{gv.cannot}}" style="margin-top: auto; width: 100%; height: 64px; font-size: 18px; line-height: 28px;">Check in</button>
+        </div>
+        <div role="group" aria-label="Keyboard" style="flex: 1 1 460px; max-width: 620px; min-width: 0; align-content: space-between; display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); gap: 8px 6px; padding: 12px; border-radius: 16px; background: rgba(255,255,255,.06); box-shadow: inset 0 0 0 1px rgba(255,255,255,.12);">
+          <sc-for list="{{gv.kb}}" as="k" hint-placeholder-count="30">
+            <sc-if value="{{k.spacer}}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="grid-column: span 1;"></span></sc-if>
+            <sc-if value="{{k.key}}" hint-placeholder-val="{{ true }}">
+              <button class="uu-key uu-focus" onClick="{{k.press}}" aria-label="{{k.aria}}" style="grid-column: span {{k.span}}; height: clamp(46px, 7vh, 60px); border: 0; border-radius: 10px; background: {{k.bg}}; box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); color: #fff; font-family: inherit; font-size: {{k.fs}}; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                <sc-if value="{{k.isBack}}" hint-placeholder-val="{{ false }}"><svg class="i" width="24" height="24" viewBox="0 0 24 24"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path><path d="m18 9-6 6"></path><path d="m12 9 6 6"></path></svg></sc-if>
+                <sc-if value="{{k.isText}}" hint-placeholder-val="{{ true }}">{{k.label}}</sc-if>
+              </button>
+            </sc-if>
+          </sc-for>
+        </div>
+        </div>
+      </section>
+    </sc-if>
+
+    <!-- Guest checked in: number and wait only. -->
+    <sc-if value="{{v.guestIn}}" hint-placeholder-val="{{ false }}">
+      <section class="fade" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px clamp(16px, 4vw, 48px);">
+        <span style="width: 40px; height: 40px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; background: #17B26A; box-shadow: 0 0 0 4px rgba(23,178,106,.25); color: #fff;"><svg class="i" width="24" height="24" viewBox="0 0 24 24" style="stroke-width: 2.5;"><path d="M20 6 9 17l-5-5"></path></svg></span>
+        <h1 style="margin: 20px 0 0; font-size: clamp(24px, 2.6vw, 30px); line-height: 1.3; font-weight: 600; color: #fff;">You’re checked in, {{gi.first}}</h1>
+        <div aria-label="Your number {{gi.queue}}" style="margin-top: 8px; font-size: clamp(64px, min(9vw, 13vh), 112px); line-height: 1; font-weight: 600; letter-spacing: -0.03em; color: #fff; font-variant-numeric: tabular-nums;">{{gi.queue}}</div>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;">
+          <span style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 9999px; background: rgba(255,255,255,.12); box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); font-size: 16px; line-height: 24px; font-weight: 500; color: #fff;">{{gi.waitPill}}</span>
+          <span style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px 6px 10px; border-radius: 9999px; background: #FFFAEB; box-shadow: inset 0 0 0 1px #FEDF89; font-size: 16px; line-height: 24px; font-weight: 600; color: #B54708;"><svg class="i" width="18" height="18" viewBox="0 0 24 24" style="color: #DC6803;"><rect x="2" y="5" width="20" height="14" rx="2"></rect><circle cx="9" cy="11" r="2"></circle><path d="M6.17 15a3 3 0 0 1 5.66 0"></path><path d="M16 10h2"></path><path d="M16 14h2"></path></svg>Bring your ID to the window</span>
+        </div>
+        <p style="margin: 16px 0 0; max-width: 560px; font-size: 18px; line-height: 28px; color: var(--on-brand-sub);"><span style="font-weight: 600; color: #fff;">Watch the screen by the window.</span> When your number is called, tell staff who you’re picking up for.</p>
+        <button class="uu-btn uu-light" onClick="{{done}}" style="margin-top: 32px; height: 64px; padding: 0 56px; font-size: 18px; line-height: 28px;">Done</button>
+        <p style="margin: 16px 0 0; font-size: 16px; line-height: 24px; color: var(--on-brand-muted); font-variant-numeric: tabular-nums;">Returning to start in {{left}}s</p>
+      </section>
+    </sc-if>
+
+    <!-- Verify identity with a one-time code -->
+    <sc-if value="{{v.verify}}" hint-placeholder-val="{{ false }}">
+      <section class="fade" style="flex: 1; width: 100%; max-width: {{vf.maxW}}; margin: 0 auto; padding: 8px clamp(16px, 3vw, 32px) 24px; display: flex; flex-direction: column; justify-content: center;">
+
+        <sc-if value="{{vf.choose}}" hint-placeholder-val="{{ true }}">
+          <span style="margin-top: 16px; width: 56px; height: 56px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,.1); box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); color: #fff;">
+            <svg class="i" width="26" height="26" viewBox="0 0 24 24"><path d="M5 11h14a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2z"></path><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          </span>
+          <h1 style="margin: 24px 0 0; font-size: clamp(30px, 3.6vw, 40px); line-height: 1.2; font-weight: 600; letter-spacing: -0.02em; color: #fff;">Confirm it’s you, {{vf.name}}</h1>
+          <p style="margin: 8px 0 0; font-size: 18px; line-height: 28px; color: var(--on-brand-sub);">{{vf.chooseText}}</p>
+          <div role="radiogroup" aria-label="Send code by" style="margin-top: 24px; display: flex; flex-direction: column; gap: 12px;">
+            <sc-for list="{{vf.methods}}" as="o" hint-placeholder-count="2">
+              <button class="uu-focus" role="radio" aria-checked="{{o.on}}" onClick="{{o.pick}}" style="width: 100%; min-height: 80px; display: flex; align-items: center; gap: 16px; padding: 16px 20px; border: 0; border-radius: 12px; background: {{o.bg}}; box-shadow: inset 0 0 0 {{o.ringW}} {{o.ring}}, 0 1px 2px rgba(10,13,18,.05); text-align: left; font-family: inherit; cursor: pointer;">
+                <span style="width: 48px; height: 48px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: {{o.iconBg}}; box-shadow: inset 0 0 0 1px {{o.iconRing}}; color: {{o.iconFg}}; flex-shrink: 0;">
+                  <svg class="i" width="22" height="22" viewBox="0 0 24 24"><path d="{{o.icon}}"></path></svg>
+                </span>
+                <span style="flex: 1; min-width: 0;">
+                  <span style="display: block; font-size: 18px; line-height: 28px; font-weight: 600; color: {{o.titleFg}};">{{o.title}}</span>
+                  <span style="display: block; font-size: 16px; line-height: 24px; color: {{o.subFg}};">{{o.dest}}</span>
+                </span>
+                <span aria-hidden="true" style="width: 24px; height: 24px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; background: {{o.radioBg}}; box-shadow: inset 0 0 0 1px {{o.radioBd}}; flex-shrink: 0;"><span style="width: 8px; height: 8px; border-radius: 9999px; background: {{o.dot}};"></span></span>
+              </button>
+            </sc-for>
+          </div>
+          <button class="uu-btn uu-light" onClick="{{vf.send}}" style="margin-top: 24px; width: 100%; height: 64px; font-size: 18px; line-height: 28px;">Send code</button>
+          <p style="margin: 16px 0 0; font-size: 14px; line-height: 20px; color: var(--on-brand-muted);">Don’t have access to these? See staff at the window with your ID.</p>
+        </sc-if>
+
+        <sc-if value="{{vf.enter}}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 24px clamp(24px, 4vw, 64px);">
+            <div style="flex: 1 1 340px; min-width: 0;">
+              <span style="margin-top: 16px; width: 56px; height: 56px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,.1); box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); color: #fff;">
+            <svg class="i" width="26" height="26" viewBox="0 0 24 24"><path d="{{vf.icon}}"></path></svg>
+          </span>
+              <h1 style="margin: 24px 0 0; font-size: clamp(30px, 3.6vw, 40px); line-height: 1.2; font-weight: 600; letter-spacing: -0.02em; color: #fff;">Enter your code</h1>
+              <p style="margin: 8px 0 0; font-size: 18px; line-height: 28px; color: var(--on-brand-sub);">We sent a 6-digit code to <span style="font-weight: 600; color: #fff;">{{vf.dest}}</span>. It expires in 10 minutes.</p>
+              <div id="otp-label" style="margin-top: 24px; margin-bottom: 8px; font-size: 16px; line-height: 24px; font-weight: 500; color: var(--on-brand-sub);">Verification code</div>
+              <div role="group" aria-labelledby="otp-label" aria-describedby="otp-msg" style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; max-width: 440px;">
+                <sc-for list="{{vf.slots}}" as="d" hint-placeholder-count="6">
+                  <div aria-label="{{d.aria}}" style="height: clamp(56px, 8vh, 72px); border-radius: 12px; background: #fff; box-shadow: inset 0 0 0 {{d.ringW}} {{d.ring}}, 0 1px 2px rgba(10,13,18,.05); display: flex; align-items: center; justify-content: center; font-family: ui-monospace, Menlo, monospace; font-size: clamp(26px, 4vh, 34px); font-weight: 600; color: #181D27;">{{d.v}}</div>
+                </sc-for>
+              </div>
+              <div id="otp-msg" style="min-height: 24px; margin-top: 8px;">
+            <sc-if value="{{vf.hasError}}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin: 0; font-size: 16px; line-height: 24px; color: #FDA29B;">{{vf.error}}</p></sc-if>
+            <sc-if value="{{vf.hasNotice}}" hint-placeholder-val="{{ false }}"><p role="status" style="margin: 0; font-size: 16px; line-height: 24px; color: #75E0A7;">{{vf.notice}}</p></sc-if>
+          </div>
+              <button class="uu-btn uu-light" onClick="{{vf.submit}}" disabled="{{vf.incomplete}}" style="margin-top: 16px; width: 100%; max-width: 440px; height: 64px; font-size: 18px; line-height: 28px;">Verify and check in</button>
+              <div style="margin-top: 12px; display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 8px;">
+            <button class="uu-btn uu-dark-solid" onClick="{{vf.resend}}" style="height: 48px; padding: 0 16px; font-size: 16px; line-height: 24px;">Resend code</button>
+            <sc-if value="{{vf.canSwitch}}" hint-placeholder-val="{{ false }}">
+              <button class="uu-btn uu-dark-solid" onClick="{{vf.switchMethod}}" style="height: 48px; padding: 0 16px; font-size: 16px; line-height: 24px;">{{vf.switchLabel}}</button>
+            </sc-if>
+          </div>
+              <p style="margin: 16px 0 0; padding: 8px 12px; border-radius: 8px; border: 1px dashed rgba(255,255,255,.3); font-size: 12px; line-height: 18px; color: var(--on-brand-muted); text-align: left; display: inline-block;">Prototype: the code is 482913</p>
+            </div>
+            <div style="flex: 0 1 320px; min-width: 260px;">
+              <div role="group" aria-label="Number keypad" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px;">
+                <sc-for list="{{vf.keys}}" as="k" hint-placeholder-count="12">
+                  <button class="uu-key uu-focus" onClick="{{k.press}}" aria-label="{{k.aria}}" style="height: clamp(56px, 9vh, 76px); border: 0; border-radius: 12px; background: {{k.bg}}; box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); color: #fff; font-family: inherit; font-size: {{k.fs}}; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; font-variant-numeric: tabular-nums;">
+                    <sc-if value="{{k.isBack}}" hint-placeholder-val="{{ false }}"><svg class="i" width="28" height="28" viewBox="0 0 24 24"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path><path d="m18 9-6 6"></path><path d="m12 9 6 6"></path></svg></sc-if>
+                    <sc-if value="{{k.isText}}" hint-placeholder-val="{{ true }}">{{k.label}}</sc-if>
+                  </button>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{vf.fail}}" hint-placeholder-val="{{ false }}">
+          <div role="alert" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding-top: 24px;">
+            <span style="width: 112px; height: 112px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,.1); box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); color: #fff;">
+              <svg class="i" width="52" height="52" viewBox="0 0 24 24" style="stroke-width: 1.75;"><path d="M5 11h14a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2z"></path><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            </span>
+            <h1 style="margin: 40px 0 0; font-size: 60px; line-height: 1.2; font-weight: 600; letter-spacing: -1.2px; color: #fff; text-wrap: balance;">{{vf.failTitle}}</h1>
+            <p style="margin: 12px 0 0; max-width: 560px; font-size: clamp(18px, 2vw, 22px); line-height: 1.45; color: var(--on-brand-sub); text-wrap: balance;">{{vf.failBody}}</p>
+            <button class="uu-btn uu-light" onClick="{{done}}" style="margin-top: 40px; height: 64px; padding: 0 56px; font-size: 18px; line-height: 28px;">Done</button>
+            <p style="margin: 24px 0 0; font-size: 16px; line-height: 24px; color: var(--on-brand-muted); font-variant-numeric: tabular-nums;">Returning to start in {{left}}s</p>
+          </div>
+        </sc-if>
+      </section>
+    </sc-if>
+
+    <!-- Who are you picking up for: only when someone authorized this student and has packages ready -->
+    <sc-if value="{{v.whoFor}}" hint-placeholder-val="{{ false }}">
+      <section class="fade" style="flex: 1; width: 100%; max-width: 720px; margin: 0 auto; padding: 8px clamp(16px, 3vw, 32px) 24px; display: flex; flex-direction: column; justify-content: center;">
+        <span style="margin-top: 16px; width: 56px; height: 56px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,.1); box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); color: #fff;">
+          <svg class="i" width="26" height="26" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        </span>
+        <h1 style="margin: 24px 0 0; font-size: clamp(30px, 3.6vw, 40px); line-height: 1.2; font-weight: 600; letter-spacing: -0.02em; color: #fff;">{{wf.title}}</h1>
+        <p style="margin: 8px 0 0; font-size: 18px; line-height: 28px; color: var(--on-brand-sub);">{{wf.sub}}</p>
+        <div role="group" aria-label="Picking up for" style="margin-top: 24px; display: flex; flex-direction: column; gap: 12px;">
+          <sc-for list="{{wf.rows}}" as="o" hint-placeholder-count="3">
+            <button class="uu-focus" role="checkbox" aria-checked="{{o.on}}" onClick="{{o.toggle}}" style="width: 100%; min-height: 80px; display: flex; align-items: center; gap: 16px; padding: 16px 20px; border: 0; border-radius: 12px; background: {{o.bg}}; box-shadow: inset 0 0 0 1px {{o.ring}}, 0 1px 2px rgba(10,13,18,.05); text-align: left; font-family: inherit; cursor: pointer;">
+              <span aria-hidden="true" style="width: 28px; height: 28px; border-radius: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: {{o.cbg}}; box-shadow: inset 0 0 0 1.5px {{o.cbd}}; color: #fff;"><sc-if value="{{o.on}}" hint-placeholder-val="{{ true }}"><svg class="i" width="18" height="18" viewBox="0 0 24 24" style="stroke-width: 3;"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></span>
+              <span style="flex: 1; min-width: 0;">
+                <span style="display: block; font-size: 18px; line-height: 28px; font-weight: 600; color: {{o.titleFg}};">{{o.title}}</span>
+                <span style="display: block; font-size: 16px; line-height: 24px; color: {{o.subFg}};">{{o.sub}}</span>
+              </span>
+            </button>
+          </sc-for>
+        </div>
+        <button class="uu-btn uu-light" onClick="{{wf.go}}" disabled="{{wf.cannot}}" style="margin-top: 24px; width: 100%; height: 64px; font-size: 18px; line-height: 28px;">Check in</button>
+        <p style="margin: 16px 0 0; font-size: 14px; line-height: 20px; color: var(--on-brand-muted);">Bring your ID. Staff will ask you to sign for everyone’s packages.</p>
+      </section>
+    </sc-if>
+
+    <!-- Checked in: purple band for the queue info, light sheet for the details -->
+    <sc-if value="{{v.checked}}" hint-placeholder-val="{{ false }}">
+      <section class="fade" onPointerDown="{{resetLeft}}" style="flex: 1; width: 100%; display: flex; flex-direction: column;">
+        <div style="width: 100%; max-width: 1200px; margin: 0 auto; padding: calc(clamp(8px, 2vh, 20px) + 26px) clamp(16px, 3vw, 40px) clamp(16px, 3vh, 28px); display: flex; flex-direction: column; gap: clamp(12px, 2.5vh, 20px);">
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <span style="width: 32px; height: 32px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; background: #17B26A; box-shadow: 0 0 0 4px rgba(23,178,106,.25); color: #fff; flex-shrink: 0;">
+              <svg class="i" width="20" height="20" viewBox="0 0 24 24" style="stroke-width: 2.5;"><path d="M20 6 9 17l-5-5"></path></svg>
+            </span>
+            <h1 style="margin: 0; font-size: clamp(20px, 2.2vw, 26px); line-height: 1.3; font-weight: 600; letter-spacing: -0.02em; color: #fff;">{{c.title}}</h1>
+          </div>
+          <div aria-live="polite" style="display: flex; flex-direction: column; gap: 6px; min-width: 0;">
+            <div aria-label="Your number {{c.queue}}" style="font-size: clamp(48px, min(7vw, 10vh), 88px); line-height: 1; font-weight: 600; letter-spacing: -0.03em; color: #fff; font-variant-numeric: tabular-nums;">{{c.queue}}</div>
+            <div style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px;">
+              <span style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px 6px 10px; border-radius: 9999px; background: rgba(255,255,255,.12); box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); font-size: 16px; line-height: 24px; font-weight: 500; color: #fff;"><svg class="i" width="18" height="18" viewBox="0 0 24 24" style="color: var(--on-brand-muted);"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>{{c.waitPill}}</span>
+              <span style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px 6px 10px; border-radius: 9999px; background: rgba(255,255,255,.12); box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); font-size: 16px; line-height: 24px; font-weight: 500; color: #fff;"><svg class="i" width="18" height="18" viewBox="0 0 24 24" style="color: var(--on-brand-muted);"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>{{c.aheadPill}}</span>
+              <!-- Name check-in (no ID tapped): staff must see an ID at the window -->
+              <sc-if value="{{c.via}}" hint-placeholder-val="{{ false }}"><span style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px 6px 10px; border-radius: 9999px; background: #FFFAEB; box-shadow: inset 0 0 0 1px #FEDF89; font-size: 16px; line-height: 24px; font-weight: 600; color: #B54708;"><svg class="i" width="18" height="18" viewBox="0 0 24 24" style="color: #DC6803;"><rect x="2" y="5" width="20" height="14" rx="2"></rect><circle cx="9" cy="11" r="2"></circle><path d="M6.17 15a3 3 0 0 1 5.66 0"></path><path d="M16 10h2"></path><path d="M16 14h2"></path></svg>Bring your ID to the window</span></sc-if>
+            </div>
+            <div style="margin-top: 10px; display: flex; align-items: flex-start; gap: 10px; font-size: 16px; line-height: 24px; color: var(--on-brand-sub);">
+              <svg class="i" width="20" height="20" viewBox="0 0 24 24" style="color: #fff; margin-top: 2px;"><rect x="2" y="3" width="20" height="14" rx="2"></rect><path d="M8 21h8"></path><path d="M12 17v4"></path></svg>
+              <span><span style="font-weight: 600; color: #fff;">Watch the screen by the window.</span> Your number shows up when your packages are ready.</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="flex: 1 0 auto; display: flex; flex-direction: column; background: #FDFDFD; border-radius: 20px 20px 0 0;">
+          <div style="width: 100%; max-width: 1200px; margin: 0 auto; flex: 1 0 auto; padding: clamp(12px, 2vh, 20px) clamp(16px, 3vw, 40px) clamp(16px, 3vh, 28px); display: flex; flex-direction: column; gap: clamp(10px, 1.6vh, 16px); color: #181D27;">
+          <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: stretch;">
+            <section style="flex: 999 1 360px; min-width: 0; height: {{c.listH}}; overflow-y: auto; overscroll-behavior: contain; border-radius: 12px; background: #fff; box-shadow: inset 0 0 0 1px #E9EAEB, 0 1px 2px rgba(10,13,18,.05); padding: 0 20px 8px; display: flex; flex-direction: column;">
+              <div style="position: sticky; top: 0; z-index: 1; flex-shrink: 0; display: flex; align-items: center; gap: 8px; padding: 16px 0 10px; background: #fff; border-bottom: 1px solid #E9EAEB;">
+                <h2 style="margin: 0; font-size: 18px; line-height: 28px; font-weight: 600;">{{c.listTitle}}</h2>
+                <span style="padding: 2px 8px; border-radius: 9999px; background: var(--brand-50); box-shadow: inset 0 0 0 1px var(--brand-200); color: var(--brand); font-size: 12px; line-height: 18px; font-weight: 500;">{{c.pkgCount}}</span>
+                <span aria-live="polite" style="margin-left: auto; font-size: 14px; line-height: 20px; color: {{c.selFg}}; font-weight: {{c.selFw}}; text-align: right;">{{c.selText}}</span>
+              </div>
+              <sc-for list="{{c.sections}}" as="sec" hint-placeholder-count="1">
+                <sc-if value="{{sec.hasHead}}" hint-placeholder-val="{{ false }}">
+                  <h3 style="margin: 0; padding: 16px 0 6px; font-size: 16px; line-height: 24px; font-weight: 600; color: #181D27;">{{sec.title}} <span style="font-weight: 500; color: #717680;">· {{sec.count}}</span></h3>
+                </sc-if>
+                <ul style="list-style: none; margin: 0; padding: 0;">
+                  <sc-for list="{{sec.pkgs}}" as="p" hint-placeholder-count="2">
+                    <!-- Partial pickup: every item starts selected; tap a row to leave it for another day -->
+                    <li style="border-top: 1px solid #F5F5F5;"><button class="uu-row uu-focus" role="checkbox" aria-checked="{{p.on}}" onClick="{{p.toggle}}" style="width: 100%; display: flex; align-items: center; gap: 12px; padding: 10px 8px; margin: 0 -8px; width: calc(100% + 16px); border: 0; border-radius: 8px; background: transparent; text-align: left; font-family: inherit; cursor: pointer; opacity: {{p.op}};">
+                      <span aria-hidden="true" style="width: 24px; height: 24px; border-radius: 6px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: {{p.cbg}}; box-shadow: inset 0 0 0 1px {{p.cbd}}; color: #fff;"><sc-if value="{{p.on}}" hint-placeholder-val="{{ true }}"><svg class="i" width="16" height="16" viewBox="0 0 24 24" style="stroke-width: 3;"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></span>
+                      <span style="width: 40px; height: 40px; border-radius: 8px; background: #fff; box-shadow: inset 0 0 0 1px #E9EAEB, 0 1px 2px rgba(10,13,18,.05); display: flex; align-items: center; justify-content: center; color: #717680; flex-shrink: 0;"><svg class="i" width="20" height="20" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><path d="M3.27 6.96 12 12.01l8.73-5.05"></path><path d="M12 22.08V12"></path></svg></span>
+                      <span style="flex: 1; min-width: 0;">
+                        <span style="display: block; font-size: 16px; line-height: 24px; font-weight: 600; color: #181D27;">{{p.merchant}}</span>
+                        <span style="display: block; font-size: 14px; line-height: 20px; color: #535862;">{{p.arrived}} · <span style="font-family: ui-monospace, Menlo, monospace;">{{p.trk}}</span></span>
+                      </span>
+                      <span style="flex-shrink: 0; padding: 2px 10px; border-radius: 9999px; font-size: 14px; line-height: 20px; font-weight: 500; background: {{p.bbg}}; color: {{p.bfg}}; box-shadow: inset 0 0 0 1px {{p.bbd}};">{{p.size}}</span>
+                    </button></li>
+                  </sc-for>
+                </ul>
+                <!-- Processing items: a count only, never selectable. For people being picked up for, only the ones chosen. -->
+                <sc-if value="{{sec.hasProc}}" hint-placeholder-val="{{ false }}">
+                  <div style="border-top: 1px solid #F5F5F5; padding: 12px 0 8px; display: flex; align-items: flex-start; gap: 8px; font-size: 14px; line-height: 20px; color: #535862;">
+                    <svg class="i" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" style="color: #A4A7AE; margin-top: 1px;"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+                    <span>{{sec.procText}}</span>
+                  </div>
+                </sc-if>
+              </sc-for>
+              <sc-if value="{{c.hasLarge}}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top: auto; position: sticky; bottom: -8px; z-index: 1; background: #fff; border-top: 1px solid #E9EAEB; padding: 12px 0 8px; display: flex; align-items: center; gap: 8px; font-size: 16px; line-height: 24px; color: #B54708; font-weight: 500;">
+                  <svg class="i" width="18" height="18" viewBox="0 0 24 24" style="color: #DC6803;"><circle cx="8" cy="21" r="1"></circle><circle cx="19" cy="21" r="1"></circle><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path></svg>{{c.largeText}}
+                </div>
+              </sc-if>
+            </section>
+
+            <section aria-label="Track your place in line" style="flex: 0 1 300px; min-width: 220px; border-radius: 12px; background: #fff; box-shadow: inset 0 0 0 1px #E9EAEB, 0 1px 2px rgba(10,13,18,.05); padding: 16px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center;">
+              <div style="padding: 10px; border-radius: 12px; background: #fff; box-shadow: inset 0 0 0 1px #E9EAEB;">
+                <svg width="128" height="128" viewBox="-1 -1 23 23" role="img" aria-label="QR code to track your place in line" style="display: block; width: {{c.qrSize}}; height: {{c.qrSize}};"><rect x="-1" y="-1" width="23" height="23" fill="#fff"></rect><path class="qr" d="{{c.qr}}"></path></svg>
+              </div>
+              <div style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px; line-height: 20px; font-weight: 500; color: #414651;">
+                <svg class="i" width="18" height="18" viewBox="0 0 24 24" style="color: var(--brand-solid);"><rect x="5" y="2" width="14" height="20" rx="2"></rect><path d="M12 18h.01"></path></svg>Scan to track your place in line
+              </div>
+            </section>
+          </div>
+
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px; margin-top: auto;">
+            <div style="flex: 1 1 320px;">
+              <div style="height: 8px; border-radius: 9999px; background: #E9EAEB; overflow: hidden;"><div style="height: 100%; border-radius: 9999px; background: var(--brand-solid, #7F56D9); width: {{c.pct}}; transition: width 1s linear;"></div></div>
+              <div style="margin-top: 8px; font-size: 14px; line-height: 20px; color: #535862; font-variant-numeric: tabular-nums;">Next person can tap anytime · Screen clears in {{left}}s</div>
+            </div>
+            <button class="uu-btn uu-primary" onClick="{{done}}" style="height: 56px; padding: 0 40px; font-size: 18px; line-height: 28px;">
+              <svg class="i" width="22" height="22" viewBox="0 0 24 24" style="stroke-width: 2.5;"><path d="M20 6 9 17l-5-5"></path></svg>Done
+            </button>
+          </div>
+
+          </div>
+        </div>
+      </section>
+    </sc-if>
+  </main>
+
+  <!-- Staff sign-in: a screen inside this board so the idle timer can return to the welcome screen on its own -->
+  <sc-if value="{{st.show}}" hint-placeholder-val="{{ false }}">
+  <div class="fade" onPointerDown="{{st.poke}}" onKeyDown="{{st.poke}}" style="--brand: #53389E; --brand-solid: #7F56D9; --brand-400: #9E77ED; position: absolute; inset: 0; z-index: 30; overflow-y: auto; display: flex; flex-wrap: wrap; background: #fff; color: #181D27;">
+  <section class="{{st.secCls}}" style="flex: 1 1 480px; min-width: 0; display: flex; flex-direction: column; padding: 24px clamp(16px, 4vw, 48px);">
+
+    <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding: clamp(12px, 3vh, 32px) 0;">
+      <div style="width: 100%; max-width: 400px;">
+        <div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+          <div role="img" aria-label="RICOH" style="font-size: 30px; line-height: 1; font-weight: 800; letter-spacing: .04em; color: #CF142B;">RICOH</div>
+          <div style="margin-top: 6px; font-size: 14px; line-height: 20px; font-weight: 500; color: #535862;">Intelligent Business Platform</div>
+          <h1 style="margin: clamp(16px, 3vh, 32px) 0 0; font-size: 30px; line-height: 38px; font-weight: 600; letter-spacing: -0.01em;">{{st.heading}}</h1>
+          <p style="margin: 8px 0 0; font-size: 16px; line-height: 24px; color: #535862;">{{st.subhead}}</p>
+        </div>
+
+        <!-- Staff sign-in: gear only, then username and password. No badge sign-in. -->
+        <sc-if value="{{st.stepUser}}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 32px; display: flex; flex-direction: column; gap: 20px;">
+            <div>
+              <label for="st-user" style="display: block; margin-bottom: 6px; font-size: 14px; line-height: 20px; font-weight: 500; color: #414651;">Username <span style="color: #7F56D9;">*</span></label>
+              <input id="st-user" class="uu-input" inputmode="none" value="{{st.user}}" onChange="{{st.onUser}}" onPointerDown="{{st.openUserKb}}" onFocus="{{st.openUserKb}}" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Enter your username" style="width: 100%; height: 52px; border: 0; border-radius: 8px; background: #fff; box-shadow: {{st.userRing}}; padding: 0 14px; font-family: inherit; font-size: 16px; line-height: 24px; color: #181D27; caret-color: #7F56D9;">
+            </div>
+            <button class="uu-btn uu-primary" onClick="{{st.toPw}}" disabled="{{st.noUser}}" style="width: 100%; height: 52px; font-size: 16px; line-height: 24px;">Continue</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{st.stepPw}}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top: 32px; display: flex; flex-direction: column; gap: 20px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 14px; border-radius: 8px; background: #FAFAFA; box-shadow: inset 0 0 0 1px #E9EAEB;">
+              <span style="font-size: 14px; line-height: 20px; font-weight: 500; color: #414651; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{st.user}}</span>
+              <button class="uu-btn uu-link" onClick="{{st.toUser}}" style="font-size: 14px; line-height: 20px;">Change</button>
+            </div>
+            <div>
+              <label for="st-pw" style="display: block; margin-bottom: 6px; font-size: 14px; line-height: 20px; font-weight: 500; color: #414651;">Password <span style="color: #7F56D9;">*</span></label>
+              <div style="position: relative;">
+                <input id="st-pw" type="{{st.pwType}}" class="uu-input" inputmode="none" value="{{st.pw}}" onChange="{{st.onPw}}" onPointerDown="{{st.openPwKb}}" onFocus="{{st.openPwKb}}" autocomplete="off" placeholder="Enter your password" style="width: 100%; height: 52px; border: 0; border-radius: 8px; background: #fff; box-shadow: {{st.pwRing}}; padding: 0 72px 0 14px; font-family: inherit; font-size: 16px; line-height: 24px; color: #181D27; caret-color: #7F56D9;">
+                <button class="uu-btn uu-link" onClick="{{st.togglePwShow}}" aria-pressed="{{st.pwShown}}" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); height: 36px; padding: 0 6px; font-size: 14px; line-height: 20px;">{{st.pwShowLabel}}</button>
+              </div>
+              <sc-if value="{{st.hasErr}}" hint-placeholder-val="{{ false }}">
+                <p role="alert" style="margin: 6px 0 0; font-size: 14px; line-height: 20px; color: #D92D20;">{{st.err}}</p>
+              </sc-if>
+            </div>
+            <sc-if value="{{st.noPw}}" hint-placeholder-val="{{ true }}">
+              <button class="uu-btn uu-primary" disabled="{{ true }}" style="width: 100%; height: 52px; font-size: 16px; line-height: 24px;">Sign in</button>
+            </sc-if>
+            <sc-if value="{{st.goAdmin}}" hint-placeholder-val="{{ false }}">
+              <a href="Admin.dc.html" onClick="{{st.leave}}" class="uu-btn uu-primary" style="width: 100%; height: 52px; font-size: 16px; line-height: 24px;">Sign in</a>
+            </sc-if>
+            <sc-if value="{{st.goManager}}" hint-placeholder-val="{{ false }}">
+              <a href="Manager.dc.html" onClick="{{st.leave}}" class="uu-btn uu-primary" style="width: 100%; height: 52px; font-size: 16px; line-height: 24px;">Sign in</a>
+            </sc-if>
+            <sc-if value="{{st.goDenied}}" hint-placeholder-val="{{ false }}">
+              <button class="uu-btn uu-primary" onClick="{{st.deny}}" style="width: 100%; height: 52px; font-size: 16px; line-height: 24px;">Sign in</button>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{st.showTest}}" hint-placeholder-val="{{ true }}">
+        <div style="margin-top: clamp(12px, 2.5vh, 24px); display: flex; flex-wrap: wrap; align-items: center; gap: 2px 10px; font-size: 12px; line-height: 18px; color: #A4A7AE;">
+          <span>Prototype test accounts:</span>
+          <sc-for list="{{st.accounts}}" as="sa" hint-placeholder-count="4">
+            <button onClick="{{sa.pick}}" title="{{sa.role}}" style="border: 0; background: none; padding: 4px 0; font-family: inherit; font-size: 12px; line-height: 18px; color: #717680; text-decoration: underline; text-decoration-color: #D5D7DA; text-underline-offset: 2px; cursor: pointer;">{{sa.user}}</button>
+          </sc-for>
+        </div>
+        </sc-if>
+      </div>
+    </div>
+    <div style="align-self: flex-start; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+      <button onClick="{{st.back}}" class="uu-btn uu-secondary" style="height: 56px; padding: 0 26px 0 20px; font-size: 18px; line-height: 28px;">
+        <svg class="i" width="22" height="22" viewBox="0 0 24 24" style="color: #A4A7AE;"><path d="M19 12H5"></path><path d="m12 19-7-7 7-7"></path></svg>Back to kiosk
+      </button>
+      <!-- Idle auto-return: quiet counter; any tap/key resets it; stops once someone starts typing -->
+      <sc-if value="{{st.idle.show}}" hint-placeholder-val="{{ true }}">
+        <span aria-live="off" style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px; line-height: 20px; color: {{st.idle.color}}; font-weight: {{st.idle.weight}}; font-variant-numeric: tabular-nums;">
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" style="transform: rotate(-90deg);"><circle cx="8" cy="8" r="6.5" fill="none" stroke="#E9EAEB" stroke-width="2"></circle><circle cx="8" cy="8" r="6.5" fill="none" stroke="{{st.idle.ring}}" stroke-width="2" stroke-linecap="round" stroke-dasharray="40.84" stroke-dashoffset="{{st.idle.offset}}" style="transition: stroke-dashoffset 1s linear;"></circle></svg>
+          <span>{{st.idle.text}}</span>
+        </span>
+      </sc-if>
+    </div>
+  </section>
+
+  <!-- On-screen keyboard: replaces the brand panel on wide screens, slides up from the bottom on narrow ones -->
+  <sc-if value="{{st.kbOpen}}" hint-placeholder-val="{{ false }}">
+    <div class="st-kb" role="group" aria-label="On-screen keyboard">
+      <div style="width: 100%; max-width: 560px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+          <span style="font-size: 14px; line-height: 20px; font-weight: 600; color: #414651;">{{st.kbLabel}}</span>
+          <button class="uu-btn uu-tertiary" onClick="{{st.closeKb}}" aria-label="Hide keyboard" style="height: 36px; padding: 0 10px; font-size: 14px; line-height: 20px;"><svg class="i" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>Hide</button>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); gap: 6px;">
+          <sc-for list="{{st.keys}}" as="k" hint-placeholder-count="48">
+            <button class="st-key {{k.cls}}" onClick="{{k.press}}" aria-label="{{k.aria}}" style="grid-column: span {{k.span}}; height: clamp(44px, 6.4vh, 56px); border: 0; border-radius: 8px; background: {{k.bg}}; color: {{k.fg}}; box-shadow: inset 0 0 0 1px {{k.bd}}, 0 1px 2px rgba(10,13,18,.05); font-family: inherit; font-size: {{k.size}}; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0;">
+              <sc-if value="{{k.isBack}}" hint-placeholder-val="{{ false }}"><svg class="i" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path><path d="m18 9-6 6"></path><path d="m12 9 6 6"></path></svg></sc-if>
+              <sc-if value="{{k.isShift}}" hint-placeholder-val="{{ false }}"><svg class="i" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4 4 12h5v8h6v-8h5z"></path></svg></sc-if>
+              <sc-if value="{{k.isText}}" hint-placeholder-val="{{ true }}">{{k.label}}</sc-if>
+            </button>
+          </sc-for>
+          <!-- Action key says what happens: Next on username, Sign in on password -->
+          <sc-if value="{{st.kbNext}}" hint-placeholder-val="{{ true }}"><button class="uu-btn uu-primary st-key-primary" onClick="{{st.kbNextGo}}" disabled="{{st.noUser}}" style="grid-column: span 6; height: clamp(44px, 6.4vh, 56px); border-radius: 8px; font-size: 16px; line-height: 24px; padding: 0;">Next<svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></button></sc-if>
+          <sc-if value="{{st.kbSignOff}}" hint-placeholder-val="{{ false }}"><button class="uu-btn uu-primary" disabled="{{ true }}" style="grid-column: span 6; height: clamp(44px, 6.4vh, 56px); border-radius: 8px; font-size: 16px; line-height: 24px; padding: 0;">Sign in</button></sc-if>
+          <sc-if value="{{st.kbSignAdmin}}" hint-placeholder-val="{{ false }}"><a href="Admin.dc.html" onClick="{{st.leave}}" class="uu-btn uu-primary st-key-primary" style="grid-column: span 6; height: clamp(44px, 6.4vh, 56px); border-radius: 8px; font-size: 16px; line-height: 24px; padding: 0;">Sign in</a></sc-if>
+          <sc-if value="{{st.kbSignManager}}" hint-placeholder-val="{{ false }}"><a href="Manager.dc.html" onClick="{{st.leave}}" class="uu-btn uu-primary st-key-primary" style="grid-column: span 6; height: clamp(44px, 6.4vh, 56px); border-radius: 8px; font-size: 16px; line-height: 24px; padding: 0;">Sign in</a></sc-if>
+          <sc-if value="{{st.kbSignDenied}}" hint-placeholder-val="{{ false }}"><button class="uu-btn uu-primary st-key-primary" onClick="{{st.kbDeny}}" style="grid-column: span 6; height: clamp(44px, 6.4vh, 56px); border-radius: 8px; font-size: 16px; line-height: 24px; padding: 0;">Sign in</button></sc-if>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{st.kbClosed}}" hint-placeholder-val="{{ true }}">
+  <aside class="signin-aside" aria-hidden="true" style="flex: 1 1 360px; min-height: 240px; position: relative; overflow: hidden; background: #53389E;">
+    <svg width="100%" height="100%" viewBox="0 0 512 740" preserveAspectRatio="xMidYMid slice" style="position: absolute; inset: 0;">
+      <g fill="none" stroke="#9E77ED" stroke-width="2" opacity=".6"><circle cx="512" cy="370" r="120"></circle><circle cx="512" cy="370" r="200"></circle><circle cx="512" cy="370" r="280"></circle><circle cx="512" cy="370" r="360"></circle><circle cx="512" cy="370" r="440"></circle></g>
+    </svg>
+    <div style="position: absolute; left: clamp(24px, 4vw, 48px); right: clamp(24px, 4vw, 48px); bottom: clamp(24px, 4vw, 48px); color: #fff;">
+      <div style="font-size: 30px; line-height: 38px; font-weight: 600; letter-spacing: -0.01em;">Delivery CTRL Kiosk</div>
+      <div style="margin-top: 8px; font-size: 18px; line-height: 28px; color: #E9D7FE;">Set up, run, and check the health of mailroom kiosks.</div>
+    </div>
+  </aside>
+  </sc-if>
+  </div>
+  </sc-if>
+  <!-- Universal kiosk navigation: Back always bottom-left (easy reach, same spot on every screen); main actions sit on the right. -->
+  <footer style="background: {{ui.footBg}}; padding: {{ui.footPad}}; display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; font-size: 14px; line-height: 20px; color: {{ui.foot}};">
+    <div style="display: flex; align-items: center; flex: 0 1 auto; min-width: 0;">
+      <!-- Campus offers: welcome screen only, rotates every ~9s, not tappable (scan the QR on your phone). Hidden the moment a flow starts. -->
+      <sc-if value="{{ad.show}}" hint-placeholder-val="{{ false }}">
+        <div role="region" aria-label="Campus offers" aria-live="off" style="position: relative; width: min(448px, 54vw); height: 80px;">
+          <sc-for list="{{ad.slides}}" as="a" hint-placeholder-count="4">
+            <div class="ad-slide" aria-hidden="{{a.hidden}}" style="position: absolute; inset: 0; opacity: {{a.opacity}}; transform: {{a.shift}}; display: flex; align-items: center; gap: 12px; padding: 0 8px 6px 0; border-radius: 12px; overflow: hidden; background: rgba(255,255,255,.10); box-shadow: inset 0 0 0 1px rgba(255,255,255,.16); pointer-events: none;">
+              <!-- Full-bleed offer photo; brand-color block with initials until a photo is supplied -->
+              <span style="align-self: stretch; width: 80px; margin-bottom: -6px; flex-shrink: 0; position: relative; background: {{a.markBg}}; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; line-height: 28px; font-weight: 600;">
+                <sc-if value="{{a.noPhoto}}" hint-placeholder-val="{{ true }}"><span aria-hidden="true">{{a.mark}}</span></sc-if>
+                <sc-if value="{{a.hasPhoto}}" hint-placeholder-val="{{ false }}"><img src="{{a.photo}}" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;"></sc-if>
+              </span>
+              <span style="flex: 1; min-width: 0; display: flex; flex-direction: column;">
+                <span style="font-size: 12px; line-height: 18px; font-weight: 500; color: {{ui.foot}}; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Campus offer · {{a.biz}}</span>
+                <span style="font-size: 14px; line-height: 20px; font-weight: 600; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{a.title}}</span>
+                <span style="font-size: 12px; line-height: 18px; color: {{ui.sub}}; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{a.sub}}</span>
+              </span>
+              <svg width="64" height="64" viewBox="-2 -2 25 25" role="img" aria-label="QR code for this offer" style="display: block; flex-shrink: 0; align-self: flex-start; margin-top: 8px; border-radius: 8px;"><rect x="-2" y="-2" width="25" height="25" fill="#FCFAFF" style="fill: color-mix(in srgb, var(--brand) 12%, #FFFFFF);"></rect><path class="qr" d="{{a.qr}}" style="fill: color-mix(in srgb, var(--brand) 80%, #0A0D12);"></path></svg>
+            </div>
+          </sc-for>
+          <div aria-hidden="true" style="position: absolute; left: 92px; bottom: 6px; display: flex; gap: 4px;">
+            <sc-for list="{{ad.dots}}" as="d" hint-placeholder-count="4"><span style="width: {{d.w}}; height: 4px; border-radius: 9999px; background: {{d.bg}}; transition: width .3s ease;"></span></sc-for>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{nav.show}}" hint-placeholder-val="{{ false }}">
+        <button class="uu-btn uu-dark-solid" onClick="{{nav.back}}" style="height: 56px; padding: 0 26px 0 20px; font-size: 18px; line-height: 28px;"><svg class="i" width="22" height="22" viewBox="0 0 24 24"><path d="M19 12H5"></path><path d="m12 19-7-7 7-7"></path></svg>Back</button>
+      </sc-if>
+    </div>
+    <div style="display: flex; align-items: center; gap: 2px;">
+      <!-- Prototype controls: page chrome, not kiosk UI -->
+      <div style="{{ui.simPos}} display: flex; align-items: center; z-index: 40;">
+        <sc-if value="{{panel}}" hint-placeholder-val="{{ false }}">
+          <aside class="proto" aria-label="Prototype controls" style="position: absolute; right: 0; bottom: calc(100% + 8px); width: 300px; max-height: calc(100vh - 140px); overflow-y: auto; border-radius: 12px; background: #fff; box-shadow: inset 0 0 0 1px #E9EAEB, 0 12px 16px -4px rgba(10,13,18,.08), 0 4px 6px -2px rgba(10,13,18,.03); padding: 16px; display: flex; flex-direction: column; gap: 16px;">
+            <div>
+              <div style="font-size: 14px; line-height: 20px; font-weight: 600; color: #181D27;">Tap an ID on the reader</div>
+                <div style="font-size: 12px; line-height: 18px; color: #535862; margin-bottom: 8px;">Prototype only. {{hint}}</div>
+              <div style="display: flex; flex-direction: column; gap: 6px;">
+                <sc-for list="{{tray}}" as="t" hint-placeholder-count="4">
+                  <button class="uu-row uu-focus" onClick="{{t.tap}}" disabled="{{t.disabled}}" style="display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 10px; border: 0; border-radius: 8px; background: #fff; box-shadow: inset 0 0 0 1px #E9EAEB; text-align: left; font-family: inherit; cursor: pointer;">
+                    <span style="width: 32px; height: 32px; border-radius: 9999px; background: {{t.avBg}}; color: {{t.avFg}}; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; flex-shrink: 0;">{{t.initials}}</span>
+                    <span style="flex: 1; min-width: 0;"><span style="display: block; font-size: 14px; line-height: 20px; font-weight: 600; color: #181D27;">{{t.name}}</span><span style="display: block; font-size: 12px; line-height: 18px; color: #535862;">{{t.note}}</span></span>
+                  </button>
+                </sc-for>
+              </div>
+            </div>
+            <div style="border-top: 1px solid #E9EAEB; padding-top: 12px; display: flex; flex-direction: column; gap: 12px;">
+              <div style="font-size: 14px; line-height: 20px; font-weight: 600; color: #181D27;">Simulate</div>
+              <div style="display: flex; flex-direction: column; gap: 12px;">
+              <sc-for list="{{toggles}}" as="t" hint-placeholder-count="3">
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+                  <div><div style="font-size: 14px; line-height: 20px; font-weight: 500; color: #414651;">{{t.label}}</div><div style="font-size: 12px; line-height: 18px; color: #535862;">{{t.state}}</div></div>
+                  <button class="uu-focus" role="switch" aria-checked="{{t.on}}" aria-label="{{t.label}}" onClick="{{t.flip}}" style="width: 44px; height: 24px; border: 0; border-radius: 9999px; padding: 2px; display: flex; justify-content: {{t.justify}}; background: {{t.track}}; cursor: pointer; flex-shrink: 0; transition: background-color .15s linear;">
+                    <span style="width: 20px; height: 20px; border-radius: 9999px; background: #fff; box-shadow: 0 1px 3px rgba(10,13,18,.1), 0 1px 2px -1px rgba(10,13,18,.1);"></span>
+                  </button>
+                </div>
+              </sc-for>
+            </div>
+            </div>
+            <div style="border-top: 1px solid #E9EAEB; padding-top: 12px;">
+              <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;"><span style="font-size: 14px; line-height: 20px; font-weight: 600; color: #181D27;">Kiosk color</span><span style="font-size: 12px; line-height: 18px; color: #535862;">{{themeName}}</span></div>
+              <div role="radiogroup" aria-label="Kiosk color" style="display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 4px;">
+                <sc-for list="{{swatches}}" as="w" hint-placeholder-count="9">
+                  <button class="uu-focus" role="radio" aria-checked="{{w.on}}" aria-label="{{w.name}}" title="{{w.name}}" onClick="{{w.pick}}" style="width: 100%; aspect-ratio: 1; border: 0; padding: 0; border-radius: 9999px; background: {{w.hex}}; box-shadow: {{w.ring}}; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                    <sc-if value="{{w.on}}" hint-placeholder-val="{{ false }}"><svg class="i" width="14" height="14" viewBox="0 0 24 24" style="color: #fff; stroke-width: 3;"><path d="M20 6 9 17l-5-5"></path></svg></sc-if>
+                  </button>
+                </sc-for>
+              </div>
+              <div style="margin-top: 8px; display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 12px; line-height: 18px; color: #535862;"><span>{{acctNote}}</span><sc-if value="{{hasOverride}}" hint-placeholder-val="{{ false }}"><button onClick="{{useAccount}}" style="border: 0; background: none; padding: 0; cursor: pointer; font-family: inherit; font-weight: 600; color: #6941C6; font-size: 12px; line-height: 18px; white-space: nowrap;">Use account color</button></sc-if></div>
+            </div>
+            <div style="border-top: 1px solid #E9EAEB; padding-top: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+              <div><div style="font-size: 14px; line-height: 20px; font-weight: 600; color: #181D27;">Reset prototype</div><div style="font-size: 12px; line-height: 18px; color: #535862;">Clears setup, colors, toggles and check-ins on every screen.</div></div>
+              <button class="uu-btn uu-secondary" onClick="{{resetProto}}" style="height: 36px; padding: 0 12px; font-size: 14px; line-height: 20px; flex-shrink: 0;"><svg class="i" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="color: #A4A7AE;"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path></svg>Reset</button>
+            </div>
+          </aside>
+        </sc-if>
+        <!-- Prototype-only: deliberately quiet ghost control so it doesn't compete with the kiosk design -->
+        <button class="uu-focus proto-trigger" onClick="{{togglePanel}}" aria-expanded="{{panel}}" aria-label="Prototype controls" title="Prototype controls" style="height: 32px; padding: 0 8px; display: inline-flex; align-items: center; gap: 4px; border: 0; border-radius: 8px; background: transparent; color: {{simColor}}; opacity: {{simOpacity}}; font-family: inherit; font-size: 12px; line-height: 18px; font-weight: 500; white-space: nowrap; cursor: pointer;">
+          <svg class="i" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21v-7"></path><path d="M4 10V3"></path><path d="M12 21v-9"></path><path d="M12 8V3"></path><path d="M20 21v-5"></path><path d="M20 12V3"></path><path d="M1 14h6"></path><path d="M9 8h6"></path><path d="M17 16h6"></path></svg>{{panelLabel}}
+        </button>
+      </div>
+    <!-- Checked-in screen has no footer: it's transient (auto-clears / Done), and staff access stays on every other screen -->
+    <sc-if value="{{ui.footFull}}" hint-placeholder-val="{{ true }}">
+    <span>Powered by <span style="font-weight: 700; letter-spacing: .02em; color: {{ui.footStrong}};">RICOH</span> Delivery CTRL</span>
+    <button onClick="{{openStaff}}" class="staff-gear" aria-label="Staff sign-in" title="Staff sign-in" style="border: 0; padding: 0; background: transparent; cursor: pointer; width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border-radius: 9999px; color: {{ui.foot}};">
+      <svg class="i" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+    </button>
+    </sc-if>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"readerSide":{"editor":"enum","options":["right","left"],"default":"right"},"demo":{"editor":"enum","options":["none","reading","search","idEntry","verifyMethod","verifyCode","guest","guestIn","whoFor","checkedIn","checkedInProxy","checkedInPartial","staffKeyboard"],"default":"whoFor"},"$preview":{"width":1180,"height":820}}'>
+class Component extends DCLogic {
+  state = { screen: 'welcome', network: true, reader: true, hours: true, q: '', visit: null, notice: null, left: 0, delOpen: false, panel: false };
+  counter = 103;
+  checkins = {};
+  timers = [];
+
+  componentDidMount() {
+    /* Prototype: watch the saved kiosk assignment so this screen updates when another screen changes it. */
+    var selfP = this; this._raw = null;
+    this._clock = setInterval(function () { selfP.setState({ now: Date.now() }); }, 10000);
+    this._adTimer = setInterval(function () { if (selfP.state.screen === 'welcome' || !selfP.state.screen) selfP.setState({ adIdx: (selfP.state.adIdx || 0) + 1 }); }, 9000);
+    this._poll = setInterval(function () { var v = null; try { v = window.localStorage.getItem('kioskProto.device') + '|' + window.localStorage.getItem('kioskProto.themeOverride') + '|' + window.localStorage.getItem('kioskProto.weather') + '|' + window.localStorage.getItem('kioskProto.ads') + '|' + window.localStorage.getItem('kioskProto.findBy'); } catch (e) {} if (v !== selfP._raw) { selfP._raw = v; selfP.setState({ devTick: (selfP.state.devTick || 0) + 1 }); } }, 600);
+    var self = this;
+    /* Example artboard: open straight on Emma Johnson's checked-in screen and hold it there. */
+    if ((this.props.demo || 'none') === 'checkedIn') this.checkIn(this.find('U2048193'), false);
+    if ((this.props.demo || 'none') === 'checkedInPartial') { this.checkIn(this.find('U2048193'), false); this.checkins['U2048193'].skip = { p2: true, p52: true, p53: true, p54: true, p55: true, p56: true }; this.setState({ selTick: 1 }); }
+    if ((this.props.demo || 'none') === 'idEntry') { this.setState({ screen: 'search', q: 'U20481', left: 45 }); }
+    if ((this.props.demo || 'none') === 'reading') this.setState({ screen: 'reading' });
+    if ((this.props.demo || 'none') === 'guest') this.setState({ screen: 'guest', guest: { first: 'maria', last: 'lopez', field: 'last' }, left: 45 });
+    if ((this.props.demo || 'none') === 'guestIn') this.setState({ screen: 'guestIn', gvisit: { first: 'Maria', queue: 'A104', ahead: 2 }, left: 30 });
+    if ((this.props.demo || 'none') === 'whoFor') this.checkIn(this.find('U2051177'), false);
+    if ((this.props.demo || 'none') === 'checkedInProxy') { this.checkIn(this.find('U2051177'), false, { self: true, 'Jordan Lee': true, 'Priya Natarajan': true }); }
+    if ((this.props.demo || 'none') === 'search') this.setState({ screen: 'search', q: 'Emm', left: 45 });
+    if ((this.props.demo || 'none') === 'verifyMethod') this.pick(this.find('U2048193'));
+    if ((this.props.demo || 'none') === 'verifyCode') { var vst = this.find('U2048193'); this.setState({ screen: 'verifyCode', verify: { student: vst, method: vst.phone ? 'phone' : 'email', code: '48', attempts: 0, error: '', notice: '', reason: null }, left: 60 }); }
+    if ((this.props.demo || 'none') === 'staffKeyboard') this.setState({ screen: 'staff', panel: false, st: { step: 'user', user: 'admin@ricoh-usa', pw: '', err: '', kb: 'user', shift: false, shown: false }, stLeft: 30 });
+    this.tick = setInterval(function () {
+      var s = self.state;
+      if (s.screen === 'staff') {
+        var t = s.st || {};
+        if (t.step === 'pw' || (t.step === 'user' && (t.user || '').trim())) return;
+        var l = s.stLeft == null ? 30 : s.stLeft;
+        if (l <= 1) self.toWelcome(); else self.setState({ stLeft: l - 1 });
+        return;
+      }
+      if (((self.props.demo || 'none') === 'checkedIn' || (self.props.demo || 'none') === 'checkedInPartial') && s.screen === 'checkedIn') return;
+      if ((self.props.demo || 'none') === 'idEntry' && s.screen === 'search') return;
+      if ((self.props.demo || 'none') === 'guest' && s.screen === 'guest') return;
+      if ((self.props.demo || 'none') === 'guestIn' && s.screen === 'guestIn') return;
+      if ((self.props.demo || 'none') === 'whoFor' && s.screen === 'whoFor') return;
+      if ((self.props.demo || 'none') === 'checkedInProxy' && s.screen === 'checkedIn') return;
+      if ((self.props.demo || 'none') === 'search' && s.screen === 'search') return;
+      if ((self.props.demo || 'none') === 'verifyMethod' && s.screen === 'verifyMethod') return;
+      if ((self.props.demo || 'none') === 'verifyCode' && s.screen === 'verifyCode') return;
+      if (['checkedIn', 'whoFor', 'guest', 'guestIn', 'message', 'search', 'verifyMethod', 'verifyCode', 'verifyFail'].indexOf(s.screen) >= 0) {
+        if (s.left <= 1) self.toWelcome(); else self.setState({ left: s.left - 1 });
+      }
+    }, 1000);
+  }
+  componentWillUnmount() { clearInterval(this.tick); clearInterval(this._poll); clearInterval(this._clock); clearInterval(this._adTimer); this.clearTimers(); }
+  later(fn, ms) { this.timers.push(setTimeout(fn, ms)); }
+  clearTimers() { this.timers.forEach(clearTimeout); this.timers = []; }
+  /* Staff sign-in (in-board screen). Gear only: username/password with an on-screen keyboard. No badge sign-in. Idle 30s → welcome. */
+  staffAccounts() {
+    return [{ user: 'admin@ricoh-usa.com', name: 'Jordan Lee', role: 'Ricoh admin', go: 'admin' },
+      { user: 'dana@emory.edu', name: 'Dana Whitfield', role: 'Emory site manager', go: 'manager' },
+      { user: 'sam@clemson.edu', name: 'Sam Ortiz', role: 'Clemson site manager', go: 'manager' },
+      { user: 'alex@emory.edu', name: 'Alex Kim', role: 'No kiosk access', go: 'none' }];
+  }
+  staffBadge(a) { this.clearTimers(); this.setState({ screen: 'staff', panel: false, st: { step: 'badge', badge: a, user: '', pw: '', err: '', kb: null, shift: false, shown: false }, stLeft: 30 }); }
+  staffVals() {
+    var self = this, s = this.state, t = s.st || { step: 'user', user: '', pw: '', err: '', kb: null };
+    var set = function (p) { self.setState({ st: Object.assign({}, self.state.st || t, p), stLeft: 30 }); };
+    var u = t.user.trim().toLowerCase();
+    var role = u.indexOf('ricoh') >= 0 ? 'admin' : (u === 'dana@emory.edu' || u === 'sam@clemson.edu') ? 'manager' : 'none';
+    var hasPw = t.pw.length > 0, left = s.stLeft == null ? 30 : s.stLeft;
+    var b = t.badge, isBadge = t.step === 'badge' && !!b, bOk = isBadge && b.go !== 'none';
+    var focusRing = 'inset 0 0 0 2px #9E77ED, 0 0 0 4px rgba(158,119,237,.24)', baseRing = 'inset 0 0 0 1px #D5D7DA, 0 1px 2px rgba(10,13,18,.05)';
+    /* Keyboard */
+    var kb = t.kb, shift = !!t.shift;
+    var type = function (str) {
+      var cur = self.state.st || t, field = cur.kb === 'pw' ? 'pw' : 'user', v = cur[field] || '';
+      if (v.length >= 64) return;
+      var o = { shift: false }; o[field] = v + str; if (field === 'pw') o.err = ''; set(o);
+    };
+    var K = function (label, span, kind) { return { label: label, span: span || 2, kind: kind || 'char' }; };
+    var rows = [];
+    '1234567890'.split('').forEach(function (c) { rows.push(K(c)); });
+    'qwertyuiop'.split('').forEach(function (c) { rows.push(K(c)); });
+    'asdfghjkl'.split('').forEach(function (c) { rows.push(K(c)); }); rows.push(K('@', 2, 'sym'));
+    rows.push(K('shift', 3, 'shift')); 'zxcvbnm'.split('').forEach(function (c) { rows.push(K(c)); }); rows.push(K('back', 3, 'back'));
+    rows.push(K('_', 2, 'sym')); rows.push(K('-', 2, 'sym')); rows.push(K('.', 2, 'sym')); rows.push(K('.edu', 4, 'sym')); rows.push(K('.com', 4, 'sym'));
+    var keys = rows.map(function (k) {
+      var letter = k.kind === 'char' && /[a-z]/.test(k.label), shown = letter && shift ? k.label.toUpperCase() : k.label;
+      var st = { bg: '#FFFFFF', fg: '#181D27', bd: '#D5D7DA', size: '20px', cls: '' };
+      if (k.kind === 'sym' || k.kind === 'back') st.size = '16px';
+      if (k.kind === 'shift' && shift) { st.bg = '#F4EBFF'; st.fg = '#6941C6'; st.bd = '#D6BBFB'; }
+      if (k.kind === 'done') { st.bg = '#7F56D9'; st.fg = '#FFFFFF'; st.bd = 'rgba(10,13,18,.18)'; st.size = '16px'; st.cls = 'st-key-primary'; }
+      return { span: k.span, label: shown, isText: k.kind !== 'back' && k.kind !== 'shift', isBack: k.kind === 'back', isShift: k.kind === 'shift',
+        aria: k.kind === 'back' ? 'Backspace' : k.kind === 'shift' ? 'Shift' : k.kind === 'done' ? 'Done' : shown,
+        bg: st.bg, fg: st.fg, bd: st.bd, size: st.size, cls: st.cls,
+        press: function () {
+          var cur = self.state.st || t;
+          if (k.kind === 'shift') return set({ shift: !cur.shift });
+          if (k.kind === 'back') { var f = cur.kb === 'pw' ? 'pw' : 'user', o = {}; o[f] = (cur[f] || '').slice(0, -1); return set(o); }
+          if (k.kind === 'done') {
+            if (cur.kb === 'user') { if (cur.user.trim()) return set({ step: 'pw', kb: 'pw', shift: false, err: '' }); return set({ kb: null }); }
+            return set({ kb: null, shift: false });
+          }
+          type(letter && cur.shift ? k.label.toUpperCase() : k.label);
+        } };
+    });
+    return {
+      show: s.screen === 'staff',
+      heading: isBadge ? (bOk ? 'Welcome back, ' + b.name.split(' ')[0] : 'Badge not authorized') : t.step === 'user' ? 'Log in to your account' : 'Enter your password',
+      subhead: isBadge ? (bOk ? 'Signed in with your staff badge' : 'This badge can’t open kiosk settings') : 'Staff sign-in for Delivery CTRL kiosks',
+      stepUser: t.step === 'user', stepPw: t.step === 'pw', stepBadge: isBadge, showTest: !isBadge,
+      badgeName: b ? b.name : '', badgeRole: b ? (bOk ? b.role + ' · ' + b.user : 'Ask a site manager for kiosk access.') : '',
+      badgeInitials: b ? b.name.split(' ').map(function (w) { return w[0]; }).join('') : '',
+      badgeBg: bOk ? '#FAFAFA' : '#FEF3F2', badgeBd: bOk ? '#E9EAEB' : '#FECDCA', badgeRoleFg: bOk ? '#535862' : '#B42318',
+      badgeAdmin: bOk && b.go === 'admin', badgeManager: bOk && b.go === 'manager',
+      user: t.user, pw: t.pw, noUser: !t.user.trim(),
+      noPw: !hasPw, goAdmin: hasPw && role === 'admin', goManager: hasPw && role === 'manager', goDenied: hasPw && role === 'none',
+      hasErr: !!t.err, err: t.err,
+      userRing: kb === 'user' ? focusRing : baseRing,
+      pwRing: t.err ? 'inset 0 0 0 1px #FDA29B, 0 1px 2px rgba(10,13,18,.05)' : kb === 'pw' ? focusRing : baseRing,
+      pwType: t.shown ? 'text' : 'password', pwShown: !!t.shown, pwShowLabel: t.shown ? 'Hide' : 'Show',
+      togglePwShow: function () { set({ shown: !(self.state.st || t).shown }); },
+      kbOpen: !!kb, kbClosed: !kb, kbLabel: kb === 'pw' ? 'Typing your password' : 'Typing your username', keys: keys,
+      secCls: kb ? 'st-sec-kb' : '',
+      kbNext: kb !== 'pw', kbSignOff: kb === 'pw' && !hasPw, kbSignAdmin: kb === 'pw' && hasPw && role === 'admin',
+      kbSignManager: kb === 'pw' && hasPw && role === 'manager', kbSignDenied: kb === 'pw' && hasPw && role === 'none',
+      kbNextGo: function () { var cur = self.state.st || t; if (cur.user.trim()) set({ step: 'pw', kb: 'pw', shift: false, err: '' }); },
+      kbDeny: function () { set({ err: 'You don’t have access to set up or run a kiosk.', pw: '' }); },
+      openUserKb: function () { if ((self.state.st || t).kb !== 'user') set({ kb: 'user', shift: false }); },
+      openPwKb: function () { if ((self.state.st || t).kb !== 'pw') set({ kb: 'pw', shift: false }); },
+      closeKb: function () { set({ kb: null, shift: false }); },
+      onUser: function (e) { set({ user: e.target.value }); },
+      onPw: function (e) { set({ pw: e.target.value, err: '' }); },
+      toPw: function () { if (t.user.trim()) set({ step: 'pw', err: '', kb: 'pw', shift: false }); },
+      toUser: function () { set({ step: 'user', pw: '', err: '', kb: null, badge: null, shift: false, shown: false }); },
+      deny: function () { set({ err: 'You don’t have access to set up or run a kiosk.', pw: '' }); },
+      back: function () { self.toWelcome(); },
+      /* Signing in leaves this board: reset it behind the staff member so Start kiosk / Sign out land on the student welcome screen. */
+      leave: function () { setTimeout(function () { self.toWelcome(); self.setState({ st: null, stLeft: 30 }); }, 50); },
+      poke: function () { if (self.state.stLeft !== 30) self.setState({ stLeft: 30 }); },
+      accounts: this.staffAccounts().map(function (a) { return { user: a.user, role: a.role, pick: function () { set({ user: a.user, pw: '', err: '', step: 'pw', kb: null, badge: null }); } }; }),
+      idle: { show: (t.step === 'user' && !t.user.trim()) || isBadge, text: 'Returning to kiosk in ' + left + 's', offset: (40.84 * (1 - left / 30)).toFixed(2),
+        color: left <= 5 ? '#414651' : '#717680', weight: left <= 5 ? '500' : '400', ring: left <= 5 ? '#535862' : '#A4A7AE' }
+    };
+  }
+  toWelcome() { this.clearTimers(); this.setState({ screen: 'welcome', visit: null, notice: null, q: '', delOpen: false, delOpenMap: {}, who: null, guest: null, gvisit: null, left: 0 }); }
+
+  students() {
+    if (this._st) return this._st;
+    var P = function (id, merchant, tn, arrived, size) { return { id: id, merchant: merchant, tn: tn, arrived: arrived, size: size }; };
+    this._st = [
+      { badgeId: 'U2048193', name: 'Emma Johnson', packages: [P('p1', 'Target', '1Z999AA10123456784', '2026-10-10', 'Medium'), P('p2', 'Amazon', 'TBA304918275000', '2026-10-11', 'Small'),
+      P('p50', 'Apple', '1Z4E52W80394815050', '2026-10-12', 'Small'), P('p51', 'Nike', '9405511899561400051', '2026-10-11', 'Medium'),
+      P('p52', 'Wayfair', '783015629452', '2026-10-09', 'Large'), P('p53', 'Sephora', '9361289878700300053', '2026-10-12', 'Small'),
+      P('p54', 'Chewy', '776540293354', '2026-10-10', 'Medium'), P('p55', 'Etsy', '9400136897846000055', '2026-10-08', 'Small'),
+      P('p56', 'Best Buy', '1Z77W0A20391800056', '2026-10-12', 'Medium')] },
+      { badgeId: 'U2051177', demoId: '12345678', name: 'Liam Martinez', delegations: [{ name: 'Jordan Lee', processing: [{ merchant: 'Apple' }], packages: [P('p20', 'Best Buy', '1Z77W0A20391827715', '2026-10-09', 'Medium'), P('p21', 'Amazon', 'TBA305001938000', '2026-10-11', 'Small')] }, { name: 'Priya Natarajan', packages: [P('p22', 'Target', '1Z999AA10123450022', '2026-10-12', 'Small')] }], packages: [P('p3', 'Chegg', '9400111899223197428490', '2026-10-09', 'Small')] },
+      { badgeId: 'U2039920', name: 'Sophia Chen', processing: [{ merchant: 'Amazon' }], packages: [P('p4', 'IKEA', '772899174028', '2026-10-08', 'Large'), P('p5', 'Apple', '1Z4E52W80394810276', '2026-10-10', 'Medium'), P('p6', 'Amazon', 'TBA305127736000', '2026-10-12', 'Small')] },
+      { badgeId: 'U2060412', name: 'Noah Williams', packages: [P('p7', 'Nike', '9405511899561463209817', '2026-10-07', 'Medium'), P('p8', 'Wayfair', '783015629441', '2026-10-11', 'Large')] },
+      { badgeId: 'U2044508', name: 'Olivia Brown', packages: [P('p9', 'Amazon', 'TBA304771092000', '2026-10-12', 'Medium')] },
+      { badgeId: 'U2073356', name: 'Daniel Kim', packages: [] },
+      { badgeId: 'U2074410', name: 'Ava Thompson', packages: [], processing: [{ merchant: 'Wayfair' }, { merchant: 'Amazon' }] },
+      { badgeId: 'E1004417', name: 'Grace Okoye', packages: [P('p10', 'Staples', '1Z0X118A0398761152', '2026-10-11', 'Medium')] },
+      { badgeId: 'U2066802', name: 'Emma Davis', packages: [P('p11', 'Sephora', '9361289878700318825501', '2026-10-10', 'Small')] },
+      { badgeId: 'U2050931', name: 'Ethan Patel', packages: [P('p12', 'Amazon', 'TBA305002847000', '2026-10-12', 'Small')] },
+      { badgeId: 'U2041178', name: 'Isabella Garcia', packages: [P('p13', 'Amazon', 'TBA305118846000', '2026-10-11', 'Medium'), P('p14', 'Target', '1Z87V4E20387726190', '2026-10-12', 'Large')] },
+      { badgeId: 'U2058846', name: 'Mason Okafor', packages: [P('p15', 'Chewy', '776540293318', '2026-10-10', 'Large')] },
+      { badgeId: 'U2062290', name: 'Mia Robinson', packages: [P('p16', 'Etsy', '9400136897846030113425', '2026-10-09', 'Small')] },
+      { badgeId: 'U2071150', name: 'Emma Jones', gen: true, packages: [P('p30', 'Amazon', 'TBA305200114000', '2026-10-11', 'Small')] },
+      { badgeId: 'U2071233', name: 'Emma Garcia', gen: true, packages: [P('p31', 'Target', '1Z999AA10123450031', '2026-10-10', 'Medium')] },
+      { badgeId: 'U2071318', name: 'Emma Lee', gen: true, packages: [P('p32', 'Uniqlo', '9400111899223100032', '2026-10-12', 'Small')] },
+      { badgeId: 'U2071405', name: 'Emma Nguyen', gen: true, packages: [P('p33', 'Amazon', 'TBA305200133000', '2026-10-09', 'Medium')] },
+      { badgeId: 'U2071547', name: 'Emma Brooks', gen: true, packages: [P('p34', 'Apple', '1Z4E52W80394810034', '2026-10-11', 'Small')] },
+      { badgeId: 'U2071626', name: 'Emma Thompson', gen: true, packages: [P('p35', 'IKEA', '772899174035', '2026-10-08', 'Large')] },
+      { badgeId: 'U2071779', name: 'Emmett Walsh', gen: true, packages: [P('p36', 'Nike', '9405511899561400036', '2026-10-12', 'Medium')] },
+      { badgeId: 'U2071862', name: 'Emmanuel Osei', gen: true, packages: [P('p37', 'Chegg', '9400111899223100037', '2026-10-10', 'Small')] },
+      { badgeId: 'U2071941', name: 'Emily Carter', gen: true, packages: [P('p38', 'Sephora', '9361289878700300038', '2026-10-11', 'Small')] },
+      { badgeId: 'U2072014', name: 'Emily Zhang', gen: true, packages: [P('p39', 'Amazon', 'TBA305200139000', '2026-10-12', 'Medium')] },
+      { badgeId: 'U2072190', name: 'Emilia Rossi', gen: true, packages: [P('p40', 'Etsy', '9400136897846000040', '2026-10-09', 'Small')] },
+      { badgeId: 'U2072275', name: 'Emerson Hale', gen: true, packages: [P('p41', 'Best Buy', '1Z77W0A20391800041', '2026-10-10', 'Medium')] }
+    ];
+    /* Contact info on file: [phone, email]. Some students have only one; Mia has neither. */
+    var C = {
+      U2074410: ['6175550177', 'ava.thompson@northbridge.edu'],
+      U2048193: ['6175550148', 'emma.johnson@northbridge.edu'], U2051177: ['6175550193', 'liam.martinez@northbridge.edu'],
+      U2039920: ['6175550127', null], U2060412: [null, 'noah.williams@northbridge.edu'], U2044508: ['6175550166', 'olivia.brown@northbridge.edu'],
+      U2073356: [null, 'daniel.kim@northbridge.edu'], E1004417: [null, 'g.okoye@northbridge.edu'], U2066802: ['6175550112', null],
+      U2050931: ['6175550184', 'ethan.patel@northbridge.edu'], U2041178: ['6175550105', 'isabella.garcia@northbridge.edu'], U2058846: ['6175550139', null]
+    };
+    this._st.forEach(function (s) {
+      var c = C[s.badgeId] || [];
+      if (s.gen) { var n = s.name.toLowerCase().split(' '); c = ['617555' + s.badgeId.slice(-4), n[0] + '.' + n[1] + '@northbridge.edu']; }
+      s.phone = c[0] || null; s.email = c[1] || null;
+      s.year = s.badgeId.charAt(0) === 'E' ? 'Staff' : 'Class of ' + (2026 + (parseInt(s.badgeId.slice(-2), 10) % 4));
+    });
+    return this._st;
+  }
+  trayCards() {
+    return [
+      { badgeId: 'U2048193', name: 'Emma Johnson', note: '9 packages · large item' },
+      { badgeId: 'U2039920', name: 'Sophia Chen', note: '3 ready + 1 processing · large item' },
+      { badgeId: 'U2051177', name: 'Liam Martinez', note: 'Type ID 12345678 · picking up for 2 people' },
+      { badgeId: 'U2044508', name: 'Olivia Brown', note: 'Phone wallet ID' },
+      { badgeId: 'E1004417', name: 'Grace Okoye', note: 'Staff ID · 1 package', staff: true },
+      { badgeId: 'U2060412', name: 'Noah Williams', note: '2 packages · large item' },
+      { badgeId: 'U2073356', name: 'Daniel Kim', note: 'No packages' },
+      { badgeId: 'U2074410', name: 'Ava Thompson', note: 'Nothing ready · 2 processing' },
+      { badgeId: 'V0009127', name: 'Unregistered card', note: 'Not in roster', visitor: true }
+    ];
+  }
+  find(id) { return this.students().filter(function (s) { return s.badgeId === id; })[0]; }
+  plural(n, w) { return n + ' ' + w + (n === 1 ? '' : 's'); }
+  daysAgo(iso) {
+    var d = Math.round((new Date('2026-10-12T12:00:00') - new Date(iso + 'T12:00:00')) / 86400000);
+    return d <= 0 ? 'Arrived today' : d === 1 ? 'Arrived yesterday' : 'Arrived ' + d + ' days ago';
+  }
+  initials(n) { return n.split(' ').map(function (w) { return w[0]; }).join('').slice(0, 2); }
+  /* Prototype: the kiosk device's assignment saved by Set up this kiosk device (undefined = none saved, null = removed). */
+  loadDevice() {
+    try { var v = window.localStorage.getItem('kioskProto.device'); if (!v) return undefined; if (v === 'none') return null; return JSON.parse(v); } catch (e) { return undefined; }
+  }
+  /* Prototype: school colour chosen in the Simulate panel (saved so every student screen follows it). */
+  palette() {
+    return [['Purple', '#53389E'], ['Indigo', '#3538CD'], ['Navy', '#194185'], ['Blue', '#1849A9'], ['Teal', '#125D56'],
+      ['Green', '#095C37'], ['Burnt orange', '#932F19'], ['Crimson', '#A11043'], ['Charcoal', '#252B37']];
+  }
+  accountColor(dev) { return dev && dev.cust && dev.cust.id === 'emr' ? '#194185' : '#53389E'; }
+  loadOverride() { try { var t = window.localStorage.getItem('kioskProto.themeOverride'); if (t) return t; } catch (e) {} return this.state.override || null; }
+  loadTheme(dev) { return this.loadOverride() || this.accountColor(dev); }
+  noHours() { var d = this.loadDevice(); return !!(d && !d.sp.today); }
+  accepts() { var s = this.state; return s.reader && s.network && s.hours && !this.noHours() && s.screen !== 'reading'; }
+
+  tap(id) {
+    if (!this.accepts()) return;
+    var self = this;
+    this.clearTimers();
+    this.setState({ screen: 'reading', notice: null, visit: null });
+    this.later(function () {
+      var s = self.find(id);
+      if (!s) { self.setState({ screen: 'message', notice: { type: 'notFound' }, left: 12 }); return; }
+      if (!s.packages.length && !s.delegations) { self.setState({ screen: 'message', notice: { type: (s.processing && s.processing.length) ? 'processing' : 'none', n: (s.processing || []).length, name: s.name.split(' ')[0] }, left: 12 }); return; }
+      self.checkIn(s, false);
+    }, 1100);
+  }
+  checkIn(s, via, chosen) {
+    if (s.delegations && !chosen) { var sel = { self: s.packages.length > 0 }; if (!s.packages.length && s.delegations.length === 1) sel[s.delegations[0].name] = true; this.setState({ screen: 'whoFor', who: { student: s, via: via, sel: sel }, left: 45 }); return; }
+    var p = this.checkins[s.badgeId], v;
+    if (p) { p.ahead = Math.max(0, p.ahead - 1); v = { student: s, queue: p.queue, ahead: p.ahead, repeat: true, via: via || p.via, chosen: chosen }; }
+    else {
+      this.counter += 1;
+      var e = { queue: 'A' + this.counter, ahead: 2 + Object.keys(this.checkins).length, via: via };
+      this.checkins[s.badgeId] = e;
+      v = { student: s, queue: e.queue, ahead: e.ahead, repeat: false, via: via, chosen: chosen };
+    }
+    this.setState({ screen: 'checkedIn', visit: v, left: 30, delOpen: false, panel: false });
+  }
+  /* Name search never reveals anything until the person proves it's them with a one-time code. */
+  pick(s) {
+    var m = s.phone ? 'phone' : s.email ? 'email' : null;
+    this.setState({ screen: m ? 'verifyMethod' : 'verifyFail', verify: { student: s, method: m, code: '', attempts: 0, error: '', notice: '', reason: m ? null : 'nocontact' }, left: m ? 60 : 12 });
+  }
+  patchV(p) { this.setState({ verify: Object.assign({}, this.state.verify, p), left: 60 }); }
+  dest(s, m) { return m === 'phone' ? '(•••) •••-' + s.phone.slice(-4) : s.email.charAt(0) + '•••@' + s.email.split('@')[1]; }
+  sendCode() { this.setState({ screen: 'verifyCode', verify: Object.assign({}, this.state.verify, { code: '', error: '', notice: '' }), left: 60 }); }
+  verifySubmit() {
+    var vs = this.state.verify, st = vs.student;
+    if (vs.code === '482913') {
+      this.setState({ verify: null });
+      if (!st.packages.length && !st.delegations) { this.setState({ screen: 'message', notice: { type: (st.processing && st.processing.length) ? 'processing' : 'none', n: (st.processing || []).length, name: st.name.split(' ')[0] }, left: 12 }); return; }
+      this.checkIn(st, true);
+      return;
+    }
+    var a = vs.attempts + 1;
+    if (a >= 3) { this.setState({ screen: 'verifyFail', verify: Object.assign({}, vs, { reason: 'locked' }), left: 12 }); return; }
+    var leftTries = 3 - a;
+    this.patchV({ attempts: a, code: '', notice: '', error: 'That code isn’t right. ' + leftTries + (leftTries === 1 ? ' try' : ' tries') + ' left.' });
+  }
+  qrPath(seed) {
+    var h = 0, i, x, y, d = 'M0 0h7v7h-7z M1 1h5v5h-5z M2 2h3v3h-3z M14 0h7v7h-7z M15 1h5v5h-5z M16 2h3v3h-3z M0 14h7v7h-7z M1 15h5v5h-5z M2 16h3v3h-3z';
+    for (i = 0; i < seed.length; i++) h = (Math.imul(h, 31) + seed.charCodeAt(i)) >>> 0;
+    var rnd = function () { h = (Math.imul(h, 1103515245) + 12345) >>> 0; return h / 4294967296; };
+    var inF = function (x, y) { return [[0, 0], [14, 0], [0, 14]].some(function (f) { return x >= f[0] && x < f[0] + 7 && y >= f[1] && y < f[1] + 7; }); };
+    for (y = 0; y < 21; y++) for (x = 0; x < 21; x++) if (!inF(x, y) && rnd() > 0.52) d += ' M' + x + ' ' + y + 'h1v1h-1z';
+    return d;
+  }
+  pkgView(p) {
+    var large = p.size === 'Large';
+    return { merchant: p.merchant, arrived: this.daysAgo(p.arrived), last4: p.tn.slice(-4), trk: p.tn.replace(/\s/g, '').slice(0, 4) + ' ••• ' + p.tn.slice(-4), /* tracking everywhere: first 4 ••• last 4 */ size: p.size,
+      bbg: large ? '#FFFAEB' : '#FAFAFA', bfg: large ? '#B54708' : '#414651', bbd: large ? '#FEDF89' : '#E9EAEB' };
+  }
+
+  renderVals() {
+    var self = this, s = this.state;
+    var dev = this.loadDevice();
+    var closed = !s.hours || this.noHours(), offline = !s.network;
+    var view;
+    if (s.screen === 'checkedIn' && s.visit) view = 'checked';
+    else if (closed) view = 'closed';
+    else if (offline) view = 'offline';
+    else if (s.screen.indexOf('verify') === 0 && s.verify) view = 'verify';
+    else if (s.screen === 'whoFor' && s.who) view = 'whoFor';
+    else if (s.screen === 'guest' && s.guest) view = 'guest';
+    else if (s.screen === 'guestIn' && s.gvisit) view = 'guestIn';
+    else if (s.screen === 'search') view = 'search';
+    else if (s.screen === 'message' && s.notice) view = 'message';
+    else if (!s.reader) view = 'readerDown';
+    else view = 'welcome';
+    var dark = true;
+    var theme = this.loadTheme(dev); var acctColor = this.accountColor(dev); var override = this.loadOverride();
+    var open = !closed;
+
+    var ui = dark
+      ? { bg: theme, title: '#FFFFFF', sub: 'var(--on-brand-sub)', markBg: '#FFFFFF', markFg: 'var(--brand-solid)', gearClass: 'uu-on-dark', foot: 'var(--on-brand-muted)', footStrong: '#FFFFFF' }
+      : { bg: '#FDFDFD', title: '#181D27', sub: '#535862', markBg: '#7F56D9', markFg: '#FFFFFF', gearClass: 'uu-tertiary', foot: '#717680', footStrong: '#414651' };
+    ui.brand = theme; ui.brandSolid = theme === '#53389E' ? '#7F56D9' : theme;
+    /* ID-card illustration header: always a lighter step of the theme so it separates from the background. */
+    ui.cardTop = theme === '#53389E' ? '#7F56D9' : 'color-mix(in srgb, ' + theme + ' 70%, #FFFFFF)';
+    ui.dot = view === 'offline' ? '#F79009' : open ? '#17B26A' : '#A4A7AE';
+    ui.status = view === 'offline' ? 'Offline' : open ? 'Open until ' + (dev && dev.sp.today ? dev.sp.today.split(' to ')[1] : '5:00 PM') : 'Closed';
+    var now = new Date(), wxOn = true; try { wxOn = window.localStorage.getItem('kioskProto.weather') !== 'off'; } catch (e) {}
+    /* Kiosk setting (Kiosk admin): students find themselves by name (default) or by typing their student ID. */
+    var dmo = this.props.demo || 'none', fb = null; try { fb = window.localStorage.getItem('kioskProto.findBy'); } catch (e) {} var byId = dmo === 'idEntry' || (dmo !== 'search' && fb !== 'name');
+    ui.byId = byId; ui.byName = !byId;
+    ui.findAlt = byId ? 'ID card not working? Enter your student ID' : 'ID not working? Search your name';
+    ui.findLabel = byId ? 'Enter your student ID' : 'Search your name';
+    ui.findHeading = byId ? 'Enter your student ID to check in' : 'Search your name to check in';
+    var wx = dev && dev.cust.id === 'clm' ? [68, 'Partly cloudy'] : dev && dev.cust.id === 'emr' ? [72, 'Partly cloudy'] : [58, 'Partly cloudy'];
+    var clk = { time: now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }), date: now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }),
+      weather: wxOn && view !== 'offline', temp: wx[0] + '°', cond: wx[1], wxLabel: wx[1] + ', ' + wx[0] + ' degrees' };
+    ui.footBg = 'transparent';
+    ui.footFull = view !== 'checked'; ui.footPad = ui.footFull ? '8px clamp(8px, 2vw, 20px) clamp(16px, 3vh, 28px) clamp(16px, 3vw, 32px)' : '0';
+    ui.simPos = ui.footFull && s.screen !== 'staff' ? 'position: relative; margin-right: 10px;' : 'position: fixed; left: 50%; bottom: 4px; transform: translateX(-50%);';
+    if (view === 'checked') { ui.footBg = '#FDFDFD'; ui.foot = '#717680'; ui.footStrong = '#414651'; }
+    ui.campus = dev ? dev.cust.name : 'Northbridge University';
+    ui.mailroom = dev ? dev.sp.name : 'Student Mail Center';
+    ui.isClemson = !!(dev && dev.cust.id === 'clm'); ui.isEmory = !!(dev && dev.cust.id === 'emr'); ui.noLogo = !ui.isClemson && !ui.isEmory;
+    ui.initials = ui.campus.split(' ').filter(function (w) { return w && w !== 'of' && w !== 'the'; }).slice(0, 2).map(function (w) { return w.charAt(0).toUpperCase(); }).join('');
+    ui.opens = dev && !dev.sp.today ? 'Check-in opens once pickup hours are set.' : 'Opens tomorrow at ' + (dev ? dev.sp.today.split(' to ')[0] : '9:00 AM');
+
+    /* Campus offers (fictional businesses). Admin / Simulate switch; on for this demo unless turned off. */
+    var adsOn = true; try { adsOn = window.localStorage.getItem('kioskProto.ads') !== 'off'; } catch (e) {}
+    var offers = [['Brickyard Burrito Co.', 'BB', '#B42318', 'Show your college ID, get a free drink', 'Any burrito or bowl · Mon–Fri', 'assets/383388c635c2d5da5bc8efe622c64cc9.jpg'],
+      ['Third Shift Coffee', '3S', '#363F72', 'Free delivery to campus dorms', 'Today only · orders over $8', 'assets/b0072876e5851fbba3ea7fa1b2bd3c0b.jpg'],
+      ['Pinecone Pizza', 'PP', '#3B7C0F', 'Student ID = 15% off any large pie', 'Dine in, pickup, or delivery', 'assets/31d4415831091c845e64c9d5cd096314.jpg'],
+      ['Loop Laundry', 'LL', '#0E7090', 'First wash free with your college ID', 'Two blocks from the mailroom', 'assets/a301783c8e3543afba720179ffd430ec.jpg']];
+    var ai = (s.adIdx || 0) % offers.length, selfQ = this;
+    var ad = { show: adsOn && view === 'welcome',
+      slides: offers.map(function (o, i) { var on = i === ai;
+        return { biz: o[0], mark: o[1], markBg: o[2], title: o[3], sub: o[4], photo: o[5] || '', hasPhoto: !!o[5], noPhoto: !o[5], qr: selfQ.qrPath('offer-' + o[0]), opacity: on ? 1 : 0, shift: on ? 'none' : 'translateY(6px)', hidden: !on }; }),
+      dots: offers.map(function (o, i) { return { w: i === ai ? '16px' : '4px', bg: i === ai ? '#FFFFFF' : 'rgba(255,255,255,.35)' }; }) };
+
+    var reading = s.screen === 'reading';
+    var w = { reading: reading, idle: !reading, cardClass: reading ? '' : 'glide', cardTransform: reading ? 'translateX(70px)' : 'none',
+      flip: ((dev && dev.side) || this.props.readerSide || 'right') === 'left' ? 'scaleX(-1)' : 'none' };
+
+    var unknown = !!(s.notice && s.notice.type === 'notFound');
+    var m = { unknown: unknown, none: !unknown,
+      title: unknown ? 'We don’t recognize that ID' : 'Nothing here yet, ' + (s.notice ? s.notice.name : ''),
+      body: unknown ? (s.notice && s.notice.fromId ? 'Check the ID on your student card and try again. If it still doesn’t work, ask staff at the window.' : ui.byId ? 'Try tapping again or enter your student ID. If it still doesn’t work, ask staff at the window.' : 'Try tapping again or search your name. If it still doesn’t work, ask staff at the window.') : 'You don’t have any packages ready for pickup. We’ll notify you when one arrives.' };
+
+    if (s.notice && s.notice.type === 'processing') { var pn = s.notice.n;
+      m.title = 'Not ready yet, ' + s.notice.name;
+      m.body = (pn === 1 ? 'Your package is' : 'Your ' + pn + ' packages are') + ' still being processed. Check back later.'; }
+    var gv = { fields: [], kb: [], cannot: true, go: function () {} }, gi = { first: '', queue: '', waitPill: '' };
+    if (s.guest) {
+      var g = s.guest, setG = function (p) { self.setState({ guest: Object.assign({}, self.state.guest, p), left: 45 }); };
+      var cap = function (t) { return t.replace(/(^|[\s'-])([a-z])/g, function (m0, a1, b1) { return a1 + b1.toUpperCase(); }); };
+      gv.fields = [['first', 'First name'], ['last', 'Last name']].map(function (f) { var on = g.field === f[0];
+        return { id: 'guest-' + f[0], label: f[1], value: cap(g[f[0]]), focus: function () { setG({ field: f[0] }); },
+          ring: on ? 'inset 0 0 0 2px var(--brand-400), 0 0 0 4px rgba(255,255,255,.35)' : 'inset 0 0 0 1px #D5D7DA' }; });
+      var okG = g.first.trim() && g.last.trim(); gv.cannot = !okG;
+      gv.go = function () { if (!okG) return; self.counter += 1; var ahead = 2 + Object.keys(self.checkins).length;
+        self.setState({ screen: 'guestIn', guest: null, gvisit: { first: cap(g.first.trim()), queue: 'A' + self.counter, ahead: ahead }, left: 30 }); };
+      gv.kb = [].concat('qwertyuiop'.split('').map(function (c) { return [c, 2]; }), [['_sp', 1]], 'asdfghjkl'.split('').map(function (c) { return [c, 2]; }), [['_sp', 1]],
+        [["'", 2]], 'zxcvbnm'.split('').map(function (c) { return [c, 2]; }), [['-', 2], ['back', 2], ['clear', 5], ['space', 7], ['next', 8]]).map(function (k) {
+        var key = k[0], spacer = key === '_sp', back = key === 'back', clr = key === 'clear', sp = key === 'space', nx = key === 'next';
+        return { spacer: spacer, key: !spacer, span: k[1], isBack: back, isText: !back,
+          label: clr ? 'Clear' : sp ? 'Space' : nx ? (g.field === 'first' ? 'Next' : 'Done') : key.toUpperCase(),
+          aria: back ? 'Delete' : clr ? 'Clear' : sp ? 'Space' : nx ? 'Next field' : key === "'" ? 'Apostrophe' : key === '-' ? 'Hyphen' : key.toUpperCase(),
+          fs: clr || sp || nx ? '16px' : '22px', bg: back || clr || nx ? 'rgba(255,255,255,.06)' : 'rgba(255,255,255,.12)',
+          press: function () { var v0 = g[g.field] || '', p = {};
+            if (nx) { setG({ field: g.field === 'first' ? 'last' : 'first' }); return; }
+            if (back) v0 = v0.slice(0, -1); else if (clr) v0 = ''; else if (sp) { if (v0 && v0.slice(-1) !== ' ') v0 = v0 + ' '; } else if (v0.length < 30) v0 = v0 + key;
+            p[g.field] = v0; setG(p); } };
+      });
+    }
+    if (s.gvisit) { var gm = Math.max(1, Math.round(s.gvisit.ahead * 1.5)); gi = { first: s.gvisit.first, queue: s.gvisit.queue, waitPill: 'About ' + gm + ' min wait · ' + s.gvisit.ahead + ' people ahead' }; }
+    var term = s.q.trim().toLowerCase();
+    var masked = function (n) { var p = n.split(' '); return p[0] + ' ' + p[p.length - 1].charAt(0) + '.'; };
+    /* Each typed word must start one of the name's words ("emma j" finds Emma Johnson and Emma Jones). */
+    var tokens = term.split(/\s+/).filter(Boolean);
+    var results = term.replace(/\s/g, '').length >= 3 ? this.students().filter(function (st) {
+      var words = st.name.toLowerCase().split(' ');
+      return tokens.every(function (t) { return words.some(function (w) { return w.indexOf(t) === 0; }); });
+    }).sort(function (a, b) { return masked(a.name).localeCompare(masked(b.name)); }).slice(0, 20) : [];
+      /* On-screen keyboard: letters plus apostrophe and hyphen for names like O'Brien or Smith-Jones. 20-column grid, letters span 2. */
+    var nameKb = [].concat('qwertyuiop'.split('').map(function (c) { return [c, 2]; }), [['_sp', 1]], 'asdfghjkl'.split('').map(function (c) { return [c, 2]; }), [['_sp', 1]],
+        [["'", 2]], 'zxcvbnm'.split('').map(function (c) { return [c, 2]; }), [['-', 2], ['back', 2], ['clear', 5], ['space', 15]]).map(function (k) {
+        var key = k[0], spacer = key === '_sp', back = key === 'back', clr = key === 'clear', sp = key === 'space';
+        return { spacer: spacer, key: !spacer, span: k[1], isBack: back, isText: !back, disabled: false, fg: '#fff',
+          label: clr ? 'Clear' : sp ? 'Space' : key.toUpperCase(),
+          aria: back ? 'Delete' : clr ? 'Clear name' : sp ? 'Space' : key === "'" ? 'Apostrophe' : key === '-' ? 'Hyphen' : key.toUpperCase(),
+          fs: clr || sp ? '16px' : '22px', bg: back || clr ? 'rgba(255,255,255,.06)' : 'rgba(255,255,255,.12)',
+          press: function () {
+            var q = self.state.q;
+            if (back) q = q.slice(0, -1);
+            else if (clr) q = '';
+            else if (sp) { if (q && q.slice(-1) !== ' ') q = q + ' '; }
+            else if (q.length < 30) q = q + key;
+            self.setState({ q: q, left: 45 });
+          } };
+      });
+    /* Student ID keyboard: number row always on top (no mode switching), letters below, not case-sensitive. */
+    var findId = function () {
+      var q = (self.state.q || '').trim().toUpperCase(); if (!q) return;
+      var hit = self.students().filter(function (x) { return x.badgeId.toUpperCase() === q || (x.demoId && x.demoId === q); })[0];
+      if (hit) self.pick(hit); else self.setState({ screen: 'message', notice: { type: 'notFound', fromId: true }, left: 12 });
+    };
+    var idKb = [].concat('1234567890'.split('').map(function (c) { return [c, 2]; }), 'qwertyuiop'.split('').map(function (c) { return [c, 2]; }), [['_sp', 1]], 'asdfghjkl'.split('').map(function (c) { return [c, 2]; }), [['_sp', 1]],
+      [['clear', 3]], 'zxcvbnm'.split('').map(function (c) { return [c, 2]; }), [['back', 3], ['find', 20]]).map(function (k) {
+      var key = k[0], spacer = key === '_sp', back = key === 'back', clr = key === 'clear', fnd = key === 'find', empty = !(s.q || '').trim();
+      return { spacer: spacer, key: !spacer, span: k[1], isBack: back, isText: !back, disabled: fnd && empty,
+        label: clr ? 'Clear' : fnd ? 'Find my packages' : key.toUpperCase(),
+        aria: back ? 'Delete' : clr ? 'Clear ID' : fnd ? 'Find my packages' : key.toUpperCase(),
+        fs: clr || fnd ? '18px' : '22px', bg: fnd ? (empty ? 'rgba(255,255,255,.16)' : '#FFFFFF') : back || clr ? 'rgba(255,255,255,.06)' : 'rgba(255,255,255,.12)', fg: fnd && !empty ? 'var(--brand)' : '#fff',
+        press: function () {
+          var q = self.state.q || '';
+          if (fnd) return findId();
+          if (back) q = q.slice(0, -1); else if (clr) q = ''; else if (q.length < 16) q = q + key;
+          self.setState({ q: q, left: 45 });
+        } };
+    });
+    var sv = { keepTyping: term.length > 0 && term.replace(/\s/g, '').length < 3, noMatch: term.replace(/\s/g, '').length >= 3 && results.length === 0, term: s.q.trim(),
+      hasQ: s.q.length > 0, empty: s.q.trim().length === 0,
+      /* One status panel (same spot, same box) for every state before results show. */
+      panel: s.q.trim().length === 0 || (term.length > 0 && term.replace(/\s/g, '').length < 3) || (term.replace(/\s/g, '').length >= 3 && results.length === 0),
+      panelTitle: s.q.trim().length === 0 ? 'Start typing your name' : results.length === 0 && term.replace(/\s/g, '').length >= 3 ? 'No match for “' + s.q.trim() + '”' : 'Keep typing…',
+      panelSub: s.q.trim().length === 0 ? 'Matches will appear here.' : results.length === 0 && term.replace(/\s/g, '').length >= 3 ? 'Check the spelling, or ask staff at the window.' : 'Type at least 3 letters to see matches.',
+      panelIcon: s.q.trim().length === 0 ? 'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M9 3a4 4 0 1 0 0 8a4 4 0 1 0 0-8 M22 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75'
+        : results.length === 0 && term.replace(/\s/g, '').length >= 3 ? 'M11 3a8 8 0 1 0 0 16a8 8 0 1 0 0-16 M21 21l-4.35-4.35 M8 11h6' : 'M12 20h9 M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z', intro: !(s.q.length > 0 && typeof window !== 'undefined' && window.innerHeight > window.innerWidth),
+      introTitle: byId ? 'Enter your student ID' : 'Find your name',
+      introSub: byId ? 'Type the ID on your student card. We’ll send a code to your phone or email to confirm it’s you.' : 'Type your first name and last initial. We’ll send a code to your phone or email to confirm it’s you.',
+      fieldLabel: byId ? 'Your student ID' : 'Your name', placeholder: byId ? 'Student ID' : 'First name and last initial', tt: byId ? 'uppercase' : 'capitalize',
+      kb: byId ? idKb : nameKb,
+      hasCount: byId ? false : results.length > 1, countText: results.length + ' matches' + (results.length > 4 && tokens.length < 2 ? '. Add your last initial to narrow it down.' : ''),
+      results: results.map(function (st) {
+        return { name: masked(st.name), sub: st.year, initials: self.initials(st.name), aria: 'Continue as ' + masked(st.name) + ', ' + st.year,
+          pick: function () { self.pick(st); } };
+      }) };
+
+    var ICO = { phone: 'M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z',
+      email: 'M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M22 6l-10 7L2 6' };
+    var vs = s.verify, vf = { choose: false, enter: false, fail: false, showBack: true, methods: [], slots: [], keys: [], maxW: '640px' };
+    if (vs) {
+      var vst = vs.student, avail = [vst.phone ? 'phone' : null, vst.email ? 'email' : null].filter(Boolean);
+      var other = avail.filter(function (x) { return x !== vs.method; })[0];
+      var locked = vs.reason === 'locked';
+      vf = { choose: s.screen === 'verifyMethod', enter: s.screen === 'verifyCode', fail: s.screen === 'verifyFail', showBack: s.screen !== 'verifyFail',
+        name: masked(vst.name),
+        chooseText: avail.length > 1 ? 'Choose where to send a 6-digit code.' : 'We’ll send a 6-digit code to the ' + (avail[0] === 'phone' ? 'phone number' : 'email') + ' on file.',
+        methods: avail.map(function (k) {
+          var on = vs.method === k;
+          return { title: k === 'phone' ? 'Text message' : 'Email', dest: self.dest(vst, k), icon: ICO[k], on: on,
+            bg: on ? '#fff' : 'rgba(255,255,255,.1)', ring: on ? '#fff' : 'rgba(255,255,255,.2)', ringW: '1px', titleFg: on ? 'var(--brand)' : '#fff', subFg: on ? 'var(--brand)' : 'var(--on-brand-sub)',
+            iconBg: on ? 'var(--brand-100)' : 'rgba(255,255,255,.14)', iconRing: on ? 'var(--brand-200)' : 'rgba(255,255,255,.2)', iconFg: on ? 'var(--brand-solid)' : '#fff',
+            radioBg: on ? 'var(--brand-solid)' : 'transparent', radioBd: on ? 'var(--brand-solid)' : 'rgba(255,255,255,.6)', dot: on ? '#fff' : 'transparent',
+            pick: function () { self.patchV({ method: k }); } };
+        }),
+        icon: ICO[vs.method] || '', dest: vs.method ? this.dest(vst, vs.method) : '', code: vs.code,
+        ring: vs.error ? '#FDA29B' : '#D5D7DA', hasError: !!vs.error, error: vs.error, hasNotice: !!vs.notice, notice: vs.notice,
+        incomplete: vs.code.length !== 6,
+        canSwitch: !!other, switchLabel: other === 'email' ? 'Send to email instead' : 'Text me instead',
+        failTitle: locked ? 'Too many tries' : 'We can’t verify you here',
+        failBody: locked ? 'For your security, check-in by name is paused. Please see staff at the window with your ID.' : 'There’s no phone or email on file for you. Please see staff at the window with your ID.',
+        back: function () { self.setState({ screen: s.screen === 'verifyCode' ? 'verifyMethod' : 'search', left: s.screen === 'verifyCode' ? 60 : 45 }); },
+        send: function () { self.sendCode(); },
+        onCode: function (e) { self.patchV({ code: e.target.value.replace(/\D/g, '').slice(0, 6), error: '' }); },
+        submit: function () { self.verifySubmit(); },
+        maxW: s.screen === 'verifyCode' ? '1040px' : '640px',
+        /* On-screen keypad: the tablet's own keyboard covers half the screen and may be blocked in kiosk mode. */
+        slots: [0, 1, 2, 3, 4, 5].map(function (i) {
+          var filled = i < vs.code.length, active = i === vs.code.length;
+          return { v: filled ? vs.code.charAt(i) : '', aria: 'Digit ' + (i + 1) + (filled ? ' entered' : ' empty'),
+            ring: vs.error ? '#FDA29B' : active ? 'var(--brand-400)' : '#D5D7DA', ringW: active || vs.error ? '2px' : '1px' };
+        }),
+        keys: ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'clear', '0', 'back'].map(function (k) {
+          var isBack = k === 'back', isClear = k === 'clear';
+          return { label: isClear ? 'Clear' : k, isBack: isBack, isText: !isBack, aria: isBack ? 'Delete last digit' : isClear ? 'Clear code' : k,
+            fs: isClear ? '18px' : '28px', bg: isBack || isClear ? 'rgba(255,255,255,.06)' : 'rgba(255,255,255,.12)',
+            press: function () {
+              var code = self.state.verify.code;
+              if (isBack) code = code.slice(0, -1); else if (isClear) code = ''; else if (code.length < 6) code = code + k;
+              self.patchV({ code: code, error: '', notice: '' });
+            } };
+        }),
+        resend: function () { self.patchV({ code: '', error: '', notice: 'We sent a new code to ' + self.dest(vst, vs.method) + '.' }); },
+        switchMethod: function () { if (other) self.patchV({ method: other, code: '', error: '', notice: 'We sent a code to ' + self.dest(vst, other) + '.' }); } };
+    }
+
+    var wf = { rows: [], title: '', sub: '', canGo: false, cannot: true, go: function () {} };
+    if (s.who) {
+      var ws = s.who.student, wsel = s.who.sel, wfirst = ws.name.split(' ')[0];
+      var rowsW = [];
+      if (ws.packages.length) rowsW.push({ key: 'self', title: 'Myself', sub: self.plural(ws.packages.length, 'package') });
+      ws.delegations.filter(function (d) { return d.packages.length; }).forEach(function (d) { rowsW.push({ key: d.name, title: d.name, sub: self.plural(d.packages.length, 'package') + ' · asked you to pick up' }); });
+      wf = { title: 'Who are you picking up for today?', sub: wfirst + ', ' + (ws.delegations.length === 1 ? 'someone has' : ws.delegations.length + ' people have') + ' asked you to pick up their packages. Choose everyone you’re collecting for.',
+        rows: rowsW.map(function (r) { var on = !!wsel[r.key]; return { title: r.title, sub: r.sub, on: on, bg: on ? '#FFFFFF' : 'rgba(255,255,255,.08)', ring: on ? '#FFFFFF' : 'rgba(255,255,255,.24)', titleFg: on ? '#181D27' : '#FFFFFF', subFg: on ? '#535862' : 'var(--on-brand-sub)', cbg: on ? 'var(--brand-solid)' : 'transparent', cbd: on ? 'var(--brand-solid)' : 'rgba(255,255,255,.6)',
+          toggle: function () { var n = Object.assign({}, wsel); n[r.key] = !n[r.key]; self.setState({ who: Object.assign({}, s.who, { sel: n }), left: 45 }); } }; }) };
+      var anyOn = Object.keys(wsel).some(function (k) { return wsel[k]; });
+      wf.canGo = anyOn; wf.cannot = !anyOn;
+      wf.go = function () { if (!anyOn) return; self.checkIn(ws, s.who.via, wsel); };
+    }
+    var c = { title: '', queue: '', wait: '', waitSub: '', ahead: 0, aheadSub: '', via: false, pkgs: [], pkgCount: 0, hasDel: false, delOpen: false, delPkgs: [], hasLarge: false, qr: '', pct: '100%', listH: '240px', qrSize: '140px' };
+    if (s.visit) {
+      var v = s.visit, st = v.student, first = st.name.split(' ')[0];
+      var ch = v.chosen || { self: true }; var own = ch.self ? st.packages : []; var dels = (st.delegations || []).filter(function (d) { return ch[d.name]; });
+      var procLine = function (n, who) { return (who ? n + ' more of ' + who + '’s packages ' + (n === 1 ? 'is' : 'are') : (n === 1 ? '1 more package is' : n + ' more packages are')) + ' still being processed and can’t be picked up yet.'; };
+      var all = dels.reduce(function (a, d) { return a.concat(d.packages); }, own.slice());
+      /* Partial pickup: remember what the student leaves for another day (kept if they tap in again). */
+      var rec = this.checkins[st.badgeId] || {}; rec.skip = rec.skip || {}; var skip = rec.skip;
+      var selN = all.filter(function (p) { return !skip[p.id]; }).length;
+      var large = all.filter(function (p) { return p.size === 'Large' && !skip[p.id]; }).length;
+      var selView = function (p) {
+        var pv = self.pkgView(p), on = !skip[p.id];
+        pv.on = on; pv.op = on ? '1' : '.55'; pv.cbg = on ? 'var(--brand-solid)' : '#fff'; pv.cbd = on ? 'var(--brand-solid)' : '#D5D7DA';
+        pv.toggle = function () {
+          if (on && selN <= 1) { self.setState({ selWarn: true, left: 30 }); self.later(function () { self.setState({ selWarn: false }); }, 2500); return; }
+          if (on) skip[p.id] = true; else delete skip[p.id];
+          self.setState({ selTick: (self.state.selTick || 0) + 1, selWarn: false, left: 30 });
+        };
+        return pv;
+      };
+      var mins = Math.max(1, Math.round(v.ahead * 1.5));
+      c = { title: v.repeat ? 'You’re already checked in, ' + first : 'You’re checked in, ' + first,
+        queue: v.queue, wait: v.ahead === 0 ? 'Next' : '~' + mins + ' min', waitSub: v.ahead === 0 ? 'You’re up next' : 'At today’s pace',
+        waitPill: v.ahead === 0 ? 'You’re up next' : 'About ' + mins + ' min wait', aheadPill: v.ahead === 0 ? 'No one ahead' : v.ahead === 1 ? '1 person ahead' : v.ahead + ' people ahead',
+        ahead: v.ahead, aheadSub: v.ahead === 1 ? 'person in line' : 'people in line', via: !!v.via,
+        pkgCount: all.length, hasOwn: own.length > 0, listTitle: dels.length ? 'Packages to pick up' : 'Your packages',
+        selText: s.selWarn ? 'Keep at least one selected' : selN === all.length ? 'All ' + all.length + ' selected · tap to leave any for later' : selN + ' of ' + all.length + ' selected',
+        selFg: s.selWarn ? '#B42318' : selN === all.length ? '#535862' : 'var(--brand)', selFw: selN === all.length && !s.selWarn ? '400' : '600',
+        sections: (own.length ? [{ title: 'Yours', count: own.length, hasHead: dels.length > 0, pkgs: own.map(selView), hasProc: (st.processing || []).length > 0, procText: procLine((st.processing || []).length, '') }] : []).concat(dels.map(function (d) { var pn = (d.processing || []).length; return { title: d.name, count: d.packages.length, hasHead: true, pkgs: d.packages.map(selView), hasProc: pn > 0, procText: procLine(pn, d.name.split(' ')[0]) }; })),
+        delOpen: s.delOpen, delLabel: s.delOpen ? 'Hide packages' : 'Show packages', chev: s.delOpen ? 'rotate(180deg)' : 'none',
+        hasLarge: large > 0, largeText: this.plural(large, 'large package') + '. Carts are available at the window.',
+        /* Sized so the band + both cards + Done always fit the screen; the ID notice (name search) takes ~80px. */
+        listH: 'max(220px, calc(100vh - 502px))',
+        qrSize: 'clamp(116px, calc(100vh - 604px), 240px)',
+        qr: this.qrPath(v.queue + st.badgeId), pct: Math.round(Math.max(s.left, 0) / 30 * 100) + '%' };
+    }
+
+    var acc = this.accepts();
+    var hint = !s.network ? 'The kiosk is offline, so taps are ignored.' : !s.reader ? 'The reader is unplugged, so taps are ignored.' : !s.hours ? 'The kiosk is closed, so taps are ignored.' : 'Tap an ID to check in. Works on any screen.';
+    var mk = function (label, key, onT, offT) {
+      var on = !!s[key];
+      return { label: label, on: on, state: on ? onT : offT, track: on ? '#7F56D9' : '#E9EAEB', justify: on ? 'flex-end' : 'flex-start',
+        flip: function () { var o = { panel: false }; o[key] = !s[key]; self.setState(o); } };
+    };
+
+    return {
+      ui: ui, clk: clk, ad: ad, w: w, m: m, s: sv, c: c, vf: vf, q: s.q, left: Math.max(s.left, 0),
+      v: { welcome: view === 'welcome', readerDown: view === 'readerDown', closed: view === 'closed', offline: view === 'offline', message: view === 'message', search: view === 'search', verify: view === 'verify', checked: view === 'checked', whoFor: view === 'whoFor', guest: view === 'guest', guestIn: view === 'guestIn' },
+      toGuest: function () { self.clearTimers(); self.setState({ screen: 'guest', guest: { first: '', last: '', field: 'first' }, notice: null, left: 45 }); },
+      gv: gv, gi: gi,
+      toSearch: function () { self.clearTimers(); self.setState({ screen: 'search', notice: null, q: '', left: 45 }); },
+      done: function () { self.toWelcome(); },
+      onQ: function (e) { self.setState({ q: e.target.value, left: 45 }); },
+      clearQ: function () { self.setState({ q: '', left: 45 }); },
+      nav: { show: view === 'search' || view === 'whoFor' || view === 'guest' || (view === 'verify' && vf.showBack), back: view === 'search' || view === 'whoFor' || view === 'guest' ? function () { self.toWelcome(); } : vf.back },
+      wf: wf,
+      resetLeft: function () { if (self.state.screen === 'checkedIn') self.setState({ left: 30 }); },
+      toggleDel: function () { self.setState({ delOpen: !self.state.delOpen }); },
+      simOpacity: s.panel ? '1' : '.55',
+      simColor: s.screen === 'staff' ? '#717680' : ui.foot,
+      resetProto: function () {
+        try { ['kioskProto.device', 'kioskProto.themeOverride', 'kioskProto.theme', 'kioskProto.weather', 'kioskProto.ads', 'kioskProto.staffArrive', 'kioskProto.findBy'].forEach(function (k) { window.localStorage.removeItem(k); }); } catch (e) {}
+        self.clearTimers(); self.checkins = {}; self.counter = 103;
+        self.setState({ screen: 'welcome', network: true, reader: true, hours: true, q: '', visit: null, notice: null, left: 0, delOpen: false, delOpenMap: {}, who: null, guest: null, gvisit: null, panel: false, verify: null, override: null, st: null, stLeft: 30, adIdx: 0 });
+        var demo = self.props.demo || 'none';
+        if (demo === 'guest') self.setState({ screen: 'guest', guest: { first: 'maria', last: 'lopez', field: 'last' }, left: 45 }); else if (demo === 'guestIn') self.setState({ screen: 'guestIn', gvisit: { first: 'Maria', queue: 'A104', ahead: 2 }, left: 30 }); else if (demo === 'whoFor') self.checkIn(self.find('U2051177'), false); else if (demo === 'checkedInProxy') { self.checkIn(self.find('U2051177'), false, { self: true, 'Jordan Lee': true, 'Priya Natarajan': true }); } else if (demo === 'checkedInPartial') { self.checkIn(self.find('U2048193'), false); self.checkins['U2048193'].skip = { p2: true, p52: true, p53: true, p54: true, p55: true, p56: true }; self.setState({ selTick: 1 }); } else if (demo === 'idEntry') { self.setState({ screen: 'search', q: 'U20481', left: 45 }); } else if (demo === 'checkedIn') self.checkIn(self.find('U2048193'), false); else if (demo === 'reading') self.setState({ screen: 'reading' }); else if (demo === 'search') self.setState({ screen: 'search', q: 'Emm', left: 45 }); else if (demo === 'verifyMethod') self.pick(self.find('U2048193')); else if (demo === 'verifyCode') { var vst = self.find('U2048193'); self.setState({ screen: 'verifyCode', verify: { student: vst, method: vst.phone ? 'phone' : 'email', code: '48', attempts: 0, error: '', notice: '', reason: null }, left: 60 }); } else if (demo === 'staffKeyboard') self.setState({ screen: 'staff', st: { step: 'user', user: 'admin@ricoh-usa', pw: '', err: '', kb: 'user', shift: false, shown: false }, stLeft: 30 });
+      },
+      openStaff: function () { self.clearTimers(); self.setState({ screen: 'staff', panel: false, st: { step: 'user', user: '', pw: '', err: '' }, stLeft: 30 }); },
+      st: self.staffVals(),
+      panel: s.panel, panelLabel: s.panel ? 'Hide controls' : 'Simulate',
+      togglePanel: function () { self.setState({ panel: !self.state.panel }); },
+      hint: hint,
+      themeName: (this.palette().filter(function (x) { return x[1] === theme; })[0] || ['Custom'])[0] + (override && override !== acctColor ? ' · preview' : ' · account color'),
+      acctNote: (dev ? dev.cust.name : 'Default') + ' account color: ' + (this.palette().filter(function (x) { return x[1] === acctColor; })[0] || ['Custom'])[0] + ' (' + acctColor + ')',
+      hasOverride: !!(override && override !== acctColor),
+      useAccount: function () { try { window.localStorage.removeItem('kioskProto.themeOverride'); } catch (e) {} self.setState({ override: null, panel: false }); },
+      swatches: this.palette().map(function (x) {
+        var on = x[1] === theme;
+        return { name: x[0] + (x[1] === acctColor ? ' (account color)' : ''), hex: x[1], on: on, ring: on ? '0 0 0 2px #fff, 0 0 0 4px ' + x[1] : 'inset 0 0 0 1px rgba(10,13,18,.12)',
+          pick: function () { try { if (x[1] === acctColor) window.localStorage.removeItem('kioskProto.themeOverride'); else window.localStorage.setItem('kioskProto.themeOverride', x[1]); } catch (e) {} self.setState({ override: x[1] === acctColor ? null : x[1], panel: false }); } };
+      }),
+      toggles: [mk('Kiosk Wi-Fi', 'network', 'Connected', 'Disconnected'), mk('Badge reader', 'reader', 'Connected', 'Unplugged'), mk('Pickup hours', 'hours', 'Within hours', 'Outside hours'),
+        { label: 'Weather', on: wxOn, state: wxOn ? 'Showing next to the clock' : 'Off', track: wxOn ? '#7F56D9' : '#E9EAEB', justify: wxOn ? 'flex-end' : 'flex-start',
+          flip: function () { try { window.localStorage.setItem('kioskProto.weather', wxOn ? 'off' : 'on'); } catch (e) {} self.setState({ panel: false }); } },
+        { label: 'Find by student ID', on: byId, state: byId ? 'Students type their ID' : 'Off · students search their name', track: byId ? '#7F56D9' : '#E9EAEB', justify: byId ? 'flex-end' : 'flex-start',
+          flip: function () { try { window.localStorage.setItem('kioskProto.findBy', byId ? 'name' : 'id'); } catch (e) {} self.setState({ panel: false, q: '' }); } },
+        { label: 'Campus offers', on: adsOn, state: adsOn ? 'Showing on the welcome screen' : 'Off', track: adsOn ? '#7F56D9' : '#E9EAEB', justify: adsOn ? 'flex-end' : 'flex-start',
+          flip: function () { try { window.localStorage.setItem('kioskProto.ads', adsOn ? 'off' : 'on'); } catch (e) {} self.setState({ panel: false, adIdx: 0 }); } }],
+      tray: this.trayCards().map(function (t) {
+        return { name: t.name, note: t.note, initials: t.visitor ? '?' : self.initials(t.name), disabled: !acc,
+          avBg: t.visitor ? '#F5F5F5' : t.staff ? '#E9EAEB' : '#F4EBFF', avFg: t.visitor ? '#717680' : t.staff ? '#414651' : '#6941C6',
+          tap: function () { self.setState({ panel: false }); self.tap(t.badgeId); } };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>
