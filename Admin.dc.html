@@ -162,6 +162,9 @@ a{color:#6941C6}a:hover{color:#53389E}
           <div><div style="font-size: 14px; line-height: 20px; font-weight: 500; color: #414651;">Kiosk device set up</div><div style="font-size: 12px; line-height: 18px; color: #535862;">{{simText}}</div></div>
           <button class="uu-focus" role="switch" aria-checked="{{device}}" aria-label="Kiosk device set up" onClick="{{toggleSetup}}" style="width: 44px; height: 24px; border: 0; border-radius: 9999px; padding: 2px; display: flex; justify-content: {{simJustify}}; background: {{simTrack}}; cursor: pointer; flex-shrink: 0;"><span style="width: 20px; height: 20px; border-radius: 9999px; background: #fff; box-shadow: 0 1px 3px rgba(10,13,18,.1);"></span></button>
         </div>
+        <div style="border-top: 1px solid #E9EAEB; padding-top: 12px; display: flex; flex-direction: column;">
+          <button type="button" class="uu-btn" data-tip="Clears setup, colors, toggles and check-ins on every screen." onClick="{{resetProto}}" style="border: 1px solid #555; background: none; font: inherit; text-align: left; cursor: pointer">Reset prototype</button>
+        </div>
       </aside>
     </sc-if>
     <button class="uu-btn uu-secondary proto-trigger" onClick="{{togglePanel}}" aria-expanded="{{panel}}" style="height: 36px; padding: 0 12px; font-size: 14px; line-height: 20px; border-radius: 9999px;">
@@ -222,6 +225,7 @@ class Component extends DCLogic {
           flip: function () { try { window.localStorage.setItem('kioskProto.weather', on ? 'off' : 'on'); } catch (e) {} self.setState({ wxTick: (self.state.wxTick || 0) + 1 }); } }; })(),
       panel: this.state.panel, panelLabel: this.state.panel ? 'Hide controls' : 'Simulate',
       togglePanel: function () { self.setState({ panel: !self.state.panel }); },
+      resetProto: function () { try { ['kioskProto.device', 'kioskProto.themeOverride', 'kioskProto.theme', 'kioskProto.weather', 'kioskProto.ads', 'kioskProto.staffArrive', 'kioskProto.findBy'].forEach(function (k) { window.localStorage.removeItem(k); }); } catch (e) {} self.setState({ removed: false, confirm: false, panel: false }); },
       simText: device ? 'Set up as ' + dev.sp.name + ' · ' + dev.kiosk.name : 'Not set up',
       simTrack: device ? '#7F56D9' : '#E9EAEB', simJustify: device ? 'flex-end' : 'flex-start',
       toggleSetup: function () {

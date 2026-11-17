@@ -301,6 +301,9 @@ a{color:#6941C6}a:hover{color:#53389E}
             </div>
           </sc-for>
         </div>
+        <div style="border-top: 1px solid #E9EAEB; padding-top: 12px; display: flex; flex-direction: column;">
+          <button type="button" class="uu-btn" data-tip="Clears setup, colors, toggles and check-ins on every screen." onClick="{{resetProto}}" style="border: 1px solid #555; background: none; font: inherit; text-align: left; cursor: pointer">Reset prototype</button>
+        </div>
       </aside>
     </sc-if>
     <button class="uu-btn uu-secondary proto-trigger" onClick="{{togglePanel}}" aria-expanded="{{panel}}" style="height: 36px; padding: 0 12px; font-size: 14px; line-height: 20px; border-radius: 9999px;">
@@ -531,6 +534,7 @@ class Component extends DCLogic {
       toggles: [tg('Wi-Fi connected', 'network'), tg('Guided Access on', 'lock')],
       panel: s.panel, panelLabel: s.panel ? 'Hide controls' : 'Simulate',
       togglePanel: function () { self.setState({ panel: !self.state.panel }); },
+      resetProto: function () { try { ['kioskProto.device', 'kioskProto.themeOverride', 'kioskProto.theme', 'kioskProto.weather', 'kioskProto.ads', 'kioskProto.staffArrive', 'kioskProto.findBy'].forEach(function (k) { window.localStorage.removeItem(k); }); } catch (e) {} self.reset(); },
       f: { first: s.step === 'customer', notFirst: s.step !== 'customer', cont: s.step === 'reader' || s.step === 'checks', start: s.step === 'confirm', disabled: s.step === 'reader' ? !(matched || nomatch) : blocked },
       onQ: function (e) { self.setState({ q: e.target.value }); },
       tapKnown: function () { self.setState({ panel: false }); self.tap('U2048193'); },

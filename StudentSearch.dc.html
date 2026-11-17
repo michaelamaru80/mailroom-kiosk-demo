@@ -735,9 +735,8 @@ a{color:#6941C6}a:hover{color:#53389E}
               </div>
               <div style="margin-top: 8px; display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 12px; line-height: 18px; color: #535862;"><span>{{acctNote}}</span><sc-if value="{{hasOverride}}" hint-placeholder-val="{{ false }}"><button onClick="{{useAccount}}" style="border: 0; background: none; padding: 0; cursor: pointer; font-family: inherit; font-weight: 600; color: #6941C6; font-size: 12px; line-height: 18px; white-space: nowrap;">Use account color</button></sc-if></div>
             </div>
-            <div style="border-top: 1px solid #E9EAEB; padding-top: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
-              <div><div style="font-size: 14px; line-height: 20px; font-weight: 600; color: #181D27;">Reset prototype</div><div style="font-size: 12px; line-height: 18px; color: #535862;">Clears setup, colors, toggles and check-ins on every screen.</div></div>
-              <button class="uu-btn uu-secondary" onClick="{{resetProto}}" style="height: 36px; padding: 0 12px; font-size: 14px; line-height: 20px; flex-shrink: 0;"><svg class="i" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="color: #A4A7AE;"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path></svg>Reset</button>
+            <div style="border-top: 1px solid #E9EAEB; padding-top: 12px; display: flex; flex-direction: column;">
+              <button type="button" class="uu-btn" data-tip="Clears setup, colors, toggles and check-ins on every screen." onClick="{{resetProto}}" style="border: 1px solid #555; background: none; font: inherit; text-align: left; cursor: pointer">Reset prototype</button>
             </div>
                       </div>
             </sc-if>
@@ -747,6 +746,7 @@ a{color:#6941C6}a:hover{color:#53389E}
                 <sc-for list="{{proto.cps}}" as="c" hint-placeholder-count="13">
                   <button type="button" class="uu-btn" data-tip="{{c.tip}}" onClick="{{c.go}}" style="border: 1px solid #555; background: none; font: inherit; text-align: left; cursor: pointer">{{c.label}}</button>
                 </sc-for>
+                <div style="border-top: 1px solid #3C3C3C; margin-top: 6px; padding-top: 8px; display: flex; flex-direction: column;"><button type="button" class="uu-btn" data-tip="Clears setup, colors, toggles and check-ins on every screen." onClick="{{resetProto}}" style="border: 1px solid #555; background: none; font: inherit; text-align: left; cursor: pointer">Reset prototype</button></div>
               </div>
             </sc-if>
             <sc-if value="{{proto.tabE}}" hint-placeholder-val="{{false}}">
@@ -755,6 +755,7 @@ a{color:#6941C6}a:hover{color:#53389E}
                 <sc-for list="{{proto.errs}}" as="c" hint-placeholder-count="12">
                   <button type="button" class="uu-btn" data-tip="{{c.tip}}" onClick="{{c.go}}" style="border: 1px solid #555; background: none; font: inherit; text-align: left; cursor: pointer">{{c.label}}</button>
                 </sc-for>
+                <div style="border-top: 1px solid #3C3C3C; margin-top: 6px; padding-top: 8px; display: flex; flex-direction: column;"><button type="button" class="uu-btn" data-tip="Clears setup, colors, toggles and check-ins on every screen." onClick="{{resetProto}}" style="border: 1px solid #555; background: none; font: inherit; text-align: left; cursor: pointer">Reset prototype</button></div>
               </div>
             </sc-if>
 </aside>
